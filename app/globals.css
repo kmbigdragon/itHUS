@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-primary: #003C43;
+  --color-secondary: #135D66;
+  --color-accent: #77B0AA;
+  --color-base: #E3FEF7;
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+pre {
+  overflow-x: auto;
+  white-space: pre-wrap;
+}

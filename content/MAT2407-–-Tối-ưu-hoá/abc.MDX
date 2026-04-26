@@ -1,0 +1,37 @@
+---
+title: "Sample MDX"
+author: "GitHub Copilot"
+---
+
+import Note from './Note'
+
+# Optimization Concepts
+
+This sample MDX document introduces basic optimization ideas.
+
+## Key Topics
+
+- Objective functions
+- Constraints
+- Gradient descent
+- Optimality conditions
+
+<strong>
+  Optimization is about choosing the best solution under given constraints.
+</strong>
+
+## Code Example
+
+```js
+function gradientDescent(f, grad, x0, lr = 0.1, steps = 100) {
+  let x = x0
+  for (let i = 0; i < steps; i++) {
+    x = x - lr * grad(x)
+  }
+  return x
+}
+```
+
+## Conclusion
+
+MDX lets you combine markdown with React components for richer documentation.
