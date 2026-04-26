@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
 import { Google_Sans, JetBrains_Mono } from "next/font/google";
 import { Footer } from "@/components/Footer";
-import { Analytics } from "@vercel/analytics/next";
+// import { Analytics } from "@vercel/analytics/next";
 
 import "./globals.css";
 import "katex/dist/katex.min.css";
 import Navbar from "@/components/Navbar";
 import ScrollToTop from "@/components/ScrollToTop";
+import { NavigationProgress } from "@/components/NavigationProgress";
 
 const googleSans = Google_Sans({
   variable: "--font-google-sans",
   subsets: ["vietnamese"],
-})
+});
 
 const jetBrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
@@ -36,11 +37,12 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
     >
       <body className="min-h-full flex flex-col">
+        <NavigationProgress />
         <Navbar />
         <main className="pt-16 min-h-screen overflow-x-hidden">{children}</main>
         <ScrollToTop />
         <Footer />
-        <Analytics />
+        {/* <Analytics /> */}
       </body>
     </html>
   );

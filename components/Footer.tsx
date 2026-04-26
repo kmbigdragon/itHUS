@@ -1,10 +1,23 @@
 import Link from "next/link";
-import { FaFacebook, FaGithub, FaRegCopyright, FaYoutube } from "react-icons/fa";
+import { FaFacebook, FaGithub, FaRegCopyright } from "react-icons/fa";
+import { SiGmail } from "react-icons/si";
 
 const socials = [
-  { icon: <FaFacebook size={18} />, href: "https://facebook.com", label: "Facebook" },
-  { icon: <FaGithub size={18} />, href: "https://github.com", label: "GitHub" },
-  { icon: <FaYoutube size={18} />, href: "https://youtube.com", label: "YouTube" },
+  {
+    icon: <FaFacebook size={18} />,
+    href: "https://www.facebook.com/ku4nm1N.b1gDr4goN/",
+    label: "Facebook",
+  },
+  {
+    icon: <FaGithub size={18} />,
+    href: "https://github.com/kmbigdragon",
+    label: "GitHub",
+  },
+  {
+    icon: <SiGmail size={18} />,
+    href: "mailto:kuanmin.bigdragon.56@gmail.com",
+    label: "YouTube",
+  },
 ];
 
 export function Footer() {
@@ -13,7 +26,10 @@ export function Footer() {
       <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
         <p className="text-sm text-primary/40 flex items-center gap-1">
           <FaRegCopyright /> 2025 - {new Date().getFullYear()}{" "}
-          <Link href="/" className="text-primary/60 font-medium">itHUS</Link>. All rights reserved.
+          <Link href="/" className="text-primary/60 font-medium">
+            itHUS
+          </Link>
+          - All rights reserved.
         </p>
 
         <div className="flex items-center gap-4">
