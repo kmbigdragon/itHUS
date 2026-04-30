@@ -24,7 +24,7 @@ export function toSlug(str: string) {
 
 export function getDisplayName(name: string) {
   return name
-    .replace(/\.(mdx)$/i, "")
+    .replace(/\.(mdx|pdf)$/i, "")
     .replace(/-/g, " ")
     .trim();
 }
@@ -42,7 +42,7 @@ export function findFileBySlug(slug: string[], dir: string): string | null {
     const fullPath = path.join(dir, entry);
     const stat = fs.statSync(fullPath);
 
-    const name = entry.replace(/\.(mdx)$/i, "");
+    const name = entry.replace(/\.(mdx|pdf)$/i, "");
     const normalized = toSlug(name);
 
     if (normalized === current) {
@@ -63,9 +63,7 @@ export function findFileBySlug(slug: string[], dir: string): string | null {
       }
 
       // 📄 File
-      if (stat.isFile() && /\.(mdx)$/i.test(entry)) {
-        return fullPath;
-      }
+      if (stat.isFile() && /\.(mdx|pdf)$/i.test(entry)) return fullPath; // ← thêm pdf
     }
   }
 
@@ -75,21 +73,30 @@ export function findFileBySlug(slug: string[], dir: string): string | null {
 /* =========================
    GET CONTENT
 ========================= */
-export function getContentBySlug(slug: string[]) {
+export const getContentBySlug = cache(function (slug: string[]) {
   const filePath = findFileBySlug(slug, CONTENT_PATH);
-
   if (!filePath) return null;
+  let fileName = path.basename(filePath);
+  const isPdf = /\.pdf$/i.test(fileName);
+
+  if (isPdf) {
+    return {
+      type: "pdf" as const,
+      title: getDisplayName(fileName.replace(/\.pdf$/i, "")),
+      url: `/api/content/${slug.join("/")}`,
+    };
+  }
 
   const raw = fs.readFileSync(filePath, "utf-8");
   const { data, content } = matter(raw);
-
-  const fileName = path.basename(filePath).replace(/\.(mdx)$/i, "");
+  fileName = path.basename(filePath).replace(/\.(mdx)$/i, "");
 
   return {
+    type: "mdx" as const,
     content,
     title: getDisplayName(fileName),
   };
-}
+});
 
 let cachedContent: { title: string; href: string; subject: string }[] | null =
   null;
@@ -168,7 +175,7 @@ export function getFolderContents(slug: string[]) {
     const fullPath = path.join(folderPath, entry);
     const stat = fs.statSync(fullPath);
 
-    const name = entry.replace(/\.(mdx)$/i, "");
+    const name = entry.replace(/\.(mdx|pdf)$/i, "");
 
     return {
       name,
@@ -193,8 +200,8 @@ export function getAllPaths(dir: string, base: string[] = []) {
 
     if (stat.isDirectory()) {
       paths = paths.concat(getAllPaths(fullPath, [...base, toSlug(entry)]));
-    } else if (/\.(mdx)$/i.test(entry)) {
-      const rawName = entry.replace(/\.(mdx)$/i, "");
+    } else if (/\.(mdx|pdf)$/i.test(entry)) {
+      const rawName = entry.replace(/\.(mdx|pdf)$/i, "");
 
       paths.push([...base, toSlug(rawName)]);
     }
@@ -223,7 +230,7 @@ export function buildBreadcrumb(slug: string[]) {
     const entries = fs.readdirSync(currentDir);
 
     const match = entries.find((entry) => {
-      const name = entry.replace(/\.(mdx)$/i, "");
+      const name = entry.replace(/\.(mdx|pdf)$/i, "");
       return toSlug(name) === segment;
     });
 
@@ -232,7 +239,7 @@ export function buildBreadcrumb(slug: string[]) {
     const fullPath = path.join(currentDir, match);
     const stat = fs.statSync(fullPath);
 
-    const name = match.replace(/\.(mdx)$/i, "");
+    const name = match.replace(/\.(mdx|pdf)$/i, "");
 
     // 🔥 ALWAYS push (file OR folder)
     result.push({
@@ -256,7 +263,7 @@ export function getFolderRealName(slug: string[]) {
     const entries = fs.readdirSync(dir);
 
     const match = entries.find((entry) => {
-      const name = entry.replace(/\.(mdx)$/i, "");
+      const name = entry.replace(/\.(mdx|pdf)$/i, "");
       return toSlug(name) === segment;
     });
 
@@ -266,4 +273,65 @@ export function getFolderRealName(slug: string[]) {
   }
 
   return getDisplayName(path.basename(dir));
+}
+
+export function getOrderedFiles() {
+  const results: { href: string; title: string; subject: string }[] = [];
+
+  function walk(dir: string, slugParts: string[], subject: string) {
+    const entries = fs
+      .readdirSync(dir, { withFileTypes: true })
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    for (const entry of entries) {
+      const nameWithoutExt = entry.name.replace(/\.mdx?$/i, "");
+      const newSlug = [...slugParts, toSlug(nameWithoutExt)];
+      const currentSubject = subject || toSlug(nameWithoutExt);
+
+      if (entry.isDirectory()) {
+        // đi sâu vào folder, không push folder vào list
+        walk(path.join(dir, entry.name), newSlug, currentSubject);
+      } else if (entry.name.match(/\.mdx?$/i)) {
+        const raw = fs.readFileSync(path.join(dir, entry.name), "utf-8");
+        const { data } = matter(raw);
+        results.push({
+          href: `/subjects/${newSlug.join("/")}`,
+          title: data.title ?? getDisplayName(nameWithoutExt),
+          subject: currentSubject,
+        });
+      }
+    }
+  }
+
+  // walk từng môn riêng để không cross subject
+  const subjects = fs
+    .readdirSync(CONTENT_PATH, { withFileTypes: true })
+    .filter((e) => e.isDirectory())
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  for (const subject of subjects) {
+    walk(
+      path.join(CONTENT_PATH, subject.name),
+      [toSlug(subject.name)],
+      toSlug(subject.name),
+    );
+  }
+
+  return results;
+}
+
+export function getPrevNext(currentHref: string) {
+  const files = getOrderedFiles();
+  const currentSubject = files.find((f) => f.href === currentHref)?.subject;
+
+  // chỉ lấy các file cùng môn
+  const subjectFiles = files.filter((f) => f.subject === currentSubject);
+  const index = subjectFiles.findIndex((f) => f.href === currentHref);
+
+  if (index === -1) return { prev: null, next: null };
+
+  return {
+    prev: index > 0 ? subjectFiles[index - 1] : null,
+    next: index < subjectFiles.length - 1 ? subjectFiles[index + 1] : null,
+  };
 }

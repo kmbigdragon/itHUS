@@ -1,0 +1,120 @@
+---
+title: "3. Cực trị địa phương và cực trị toàn cục"
+author: "Trần Đăng Quang Minh"
+---
+
+Xét hàm số $f: \mathbb{R}^n \rightarrow \mathbb{R}$ ($f$ trơn).
+
+Điểm $x^*$ được gọi là **cực tiểu toàn cục** của $f$ nếu:
+$$
+f(x^*) \le f(x), \forall x \in \mathbb{R}^n
+$$
+
+Điểm $x^*$ được gọi là **cực tiểu địa phương** của $f$ nếu tồn tại một lân cận $\mathcal{N}$ của $x^*$ sao cho:
+$$
+f(x^*) \le f(x), \forall x \in \mathcal{N}
+$$
+
+Điểm $x^*$ được gọi là **cực tiểu địa phương mạnh** của $f$ nếu tồn tại một lân cận $\mathcal{N}$ của $x^*$ sao cho:
+$$
+f(x^*) < f(x), \forall x \in \mathcal{N} \setminus \{x^*\}
+$$
+
+---
+$$\\$$
+
+**▸ ĐIỀU KIỆN CẦN VÀ ĐỦ CỦA CỰC TIỂU ĐỊA PHƯƠNG**
+
+- **Điều kiện cần:** Nếu $x^*$ là một cực tiểu địa phương, và $\nabla^2f$ tồn tại và liên tục
+  trong một lân cận mở của $x^*$ thì $\nabla f(x^*) = 0$ và $\nabla^2f(x^*)$ là nửa xác định dương.
+
+- **Điều kiện đủ:** Nếu $\nabla^2f$ tồn tại và liên tục trong một lân cận mở của $x^*$, $\nabla f(x^*) = 0$ và
+  $\nabla^2f(x^*)$ là xác định dương thì $x^*$ là một cực tiểu địa phương mạnh.
+
+Chú ý: Cực tiểu địa phương suy ra điều kiện cần. Điều ngược lại không chính xác.
+
+---
+$$\\$$
+
+**▸ ĐIỂM DỪNG**
+
+Cho $f$ là hàm số khả vi, **điểm dừng** của $f$ là điểm $x^*$ sao cho $\nabla f(x^*) = 0$.
+
+---
+$$\\$$
+
+**▸ ĐỊNH LÝ**
+
+Nếu $f$ lồi thì mọi điểm cực tiểu địa phương của $f$ cũng là cực tiểu toàn cục. Ngoài ra, nếu $f$
+khả vi thì mỗi điểm dừng là một cực tiểu toàn cục.
+
+---
+$$\\$$
+
+**▸ PHƯƠNG PHÁP TÌM CỰC TRỊ ĐỊA PHƯƠNG**
+
+Để tìm cực trị địa phương của hàm $f$, ta thực hiện các bước sau:
+
+- **Bước 1:** Tìm điểm dừng $x^*$ của $f$.
+
+- **Bước 2:** Tính ma trận Hessian, sau đó kiểm tra các trường hợp dưới đây
+  
+  - **(1)** Nếu $\nabla^2f(x^*) \succ 0$ (xác định dương) thì $x^*$ là cực tiểu địa phương của $f$.
+
+  - **(2)** Nếu $\nabla^2f(x^*) \prec 0$ (xác định âm) thì $x^*$ là cực đại địa phương của $f$.
+
+  - **(3)** Nếu $\nabla^2f(x^*)$ không xác định thì $x^*$ không là cực trị địa phương của $f$.
+  
+  - **(4)** Các trường hợp còn lại là các trường hợp đặc biệt, phụ thuộc vào mỗi bài toán mà có thể giải được hay không, hoặc điểm dừng là **[điểm yên ngựa](https://en.wikipedia.org/wiki/Saddle_point)**.
+
+Các phương pháp kiểm tra ma trận (nửa) xác định dương, âm:
+<div className="overflow-x-auto my-6">
+  <table className="w-full border-collapse text-sm">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-3 text-left font-semibold"></th>
+        <th className="border border-primary/20 px-4 py-3 text-center font-semibold">Định nghĩa</th>
+        <th className="border border-primary/20 px-4 py-3 text-center font-semibold">Giá trị riêng</th>
+        <th className="border border-primary/20 px-4 py-3 text-center font-semibold">Định thức con chính</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-3 font-medium">Xác định dương<br/><span className="font-normal text-xs text-primary/60">(Positive Definite)</span></td>
+        <td className="border border-primary/20 px-4 py-3 text-center text-xs">$x^\top A x > 0$ với mọi $x \neq 0$</td>
+        <td className="border border-primary/20 px-4 py-3 text-center text-xs">Tất cả $\lambda_i > 0$</td>
+        <td className="border border-primary/20 px-4 py-3 text-center text-xs">Tất cả $\Delta_k > 0$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-3 font-medium">Nửa xác định dương<br/><span className="font-normal text-xs text-primary/60">(Positive Semidefinite)</span></td>
+        <td className="border border-primary/20 px-4 py-3 text-center text-xs">$x^\top A x \ge 0$ với mọi $x$</td>
+        <td className="border border-primary/20 px-4 py-3 text-center text-xs">Tất cả $\lambda_i \ge 0$</td>
+        <td className="border border-primary/20 px-4 py-3 text-center relative">
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="w-full h-px bg-primary/40 absolute top-1/2 rotate-6"></div>
+            <div className="w-full h-px bg-primary/40 absolute top-1/2 -rotate-6"></div>
+          </div>
+          <span className="text-primary/20 text-xs">N/A</span>
+        </td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-3 font-medium">Xác định âm<br/><span className="font-normal text-xs text-primary/60">(Negative Definite)</span></td>
+        <td className="border border-primary/20 px-4 py-3 text-center text-xs">$x^\top A x < 0$ với mọi $x \neq 0$</td>
+        <td className="border border-primary/20 px-4 py-3 text-center text-xs">Tất cả $\lambda_i < 0$</td>
+        <td className="border border-primary/20 px-4 py-3 text-center text-xs">$(-1)^k \Delta_k > 0$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-3 font-medium">Nửa xác định âm<br/><span className="font-normal text-xs text-primary/60">(Negative Semidefinite)</span></td>
+        <td className="border border-primary/20 px-4 py-3 text-center text-xs">$x^\top A x \le 0$ với mọi $x$</td>
+        <td className="border border-primary/20 px-4 py-3 text-center text-xs">Tất cả $\lambda_i \le 0$</td>
+        <td className="border border-primary/20 px-4 py-3 text-center relative">
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="w-full h-px bg-primary/40 absolute top-1/2 rotate-6"></div>
+            <div className="w-full h-px bg-primary/40 absolute top-1/2 -rotate-6"></div>
+          </div>
+          <span className="text-primary/20 text-xs">N/A</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

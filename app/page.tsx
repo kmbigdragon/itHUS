@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { FaBook } from "react-icons/fa";
 import SocialButtons from "@/components/home/SocialButtons";
-
+export const dynamic = "force-static";
 export default function Home() {
   return (
     <main className="bg-base text-primary min-h-screen">

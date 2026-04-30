@@ -21,7 +21,7 @@ export function buildTree(dir = CONTENT_PATH, base: string[] = []): TreeNode[] {
     const fullPath = path.join(dir, entry);
     const stat = fs.statSync(fullPath);
 
-    const name = entry.replace(/\.(mdx)$/i, "");
+    const name = entry.replace(/\.(mdx|pdf)$/i, "");
     const slug = toSlug(name);
 
     if (stat.isDirectory()) {
@@ -32,7 +32,7 @@ export function buildTree(dir = CONTENT_PATH, base: string[] = []): TreeNode[] {
         isFile: false,
         children: buildTree(fullPath, [...base, slug]),
       });
-    } else if (/\.(mdx)$/i.test(entry)) {
+    } else if (/\.(mdx|pdf)$/i.test(entry)) {
       result.push({
         name: getDisplayName(name),
         slug,

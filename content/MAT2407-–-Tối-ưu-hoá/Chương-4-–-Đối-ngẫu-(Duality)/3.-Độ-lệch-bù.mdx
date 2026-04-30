@@ -1,0 +1,145 @@
+---
+title: "3. Độ lệch bù"
+author: "Trần Đăng Quang Minh"
+---
+
+Cho bài toán gốc và bài toán đối ngẫu ở dạng tổng quát sau:
+$$
+\begin{aligned}
+(\mathcal{P}) \quad 
+\max \quad & \sum_{j=1}^{n} c_j x_j \\
+\text{s.t.} \quad 
+& \sum_{j=1}^{n} a_{ij} x_j \le b_i, \quad i \in I, \\
+& \sum_{j=1}^{n} a_{ij} x_j = b_i, \quad i \in E, \\
+& x_j \ge 0, \quad j \in R.
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+(\mathcal{D}) \quad 
+\min \quad & \sum_{i=1}^{m} b_i y_i \\
+\text{s.t.} \quad 
+& \sum_{i=1}^{m} a_{ij} y_i \ge c_j, \quad j \in R, \\
+& \sum_{i=1}^{m} a_{ij} y_i = c_j, \quad j \in F, \\
+& y_i \ge 0, \quad i \in I.
+\end{aligned}
+$$
+
+**▸ ĐỊNH LÝ ĐỘ LỆCH BÙ**
+
+Giả sử $x \in \mathbb{R}^n$ là nghiệm chấp nhận được của $(\mathcal{P})$ và 
+$y \in \mathbb{R}^m$ là nghiệm chấp nhận được của $(\mathcal{D})$.
+
+Khi đó $x$ và $y$ là nghiệm tối ưu của $(\mathcal{P})$ và $(\mathcal{D})$ 
+khi và chỉ khi:
+
+- Với mọi $j \in R$: hoặc $x_j = 0$, hoặc $\sum_{i=1}^{m} a_{ij} y_i = c_j$
+
+- Với mọi $i \in I$: hoặc $y_i = 0$, hoặc $\sum_{j=1}^{n} a_{ij} x_j = b_i$
+
+**▸ HỆ QUẢ**
+
+$x$ là nghiệm tối ưu của $(\mathcal{P})$ khi và chỉ khi:
+- $x$ là nghiệm chấp nhận được của $(\mathcal{P})$, và
+- Tồn tại $y$ là nghiệm chấp nhận được của $(\mathcal{D})$ sao cho:
+
+$$
+\begin{cases}
+\sum_{j=1}^{n} a_{ij} x_j < b_i \; & \Rightarrow\; y_i = 0, & \forall i \in I, \\
+x_j > 0 \; & \Rightarrow\; \sum_{i=1}^{m} a_{ij} y_i = c_j, & \forall j \in R.
+\end{cases}
+$$
+
+**▸ VÍ DỤ**
+
+Kiểm tra xem $x = (x_1, x_2, x_3, x_4, x_5)^\top = (0, \frac{4}{3}, \frac{2}{3}, \frac{5}{3}, 0)^\top$
+có phải là nghiệm tối ưu của bài toán LP:
+$$
+\begin{align*}
+\max \quad 
+& 7x_1 & +\; & 6x_2 & +\; & 5x_3 & -\; & 2x_4 & +\; & 3x_5 & & \\
+\text{s.t.} \quad 
+& \ \ x_1 & +\; & 3x_2 & +\; & 5x_3 & -\; & 2x_4 & +\; & 2x_5 & \le & \ \phantom{-}4 \\
+& 4x_1 & +\; & 2x_2 & -\; & 2x_3 & +\; & \ \ x_4 & +\; & \ \ x_5 & \le & \ \phantom{-}3 \\
+& 2x_1 & +\; & 4x_2 & +\; & 4x_3 & -\; & 2x_4 & +\; & 5x_5 & \le & \ \phantom{-}5 \\
+& 3x_1 & +\; & \ \ x_2 & +\; & 2x_3 & -\; & \ \ x_4 & -\; & 2x_5 & \le & \ \phantom{-}1
+\end{align*}
+$$
+$$
+x_1, x_2, x_3, x_4, x_5 \ge 0
+$$
+
+Viết bài toán đối ngẫu của bài toán gốc như sau:
+$$
+\begin{align*}
+\min \quad 
+& \phantom{-}4y_1 & +\; & 3y_2 & +\; & 5y_3 & +\; & \ \ y_4 & & \\
+\text{s.t.} \quad 
+& \phantom{-}\ \ y_1 & +\; & 4y_2 & +\; & 2y_3 & +\; & 3y_4 &        & \ge & \ \phantom{-}7 \\
+& \phantom{-}3y_1 & +\; & 2y_2 & +\; & 4y_3 & +\; & \ \ y_4 &        & \ge & \ \phantom{-}6 \\
+& \phantom{-}5y_1 & -\; & 2y_2 & +\; & 4y_3 & +\; & 2y_4 &        & \ge & \ \phantom{-}5 \\
+& -2y_1 & +\; & \ \ y_2 & -\; & 2y_3 & -\; & \ \ y_4 &        & \ge & -2 \\
+& \phantom{-}2y_1 & +\; & \ \ y_2 & +\; & 5y_3 & -\; & 2y_4 &        & \ge & \ \phantom{-}3
+\end{align*}
+$$
+$$
+y_1, y_2, y_3, y_4 \ge 0
+$$
+Trước hết, ta thế $x = \left(0,\frac{4}{3},\frac{2}{3},\frac{5}{3},0\right)^\top$ vào các ràng buộc:
+$$
+\begin{align*}
+& 0 & +\; & 3\cdot \frac{4}{3} & +\; & 5\cdot \frac{2}{3} & -\; & 2\cdot \frac{5}{3} & +\; & 0 & = & \ \phantom{-}4 \;\; (= b_1) \\
+& 0 & +\; & 2\cdot \frac{4}{3} & -\; & 2\cdot \frac{2}{3} & +\; & \ \frac{5}{3} & +\; & 0 & = & \ \phantom{-}3 \;\; (= b_2) \\
+& 0 & +\; & 4\cdot \frac{4}{3} & +\; & 4\cdot \frac{2}{3} & -\; & 2\cdot \frac{5}{3} & +\; & 0 & = & \ \frac{14}{3} \;<\; 5 \;\; (= b_3) \\
+& 0 & +\; & \ \frac{4}{3} & +\; & 2\cdot \frac{2}{3} & -\; & \ \frac{5}{3} & -\; & 0 & = & \ \phantom{-}1 \;\; (= b_4)
+\end{align*}
+$$
+
+Từ đó suy ra:
+- Các ràng buộc (1), (2), (4) là **chặt**.
+- Ràng buộc (3) là **không chặt** vì $\frac{14}{3} < 5$.
+
+Theo hệ quả của định lý độ lệch bù, nghiệm tối ưu $y$ của bài toán đối ngẫu có $y_3 = 0$.
+
+Cũng theo hệ quả của định lý độ lệch bù, do $x_2, x_3, x_4 > 0$ nên nghiệm tối ưu $y$ của bài toán đối ngẫu
+phải thỏa mãn các ràng buộc tương ứng ở dạng đẳng thức:
+
+$$
+\begin{cases}
+3y_1 + 2y_2 + 4y_3 + y_4 = 6 \\
+5y_1 - 2y_2 + 4y_3 + 2y_4 = 5 \\
+-2y_1 + y_2 - 2y_3 - y_4 = -2
+\end{cases}
+$$
+
+Do $x_1, x_5 = 0$ nên không suy ra đẳng thức cho ràng buộc thứ nhất và thứ năm của bài toán đối ngẫu.
+
+Mặt khác, do $y_3 = 0$ (chứng minh trên), nên hệ phương trình trở thành:
+$$
+\begin{cases}
+3y_1 + 2y_2 + y_4 = 6 \\
+5y_1 - 2y_2 + 2y_4 = 5 \\
+-2y_1 + y_2 - y_4 = -2
+\end{cases}
+$$
+
+Giải hệ trên, ta thu được nghiệm:
+$$
+y = (y_1, y_2, y_3, y_4)^\top = (1, 1, 0, 1)^\top
+$$
+
+Ta thế nghiệm $y = (1, 1, 0, 1)^\top$ vào các ràng buộc còn lại của bài toán đối ngẫu:
+
+$$
+\begin{align*}
+& \ \ 1 & +\; & 4\cdot 1 & +\; & 2\cdot 0 & +\; & 3\cdot 1 & = & \ \phantom{-}8 \;\; > \;\; 7 \\
+& 2\cdot 1 & +\; & \ \ 1 & +\; & 5\cdot 0 & -\; & 2\cdot 1 & = & \ \phantom{-}1 \;\; \ngeq \;\; 3
+\end{align*}
+$$
+
+Do $y$ không thỏa mãn ràng buộc 5 ở bài toán đối ngẫu.
+
+⇒ $y = (1, 1, 0, 1)^\top$ **không phải nghiệm chấp nhận được** của bài toán đối ngẫu.
+
+⇒ Kết luận: $x = \left(0,\frac{4}{3},\frac{2}{3},\frac{5}{3},0\right)^\top$ **không phải nghiệm tối ưu** của bài toán gốc.

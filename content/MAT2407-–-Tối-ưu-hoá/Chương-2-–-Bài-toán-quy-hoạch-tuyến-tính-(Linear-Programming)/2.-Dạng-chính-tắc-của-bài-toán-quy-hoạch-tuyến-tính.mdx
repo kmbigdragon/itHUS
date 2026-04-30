@@ -1,0 +1,140 @@
+---
+title: "2. Dạng chính tắc của bài toán quy hoạch tuyến tính"
+author: "Trần Đăng Quang Minh"
+---
+
+Bài toán quy hoạch tuyến tính ở dạng sau được gọi là **dạng chính tắc**
+$$
+\begin{align*}
+\max & \ \ c^\top x \\
+s.t. & \ \ Ax = b \\
+& \ \ x \geq 0
+\end{align*}
+$$
+
+### MỌI BÀI TOÁN LP ĐỀU CÓ THỂ CHUYỂN VỀ DẠNG CHÍNH TẮC
+- $\textbf{min} \rightarrow \textbf{max}$:
+
+  Để chuyển một bài toán tối thiểu hóa về tối đa hóa, ta nhân hàm mục tiêu với -1.
+
+- **Bất đẳng thức $\rightarrow$ đẳng thức**:
+
+  ▸ Nếu LP có bất đẳng thức ở dạng
+  $$
+  a_{i1}x_1 + a_{i2}x_2 + \ldots + a_{in}x_n \leq b_i
+  $$
+  thì ta có thể biến nó thành đẳng thức bằng cách tạo một biến bù $s_i \geq 0$ và biến đổi ràng buộc trên thành
+  $$
+  a_{i1}x_1 + a_{i2}x_2 + \ldots + a_{in}x_n + s_i = b_i
+  $$
+  
+  ▸ Ngược lại, nếu LP có bất đẳng thức ở dạng
+  $$
+  a_{i1}x_1 + a_{i2}x_2 + \ldots + a_{in}x_n \geq b_i
+  $$
+  thì ta có thể biến nó thành đẳng thức bằng cách tạo một biến bù $s_i \geq 0$ và biến đổi ràng buộc trên thành
+  $$
+  a_{i1}x_1 + a_{i2}x_2 + \ldots + a_{in}x_n - s_i = b_i
+  $$
+  
+  *Như vậy nếu có $s$ bất đẳng thức thì ta cần phải tạo thêm $s$ biến bù $s_i$.*
+
+- **Biến có cận dưới khác 0, $x_i \geq l_i$**:
+
+  Có thể đổi biến $x_i' = x_i - l_i$. Khi đó điều kiện trở thành $x_i' \geq 0$.
+
+- **Biến có cận trên, $x_i \leq u_i$**:
+
+  Có thể đổi biến $x_i' = u_i - x_i$. Khi đó điều kiện trở thành $x_i' \geq 0$.
+
+- **Biến thuộc đoạn, $l_i \leq x_i \leq u_i$**:
+
+  Có thể đổi biến $x_i' = x_i - l_i$. Khi đó điều kiện trở thành $x_i' \geq 0$.
+  
+  Viết lại điều kiện $x_i \leq u_i$ thành $x_i' \leq u_i - l_i$ và thêm biến bù để trở thành đẳng thức.
+
+- **Biến tự do $x_i$**:
+   
+  Đối với biến tự do $x_i$, ta đưa về hai biến không âm $x_i^+$ và $x_i^-$ qua công thức
+  $$
+  x_i = x_i^+ - x_i^- \ \ (x_i^+, x_i^- \geq 0)
+  $$
+
+### VÍ DỤ
+
+Chuyển LP sau về dạng chính tắc:
+$$
+\begin{align*}
+\min \quad 
+& \phantom{-}3x_1 & -\; & x_2 \\
+
+s.t. \quad 
+& -\; x_1 & +\; & 6x_2 & -\; & x_3 & +\; & x_4 & \geq 3 \\
+&           &     & 7x_2 &     &     & +\; & x_4 & = 5 \\
+&           &     &      &     & x_3 & +\; & x_4 & \leq 2
+\end{align*}
+$$
+$$
+x_2 \geq -1, x_3 \leq 5, -2 \leq x_4 \leq 2.
+$$
+
+**Giải**
+
+- Chuyển từ $\min$ thành $\max$:
+$$
+\max \quad -3x_1 + x_2
+$$
+
+- Chuyển bất đẳng thức $-x_1 + 6x_2 - x_3 + x_4 \geq 3$ thành:
+$$
+-x_1 + 6x_2 - x_3 + x_4 - s_1 = 3
+$$
+$$
+s_1 \geq 0
+$$
+
+- Chuyển bất đẳng thức $x_3 + x_4 \leq 2$ thành:
+$$
+x_3 + x_4 + s_2 = 2
+$$
+$$
+s_2 \geq 0
+$$
+
+- Điều kiện $-2 \leq x_4 \leq 2$ sẽ được tách thành $x_4 \geq -2$ và $x_4 \leq -2$.
+  Trong đó, điều kiện $x_4 \leq 2$ được chuyển thành đẳng thức:
+$$
+x_4 + s_3 = 2
+$$
+$$
+s_3 \geq 0
+$$
+
+- Đổi biến với các điều kiện:
+  $$
+  x_1 = y_1^+ - y_1^- \quad (y_1^+, y_1^- \geq 0)
+  $$
+  $$
+  x_2 = y_2 - 1 \quad (y_2 \geq 0)
+  $$
+  $$
+  x_3 = 5 - y_3 \quad (y_3 \geq 0)
+  $$
+  $$
+  x_4 = y_4 - 2 \quad (y_4 \geq 0)
+  $$
+  thế vào các phương trình trên, có bài toán LP trở thành:
+$$
+\begin{align*}
+\max \quad 
+& -\; 3y_1^{+} & +\; & 3y_1^{-} & +\; & y_2 & -\; & 1 \\
+\text{s.t.} \quad 
+& -\; y_1^{+} & +\; & y_1^{-} & +\; & 6y_2 & +\; & y_3 & +\; & y_4 & -\; & s_1 & & & & & = & \phantom{-} 16 \\
+& \phantom{-\;}     &     &         &     & 7y_2 &     &     & +\; & y_4 & & & & & & & = & \phantom{-} 14 \\
+& \phantom{-\;}     &     &         &     &      & -\; & y_3 & +\; & y_4 & & &+\; & s_2 & & &= & -1 \\
+& \phantom{-\;}     &     &         &     &      &     &     &     & y_4 & & & & &+\; & s_3 & = & \phantom{-} 4
+\end{align*}
+$$
+$$
+y_1^+, y_1^-, y_2, y_3, y_4, s_1, s_2, s_3 \geq 0
+$$

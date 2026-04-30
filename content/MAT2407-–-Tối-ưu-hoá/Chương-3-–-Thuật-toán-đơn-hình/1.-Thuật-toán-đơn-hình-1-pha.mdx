@@ -1,0 +1,215 @@
+---
+title: "1. Thuật toán đơn hình 1 pha"
+author: "Trần Đăng Quang Minh"
+---
+
+**Thuật toán đơn hình** là một trong 10 thuật toán quan trọng nhất của thế kỉ XX.
+
+Nó giải bài toán quy hoạch tuyến tính ở **dạng chính tắc**.
+
+Nội dung của thuật toán đơn hình 1 pha như sau:
+
+- **Bước 1:** Đưa LP về dạng chính tắc.
+
+- **Bước 2:** Tìm một cơ sở chấp nhận được để xuất phát, hoặc chỉ ra bài toán không có nghiệm chấp nhận được.
+
+- **Bước 3:** Thực hiện các phép xoay (pivoting) cho đến khi tìm được nghiệm tối ưu, hoặc chỉ ra bài toán không bị chặn.
+
+Quy tắc chọn cột xoay, hàng xoay: Chọn một biến ngoài cơ sở, sau đó
+
+- **Chọn cột xoay:** Chọn cột xoay có hệ số dương và có chỉ số cột nhỏ nhất.
+
+- **Chọn hàng xoay:** Chọn hàng xoay có tỉ số xoay nhỏ nhất và có chỉ số biến cơ sở nhỏ nhất.
+
+Thuật toán sẽ dừng lại khi **tất cả các hệ số ở hàng $z$ (hàm mục tiêu) đều âm** (Đối với bài toán cực đại hóa). Khi đó ta thu được
+nghiệm tối ưu là giá trị đối của giá trị ở vế phải của hàng $z$.
+
+**▸ ⚠️ LƯU Ý**
+
+Thuật toán đơn hình 1 pha chỉ thực hiện được đối với bài toán LP có thể dễ dàng tìm được một cơ sở chấp nhận được để xuất phát.
+
+Thông thường, ta áp dụng ở bài toán LP dạng **chuẩn tắc (cực đại hóa)** có vế phải lớn hơn 0 $(b_i \ge 0, \forall i = 1,...,n)$.
+
+**▸ VÍ DỤ**
+
+Để đơn giản, đầu tiên ta xét một LP ở dạng chuẩn tắc
+với vế phải không âm.
+
+$$
+\begin{align*}
+\max \quad 
+& 5x_1 & +\; & 4x_2 & +\; & 3x_3 & & \\
+\text{s.t.} \quad 
+& 2x_1 & +\; & 3x_2 & +\; & \ \ x_3  & \le & \ 5 \\
+& 4x_1 & +\; & \ \ x_2& +\; & 2x_3 & \le & \ 11 \\
+& 3x_1 & +\; & 4x_2& +\; & 2x_3 & \le & \ 8 
+\end{align*}
+$$
+$$
+x_1, x_2, x_3 \ge 0
+$$
+
+Trước tiên, ta sẽ thêm các biến bù như sau:
+$$
+\begin{align*}
+&s_1& = &\ \ 5 &- &\ \ (2x_1 + 3x_2 + x_3) & \ge 0 \\
+&s_2& = &\ \ 11 &- &\ \ (4x_1 + x_2 + 2x_3) & \ge 0 \\
+&s_3& = &\ \ 8 &- &\ \ (3x_1 + 4x_2 + 2x_3) & \ge 0 
+\end{align*}
+$$
+
+Đặt hàm mục tiêu là $z$, ta có:
+$$
+z = 5x_1 + 4x_2 + 3x_3
+$$
+
+Khi này ta có thể viết LP thành:
+$$
+\begin{align*}
+&    &     & 2x_1 & +\; & 3x_2   & +\; & \ \ x_3 & +\; & s_1 &     &     &     &     & = & \ 5 \\
+&    &     & 4x_1 & +\; & \ \ x_2& +\; & 2x_3    &     &     & +\; & s_2 &     &     & = & \ 11 \\
+&    &     & 3x_1 & +\; & 4x_2   & +\; & 2x_3    &     &     &     &     & +\; & s_3 & = & \ 8 \\
+& -z & +\; & 5x_1 & +\; & 4x_2   & +\; & 3x_3    &     &     &     &     &     &     & = & \ 0
+\end{align*}
+$$
+$$
+x_1, x_2, x_3, s_1, s_2, s_3 \ge 0
+$$
+
+Như vậy, ta có thể chuyển LP trên thành ma trận mở rộng như dưới đây:
+$$
+\left[
+\begin{array}{c|cccccc|c}
+0 & 2 & 3 & 1 & 1 & 0 & 0 & 5 \\
+0 & 4 & 1 & 2 & 0 & 1 & 0 & 11 \\
+0 & 3 & 4 & 2 & 0 & 0 & 1 & 8 \\
+\hline
+-1 & 5 & 4 & 3 & 0 & 0 & 0 & 0
+\end{array}
+\right]
+$$
+$$
+x_1, x_2, x_3, s_1, s_2, s_3 \ge 0
+$$
+
+Do $z$ không tham gia vào quá trình xoay nên ta có thể bỏ cột $z$ đi để đỡ rườm rà.
+$$
+\left[
+\begin{array}{cccccc|c}
+2 & 3 & 1 & 1 & 0 & 0 & 5 \\
+4 & 1 & 2 & 0 & 1 & 0 & 11 \\
+3 & 4 & 2 & 0 & 0 & 1 & 8 \\
+\hline
+5 & 4 & 3 & 0 & 0 & 0 & 0
+\end{array}
+\right]
+$$
+$$
+x_1, x_2, x_3, s_1, s_2, s_3 \ge 0
+$$
+
+Chọn cơ sở xuất phát là $\{s_1, s_2, s_3\}$.
+
+Áp dụng tiêu chí chọn cột xoay $pivcol$ là cột có hệ số hàm mục tiêu dương lớn nhất, sau đó chọn hàng xoay $pivrow$ là hàng có ratio (tỉ lệ $b_i / a_{i, pivcol}$) dương nhỏ nhất.
+$$
+\left[
+\begin{array}{cccccc|c|c}
+\downarrow & & & & & & b & Ratio & \\
+\boxed{2} & 3 & 1 & 1 & 0 & 0 & 5 & \boxed{5/2} & \leftarrow\\
+4 & 1 & 2 & 0 & 1 & 0 & 11 & 11/4 & \\
+3 & 4 & 2 & 0 & 0 & 1 & 8 & 8/3 & \\
+\hline
+\boxed{5} & 4 & 3 & 0 & 0 & 0 & 0 &
+\end{array}
+\right]
+$$
+
+Tiến hành biến đổi sơ cấp hàng, biến cột xoay thành cột đơn vị với phần tử xoay = 1.
+$$
+\left[
+\begin{array}{cccccc|c}
+1 & 3/2 & 1/2 & 1/2 & 0 & 0 & 5/2 \\
+0 & -5 & 0 & -2 & 1 & 0 & 1 \\
+0 & -1/2 & 1/2 & -3/2 & 0 & 1 & 1/2 \\
+\hline
+0 & -7/2 & 1/2 & -5/2 & 0 & 0 & -25/2
+\end{array}
+\right]
+$$
+
+Biến vào cơ sở chính là biến $x_1$, biến rời cơ sở chính là biến $s_1$.
+
+Các bước tiếp theo làm tương tự cho đến khi hệ số hàm mục tiêu $\le 0$.
+
+$$
+\left[
+\begin{array}{cccccc|c|c}
+  & & \downarrow & & & & b & Ratio & \\
+1 & 3/2 & 1/2 & 1/2 & 0 & 0 & 5/2 & 5 & \\
+0 & -5 & 0 & -2 & 1 & 0 & 1 & - & \\
+0 & -1/2 & \boxed{1/2} & -3/2 & 0 & 1 & 1/2 & \boxed{1} & \leftarrow \\
+\hline
+0 & -7/2 & \boxed{1/2} & -5/2 & 0 & 0 & -25/2 &
+\end{array}
+\right]
+$$
+
+$$
+\left[
+\begin{array}{cccccc|c}
+1 & 2 & 0 & 2 & 0 & -1 & 2 \\
+0 & -5 & 0 & -2 & 1 & 0 & 1 \\
+0 & -1 & 1 & -3 & 0 & 2 & 1 \\
+\hline
+0 & -3 & 0 & -1 & 0 & -1 & -13
+\end{array}
+\right]
+\text{Optimal}
+$$
+
+Đến đây hệ số ở hàm mục tiêu đã hoàn toàn $\le 0$, ta thu được nghiệm tối ưu.
+
+Có thể tham khảo kết quả ở dưới đây.
+
+<SimplexTable
+  vars='["x1","x2","x3","s1","s2","s3"]'
+  basis='["s1","s2","s3"]'
+  data='[[2,3,1,1,0,0,5],[4,1,2,0,1,0,11],[3,4,2,0,0,1,8],[5,4,3,0,0,0,0]]'
+  pivotColSeparator={2}
+/>
+
+Khi đọc nghiệm:
+- Các biến trong cơ sở thì giá trị là giá trị tương ứng ở cột $b$.
+- Các biến ngoài cơ sở thì giá trị là 0.
+
+Như trong bài toán trên thì nghiệm tối ưu là:
+$$
+(x_1, x_2, x_3, s_1, s_2, s_3)^\top = (2, 0, 1, 0, 1, 0)^\top
+$$
+hay ta viết gọn lại (bỏ các biến bù) là:
+$$
+(x_1, x_2, x_3)^\top = (2, 0, 1)^\top
+$$
+và giá trị tối ưu của hàm mục tiêu là $z = 13$.
+
+**▸ ⚠️ LƯU Ý**
+
+Đối với bài toán dạng **chuẩn tắc cực đại hóa**, nếu tồn tại một biến ngoài cơ sở có hệ số
+hàm mục tiêu dương, và các hệ số điều kiện không dương thì bài toán là không bị chặn.
+
+**▸ VÍ DỤ**
+$$
+\left[
+\begin{array}{c|cccc|c}
+    & x_1 & x_2 & s_1 & s_2 & b \\
+\hline
+s_1 & 2 & 0 & 1 & 0 & 7 \\
+s_2 & 1 & -1 & 0 & 1 & 8 \\
+\hline
+-z & 5 & 4 & 0 & 0 & 0 \\
+\end{array}
+\right]
+$$
+
+Bài toán này không bị chặn, do biến $x_2$ ngoài cơ sở có hệ số hàm mục tiêu dương và
+các hệ số điều kiện không dương.

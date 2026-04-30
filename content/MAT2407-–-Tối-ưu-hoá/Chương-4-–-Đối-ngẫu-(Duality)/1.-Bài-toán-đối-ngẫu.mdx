@@ -1,0 +1,122 @@
+---
+title: "1. Bài toán đối ngẫu"
+author: "Trần Đăng Quang Minh"
+---
+
+Xét một bài toán quy hoạch tuyến tính như sau:
+$$
+\begin{align*}
+& (\mathcal{P}) & \max & & c^\top x & \\
+& & \text{s.t.} & & Ax & \le b \\
+& & & & x & \ge 0
+\end{align*}
+$$
+
+Bài toán đối ngẫu của bài toán trên là:
+$$
+\begin{align*}
+& (\mathcal{D}) & \min & & b^\top y & \\
+& & \text{s.t.} & & A^\top y & \ge c \\
+& & & & y & \ge 0
+\end{align*}
+$$
+
+**▸ TỔNG QUÁT**
+
+Các hệ số của bài toán ban đầu được chuyển đổi như sau:
+1. $x \rightarrow y$.
+2. $c^\top \rightarrow b^\top$.
+3. $A \rightarrow A^\top$.
+4. $b \rightarrow c$.
+
+Điều kiện và ràng buộc của bài toán ban đầu được chuyển đổi như sau:
+<div className="w-full overflow-x-auto">
+  <table className="w-full border border-gray-200 rounded-xl overflow-hidden text-center">
+    <thead className="bg-teal-600 text-white">
+      <tr>
+        <th className="px-4 py-3 font-semibold">Bài toán gốc (Primal)</th>
+        <th className="px-4 py-3 font-semibold">Bài toán đối ngẫu (Dual)</th>
+      </tr>
+    </thead>
+    <tbody className="text-gray-700">
+      <tr className="border-t">
+        <td className="px-4 py-2">Hàm mục tiêu <span className="font-semibold">max</span></td>
+        <td className="px-4 py-2">Hàm mục tiêu <span className="font-semibold">min</span></td>
+      </tr>
+      <tr className="border-t bg-gray-50">
+        <td className="px-4 py-2">Ràng buộc <span className="font-semibold">=</span></td>
+        <td className="px-4 py-2">Biến <span className="font-semibold">tự do</span></td>
+      </tr>
+      <tr className="border-t">
+        <td className="px-4 py-2">Ràng buộc <span className="font-semibold">≥</span></td>
+        <td className="px-4 py-2">Biến <span className="font-semibold">≤ 0</span></td>
+      </tr>
+      <tr className="border-t bg-gray-50">
+        <td className="px-4 py-2">Ràng buộc <span className="font-semibold">≤</span></td>
+        <td className="px-4 py-2">Biến <span className="font-semibold">≥ 0</span></td>
+      </tr>
+      <tr className="border-t">
+        <td className="px-4 py-2">Biến <span className="font-semibold">≥ 0</span></td>
+        <td className="px-4 py-2">Ràng buộc <span className="font-semibold">≥ 0</span></td>
+      </tr>
+      <tr className="border-t bg-gray-50">
+        <td className="px-4 py-2">Biến <span className="font-semibold">≤ 0</span></td>
+        <td className="px-4 py-2">Ràng buộc <span className="font-semibold">≤ 0</span></td>
+      </tr>
+      <tr className="border-t">
+        <td className="px-4 py-2">Biến <span className="font-semibold">tự do</span></td>
+        <td className="px-4 py-2">Ràng buộc <span className="font-semibold">=</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ VÍ DỤ**
+
+Nêu bài toán đối ngẫu của LP sau:
+$$
+(\mathcal{P}) \quad
+\begin{align*}
+\max \quad 
+& \phantom{-}x_1 & -\; & 2x_2 & +\; & 3x_3 &  \\
+\text{s.t.} \quad 
+& \ \ \ 5x_1 & +\; & \ \ x_2 & -\; & 2x_3 & \le & \ \ 8 \\
+& -x_1 & +\; & 5x_2    & +\; & 8x_3 & = & \ 10 \\
+& \phantom{-}x_1 &     &         &     &      & \le & \ 10 \\
+&  &     &         &     & \ \ x_3   & \ge & \ 0 \\
+\end{align*}
+$$
+
+Có:
+- Hàm mục tiêu chuyển từ $\max$ thành $\min$ và từ $c^\top x$ thành $b^\top y$.
+$$
+\min \quad 8y_1 + 10y_2 + 10y_3
+$$
+- $x_1, x_2$ là các biến tự do nên ràng buộc ở hàng 1 và 2 là điều kiện $=$. $x_3 \ge 0$ nên
+ràng buộc ở hàng 3 là điều kiện $\ge$. Các ràng buộc chuyển từ $Ax$ thành $A^\top y$.
+$$
+\begin{align*}
+& \phantom{-} 5y_1 & -\; & \ \ y_2 & +\; & y_3 & = & \  \phantom{-} 1 \\
+& \phantom{-} \ \ y_1 & +\; & 5y_2    & & & = & \ -2 \\
+& -2y_1 &  +\; &  8y_2   &     &      & \ge & \  \phantom{-} 3 \\
+\end{align*}
+$$
+- Các hàng 1 và 3 ở bài toán gốc có ràng buộc $(\le)$ nên $y_1, y_3 \ge 0$.
+Hàng 2 ở bài toán gốc có ràng buộc $(=)$ nên $y_2$ là biến tự do.
+
+Kết hợp lại, ta được bài toán đối ngẫu như sau:
+$$
+(\mathcal{D}) \quad
+\begin{align*}
+\min \quad 
+& \phantom{-}8y_1 & +\; & 10y_2 & +\; & 10y_3 &  \\
+\text{s.t.} \quad 
+& \phantom{-} 5y_1 & -\; & \ \ y_2 & +\; & y_3 & = & \  \phantom{-} 1 \\
+& \phantom{-} \ \ y_1 & +\; & 5y_2    & & & = & \ -2 \\
+& -2y_1 &  +\; &  8y_2   &     &      & \ge & \  \phantom{-} 3 \\
+\end{align*}
+$$
+
+**▸ TÍNH CHẤT**
+
+Đối ngẫu của bài toán đối ngẫu chính là bài toán gốc.

@@ -1,0 +1,88 @@
+---
+title: "2. Định lý đối ngẫu"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ ĐỊNH LÝ ĐỐI NGẪU YẾU**
+
+Nếu $x \in \mathbb{R}^n$ là một nghiệm chấp nhận được của $(\mathcal{P})$ và $y \in \mathbb{R}^m$
+là một nghiệm chấp nhận được của $(\mathcal{D})$ thì:
+$$
+c^\top x \le y^\top Ax \le b^\top y
+$$
+
+**▸ HỆ QUẢ**
+- Nếu $(\mathcal{P})$ không bị chặn thì $(\mathcal{D})$ không có nghiệm chấp nhận được.
+- Nếu $(\mathcal{D})$ không bị chặn thì $(\mathcal{P})$ không có nghiệm chấp nhận được.
+- Nếu $c^\top \bar{x} = b^\top \bar{y}$ thì $\bar{x}$ là nghiệm tối ưu
+của $(\mathcal{P})$ và $\bar{y}$ là nghiệm tối ưu của $(\mathcal{D})$.
+
+**▸ CHỨNG MINH**
+
+Vì $y$ là nghiệm chấp nhận được của $(\mathcal{D})$ nên:
+$$
+A^\top y \ge c
+$$
+
+Suy ra:
+$$
+\begin{align*}
+c^\top x 
+&= \sum_{j=1}^n c_j x_j \\
+&\le \sum_{j=1}^n \left( \sum_{i=1}^m a_{ij} y_i \right) x_j \\
+&= \sum_{i=1}^m \left( \sum_{j=1}^n a_{ij} x_j \right) y_i \\
+&= y^\top Ax
+\end{align*}
+$$
+
+Mặt khác, vì $x$ là nghiệm chấp nhận được của $(\mathcal{P})$ nên:
+$$
+Ax \le b
+$$
+
+Suy ra:
+$$
+y^\top Ax \le y^\top b = b^\top y
+$$
+
+Vậy:
+$$
+c^\top x \le y^\top Ax \le b^\top y
+$$
+
+---
+$$\\$$
+
+**▸ ĐỊNH LÝ ĐỐI NGẪU MẠNH**
+
+Nếu một bài toán quy hoạch tuyến tính có nghiệm tối ưu thì bài toán đối ngẫu của nó
+cũng có nghiệm tối ưu và hai giá trị tối ưu bằng nhau.
+
+**▸ HỆ QUẢ**
+
+Nếu bài toán gốc và bài toán đối ngẫu đều có nghiệm chấp nhận được thì cả hai bài toán
+đều có nghiệm tối ưu và giá trị tối ưu bằng nhau.
+
+**▸ CHỨNG MINH**
+
+Giả sử bài toán gốc $(\mathcal{P})$ có nghiệm tối ưu.
+
+Khi đó $(\mathcal{P})$ có nghiệm chấp nhận được và bị chặn.
+Theo định lý đối ngẫu yếu, nếu bài toán đối ngẫu $(\mathcal{D})$ có nghiệm chấp nhận được thì
+$(\mathcal{D})$ không thể không bị chặn.
+
+Suy ra $(\mathcal{D})$ cũng có nghiệm tối ưu.
+
+Gọi $x^*$ và $y^*$ lần lượt là nghiệm tối ưu của $(\mathcal{P})$ và $(\mathcal{D})$.
+Theo định lý đối ngẫu yếu:
+$$
+c^\top x^* \le b^\top y^*
+$$
+
+Do $x^*$ là nghiệm tối ưu của $(\mathcal{P})$ và $y^*$ là nghiệm tối ưu của $(\mathcal{D})$,
+ta suy ra:
+$$
+c^\top x^* = b^\top y^*
+$$
+
+Vậy hai bài toán có cùng giá trị tối ưu.

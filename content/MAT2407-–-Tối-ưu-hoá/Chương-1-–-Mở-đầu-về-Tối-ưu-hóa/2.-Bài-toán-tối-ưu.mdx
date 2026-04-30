@@ -1,0 +1,102 @@
+---
+title: "2. Bài toán tối ưu"
+author: "Trần Đăng Quang Minh"
+---
+
+**Bài toán tối ưu hóa (Optimization Problem)** là bài toán mà ở đó ta phải **cực tiểu** hay **cực đại** hóa một hàm số trên một tập cho trước.
+- Hàm số được cực tiểu hay cực đại hóa gọi là **hàm mục tiêu (objective function)**.
+- Tập hợp cho trước được gọi là **miền chấp nhận được (feasible region)**.
+
+### ▸ BÀI TOÁN CỰC TIỂU HÓA
+$$
+\begin{align*}
+\min_{x} & \ \ f(x) \\
+s.t. & \ \  x \in \mathcal{X}
+\end{align*}
+$$
+
+### ▸ BÀI TOÁN CỰC ĐẠI HÓA
+$$
+\begin{align*}
+\max_{x} & \ \ f(x) \\
+s.t. & \ \  x \in \mathcal{X}
+\end{align*}
+$$
+
+**Trong đó:**
+- Biến $x = (x_1, x_2,...,x_n)$.
+- Hàm mục tiêu $f$.
+- Điều kiện ràng buộc $x \in \mathcal{X}$ (tập nghiệm chấp nhận được $\mathcal{X}$). Thông thường $\mathcal{X}$ không được cho dưới dạng tập hợp mà được xác định bởi các đẳng thức và bất đẳng thức.
+
+---
+$$\\$$
+### ▸ ĐỊNH NGHĨA
+Bài toán được gọi là
+- **Không có nghiệm chấp nhận được (infeasible)**, nếu $\mathcal{X} = \varnothing$. Ngược lại, nó được gọi là **có nghiệm chấp nhận được (feasible)**.
+- **Không bị chặn (unbounded)** nếu nó có nghiệm chấp nhận được, và ta luôn tìm được nghiệm chấp nhận được có giá trị hàm mục tiêu nhỏ hơn một giá trị hữu hạn cho trước bất kì (đối với bài toán cực tiểu hóa), hoặc lớn hơn một giá trị hữu hạn cho trước bất kì (đối với bài toán cực đại hóa).
+
+ $x \in \mathcal{X}$ được gọi là một **nghiệm chấp nhận được (feasible solution)**.
+ 
+ $x^* \in \mathcal{X}$ được gọi là một **nghiệm tối ưu (optimal solution)**, nếu:
+
+$$
+f(x^*) \leq f(x), \forall x \in \mathcal{X}
+$$
+đối với bài toán cực tiểu hóa, hoặc:
+$$
+f(x^*) \geq f(x), \forall x \in \mathcal{X}
+$$
+đối với bài toán cực đại hóa.
+
+---
+$$\\$$
+### ▸ MỘT SỐ DẠNG BÀI TOÁN TỐI ƯU
+
+**Bài toán tối ưu không ràng buộc (unconstrained)**
+$$
+\max_{x \in \mathbb{R}^n} \ \ f(x)
+$$
+
+**Bài toán tối ưu tuyến tính (linear program)**
+$$
+\begin{align*}
+\max_{x} & \ \ c^\top x \\
+s.t. & \ \ Ax \leq b
+\end{align*}
+$$
+
+**Bài toán tối ưu nguyên (integer program)**
+$$
+\begin{align*}
+\max_{x} & \ \ c^\top x \\
+s.t. & \ \ Ax \leq b \\
+& \ \ x_i \in \mathbb{Z}
+\end{align*}
+$$
+
+**Bài toán tối ưu phi tuyến (nonlinear)**
+$$
+\begin{align*}
+\max_{x} & \ \ f(x) \\
+s.t. & \ \ g_i(x) \leq 0, \ i = 1, 2, ..., k \\
+& \ \ h_j(x) = 0, \ j = 1, 2, ..., l \\
+\end{align*}
+$$
+
+**Bài toán tối ưu lồi (convex)**
+
+- Dạng tổng quát:
+  $$
+  \min_{x \in \mathcal{X}} \ \ f(x)
+  $$
+  với $f: \mathcal{X} \rightarrow \mathbb{R}$ lồi và $\mathcal{X}$ là một tập lồi.
+
+- Dạng giới hạn bởi các đẳng thức và bất đẳng thức:
+  $$
+  \begin{align*}
+  \max_{x} & \ \ f(x) \\
+  s.t. & \ \ g_i(x) \leq 0, \ i = 1, 2, ..., k \\
+  & \ \ h_j(x) = 0, \ j = 1, 2, ..., l \\
+  \end{align*}
+  $$
+  trong đó $f, g_i \ (i = 1, 2, ..., k)$ là các **[hàm lồi](https://vi.wikipedia.org/wiki/H%C3%A0m_l%E1%BB%93i)**, và $h_j \ (j = 1, 2, ..., l)$ là các **[hàm affine](https://vi.wikipedia.org/wiki/Bi%E1%BA%BFn_%C4%91%E1%BB%95i_afin)**.

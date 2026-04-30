@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaBook, FaChevronDown, FaChevronRight } from "react-icons/fa";
 import { usePathname } from "next/navigation";
 
@@ -19,7 +19,7 @@ export default function Sidebar({ tree }: { tree: TreeNode[] }) {
         <FaBook /> MÔN HỌC
       </h2>
 
-      <Tree nodes={tree} />
+      <FilteredTree tree={tree} />
     </aside>
   );
 }
@@ -34,11 +34,27 @@ function Tree({ nodes }: { nodes: TreeNode[] }) {
   );
 }
 
-function TreeItem({ node, level }: { node: TreeNode; level: number }) {
-  const [open, setOpen] = useState(false);
+function FilteredTree({ tree }: { tree: TreeNode[] }) {
   const pathname = usePathname();
+  const currentSubject = pathname.split("/")[2] ?? null; // /subjects/[subject]/...
 
-  const isActive = pathname.includes(node.path);
+  const filtered = currentSubject
+    ? tree.filter((node) => node.path === currentSubject)
+    : tree;
+
+  return <Tree nodes={filtered} />;
+}
+
+function TreeItem({ node, level }: { node: TreeNode; level: number }) {
+  const pathname = usePathname();
+  const isActive = pathname === `/subjects/${node.path}`;
+  const isAncestor = pathname.startsWith(`/subjects/${node.path}`);
+
+  const [open, setOpen] = useState(isAncestor);
+
+  useEffect(() => {
+    if (isAncestor) setOpen(true);
+  }, [pathname, isAncestor]);
 
   const padding = level * 12;
 
@@ -48,11 +64,7 @@ function TreeItem({ node, level }: { node: TreeNode; level: number }) {
         <Link
           href={`/subjects/${node.path}`}
           className={`block px-2 py-1 rounded text-sm transition truncate 
-            ${
-              isActive
-                ? "bg-accent text-primary font-semibold"
-                : "hover:bg-accent/20"
-            }
+            ${isActive ? "bg-accent text-primary font-semibold" : "hover:bg-accent/20"}
           `}
           style={{ paddingLeft: padding + 8 }}
         >
@@ -71,20 +83,12 @@ function TreeItem({ node, level }: { node: TreeNode; level: number }) {
         <button className="hover:cursor-pointer" onClick={() => setOpen(!open)}>
           {open ? <FaChevronDown /> : <FaChevronRight />}
         </button>
-        <Link
-          href={"/subjects/" + node.path}
-          className="truncate"
-        >
+        <Link href={`/subjects/${node.path}`} className="truncate">
           {node.name}
         </Link>
       </div>
 
-      {/* animation nhẹ */}
-      <div
-        className={`overflow-hidden transition-all duration-300 ${
-          open ? "max-h-250" : "max-h-0"
-        }`}
-      >
+      <div className={`overflow-hidden transition-all duration-300 ${open ? "max-h-500" : "max-h-0"}`}>
         {node.children && (
           <div className="ml-2 border-l border-primary/10 pl-2">
             <Tree nodes={node.children} />

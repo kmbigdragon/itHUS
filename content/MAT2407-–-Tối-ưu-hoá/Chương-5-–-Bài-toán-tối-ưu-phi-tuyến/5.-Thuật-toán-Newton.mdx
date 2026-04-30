@@ -1,0 +1,64 @@
+---
+title: "5. Thuật toán Newton"
+author: "Trần Đăng Quang Minh"
+---
+
+Xét hàm số $f: \mathbb{R}^n \rightarrow \mathbb{R}$ và bài toán tối ưu $\min_x f(x)$.
+
+Giả sử nghiệm tối ưu của bài toán trên đạt được tại $x^*$ là $f(x^*) = f^* = min_x f(x)$
+
+Thuật toán **Newton** giúp ta tính gần đúng giá trị $x^*$.
+
+- **Bước 1:** Chọn giá trị khởi tạo $x_0 \in \mathbb{R}^n$.
+- **Bước 2:** Thực hiện dãy lặp:
+  $$
+  x^{(k)} = x^{(k-1)} + (\nabla^2 f(x^{(k-1)}))^{-1} \times \nabla f(x^{(k-1)}), \quad k = 1, 2, 3,...
+  $$
+
+**▸ VÍ DỤ**
+
+Cho hàm $f(x) = x^2$. Hãy áp dụng 2 bước lặp của thuật toán Newton với $x_0 = 4$.
+
+Có $f'(x) = 2x$; $f''(x) = 2$.
+
+Công thức lặp: $x^{(k)} = x^{(k-1)} - \alpha \cdot 2x^{(k-1)}$
+
+Ta kẻ bảng cho dễ quan sát
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-6 py-3 text-center font-semibold">$k$</th>
+        <th className="border border-primary/20 px-6 py-3 text-center font-semibold">$x^{(k-1)}$</th>
+        <th className="border border-primary/20 px-6 py-3 text-center font-semibold">$f'(x^{(k-1)})$</th>
+        <th className="border border-primary/20 px-6 py-3 text-center font-semibold">$f''(x^{(k-1)})$</th>
+        <th className="border border-primary/20 px-6 py-3 text-center font-semibold">$x^{(k)}$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-6 py-3 text-center">$1$</td>
+        <td className="border border-primary/20 px-6 py-3 text-center">$4$</td>
+        <td className="border border-primary/20 px-6 py-3 text-center">$8$</td>
+        <td className="border border-primary/20 px-6 py-3 text-center">$2$</td>
+        <td className="border border-primary/20 px-6 py-3 text-center">$4 - \frac{8}{2} = 0$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-6 py-3 text-center">$2$</td>
+        <td className="border border-primary/20 px-6 py-3 text-center">$0$</td>
+        <td className="border border-primary/20 px-6 py-3 text-center">$0$</td>
+        <td className="border border-primary/20 px-6 py-3 text-center">$2$</td>
+        <td className="border border-primary/20 px-6 py-3 text-center">$0 - \frac{0}{2} = 0$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Vậy sau 2 lần lặp, giá trị xấp xỉ của $x^*$ là $0$.
+
+**Nhận xét:** Thuật toán Newton hội tụ trong ít bước hơn so với Gradient Descent, nhưng đổi lại chi phí tính toán lớn;
+thuật toán Gradient Descent cần nhiều bước để hội tụ hơn nhưng thời gian đi mỗi bước nhanh hơn rất nhiều, nên có ứng dụng
+nhiều hơn trong các lĩnh vực như Học máy.
+
+Biểu đồ mô tả tốc độ hội tụ của 2 thuật toán Gradient Descent và Newton
+![Speed](/content/MAT2407/C5/speed.png)

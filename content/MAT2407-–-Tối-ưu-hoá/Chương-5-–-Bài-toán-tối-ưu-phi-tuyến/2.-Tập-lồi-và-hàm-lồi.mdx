@@ -1,0 +1,91 @@
+---
+title: "2. Tập lồi và hàm lồi"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ TẬP LỒI**
+
+Tập $S \subseteq \mathbb{R}^n$ được gọi là **tập lồi**, nếu:
+$$
+\lambda x + (1 - \lambda)y \in S, \quad \forall x, y \in S, \quad \forall \lambda \in [0, 1]
+$$
+Nói cách khác, đoạn thẳng nối hai điểm nằm hoàn toàn trong tập hợp nếu hai đầu mút cũng
+thuộc tập hợp.
+
+![Convex Set](/content/MAT2407/C5/convex.png)
+
+---
+$$\\$$
+
+**▸ TỔ HỢP LỒI**
+
+Một **tổ hợp lồi** của $x_1, x_2,...,x_k \in \mathbb{R}^n$ là một tổ hợp tuyến tính
+$$
+\lambda_1x_1 + \lambda_2x_2 + \cdots + \lambda_kx_k
+$$
+với các hệ số $\lambda_1, \lambda_2,..., \lambda_k \ge 0$ thỏa mãn
+$$
+\lambda_1 + \lambda_2 + \cdots + \lambda_k = 1
+$$
+
+---
+$$\\$$
+
+**▸ BAO LỒI**
+
+**Bao lồi** của một tập hợp $S$, ký hiệu là $conv(S)$, là tập hợp của tất cả các tổ hợp lồi
+của các phần tử thuộc $S$.
+
+---
+$$\\$$
+
+**▸ HÀM LỒI**
+
+Cho $S$ là tập lồi.
+
+- Hàm số $f: S \subseteq \mathbb{R}^n \rightarrow \mathbb{R}$ được gọi là **hàm lồi** nếu:
+$$
+f(\lambda x + (1 - \lambda)y) \le \lambda f(x) + (1 - \lambda) f(y) \quad \forall x, y \in S, \quad \forall \lambda \in [0, 1]
+$$
+
+
+- Hàm số $f: S \subseteq \mathbb{R}^n \rightarrow \mathbb{R}$ được gọi là **hàm lồi ngặt** nếu:
+$$
+f(\lambda x + (1 - \lambda)y) < \lambda f(x) + (1 - \lambda) f(y) \quad \forall x, y \in S (x \neq y), \quad \forall \lambda \in (0, 1)
+$$
+
+- Hàm số $f: S \subseteq \mathbb{R}^n \rightarrow \mathbb{R}$ được gọi là **hàm lồi mạnh** nếu:
+$$
+f(\lambda x + (1 - \lambda)y) < \lambda f(x) + (1 - \lambda) f(y) - \dfrac{1}{2}m\lambda(1-\lambda)\left\lVert x-y \right\rVert^2_2  \quad \forall x, y \in S, \quad \forall \lambda \in [0, 1]
+$$
+
+---
+$$\\$$
+
+**▸ ĐẶC TRƯNG CỦA HÀM LỒI**
+
+- **(Định lý) Đặc trưng bậc nhất:**
+  
+  Nếu $f$ khả vi thì $f$ là hàm lồi khi và chỉ khi $dom(f)$ là một tập lồi, và:
+  $$
+  f(y) \ge f(x) + \nabla f(x)^\top(y-x), \quad \forall x, y \in dom(f)
+  $$
+
+- **(Định lý) Đặc trưng bậc hai:**
+  
+  Nếu $f$ khả vi hai lần thì $f$ là hàm lồi khi và chỉ khi $dom(f)$ là một tập lồi, và:
+  $$
+  \nabla^2 f(x) \succeq 0, \quad \forall x \in dom(f)
+  $$
+  Tức là ma trận Hessian nửa xác định dương.
+
+- **(Định lý) Bất đẳng thức Jensen:**
+  
+  Nếu $f$ là một hàm lồi, và $X$ là một biến ngẫu nhiên trên $dom(f)$ thì:
+  $$
+  f(\mathbb{E}[X]) \le \mathbb{E}[f(x)]
+  $$
+
+- **Bổ đề:**
+  
+  Hàm $f: \mathbb{R}^n \rightarrow \mathbb{R}$ là hàm vừa lồi vừa lõm khi và chỉ khi $f$ là hàm affine.

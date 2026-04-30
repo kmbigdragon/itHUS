@@ -1,0 +1,327 @@
+---
+title: "4. Lý thuyết đa diện"
+author: "Trần Đăng Quang Minh"
+---
+
+### SIÊU PHẲNG, NỬA KHÔNG GIAN VÀ ĐA DIỆN
+**▸ ĐỊNH NGHĨA 1**
+
+Một **đa diện** là một tập hợp có dạng
+$$
+\{x \in \mathbb{R}^n \mid Ax \geq b\}
+$$
+trong đó $A \in \mathbb{R}^{m \times n}$ và $b \in \mathbb{R}^m$.
+
+**▸ ĐỊNH NGHĨA 2**
+
+Một tập hợp $S \subset \mathbb{R}^n$ được gọi là **bị chặn**, nếu tồn tại hằng số $K$ sao cho $|x_i| < K$ với $i = 1, 2,...,n$; $\forall x \in S$.
+
+**▸ ĐỊNH NGHĨA 3**
+
+Cho $a \in \mathbb{R}^n$ và $b \in \mathbb{R}$.
+- Tập hợp $\{x \in \mathbb{R}^n \mid a^\top x = b\}$ được gọi là một **siêu phẳng**.
+- Tập hợp $\{x \in \mathbb{R}^n \mid a^\top x \geq b\}$ được gọi là một **nửa không gian**.
+
+**Ví dụ**
+Dưới đây là ví dụ trực quan về siêu phẳng và nửa không gian trên $\mathbb{R}^3$.
+
+![Siêu phẳng](/content/MAT2407/C2/hyperplane_rotate.gif)
+Siêu phẳng $x_1 + x_2 + x_3 = 2$
+
+![Nửa không gian](/content/MAT2407/C2/halfspace_rotate.gif)
+Nửa không gian $x_1 + x_2 + x_3 \geq 2$
+
+---
+$$\\$$
+
+### ĐIỂM CỰC, ĐỈNH VÀ NGHIỆM CƠ SỞ CHẤP NHẬN ĐƯỢC
+
+**▸ ĐỊNH NGHĨA 4 (Điểm cực)**
+
+Cho $P$ là một đa diện. Một vector $x \in P$ được gọi là một **điểm cực (extreme point)** của $P$ nếu ta không thể
+tìm được 2 vector $y, z \in P \setminus \{x\}$ và $\lambda \in [0, 1]$ sao cho $x = \lambda y + (1 - \lambda)z$, hay nói
+cách khác là $x$ không thể được biểu diễn bằng tổ hợp lồi của hai điểm khác trong $P$.
+
+Để dễ hình dung, xét một đa diện $P \subset \mathbb{R}^2$ như hình dưới:
+
+- Một điểm $x_0$ nằm trên một cạnh (không phải là giao điểm của hai cạnh) **không phải là điểm cực**, vì ta có thể chọn hai điểm $y, z \in P$ chính là 2 đầu mút của cạnh sao cho:
+$$
+x_0 = \lambda y + (1 - \lambda)z; \ \lambda \in (0,1)
+$$
+
+- Một điểm $x_1$ nằm trong lòng đa diện cũng **không phải là điểm cực**, vì tồn tại hai điểm $y, z \in P (y \ne z)$ sao cho:
+$$
+x_1 = \lambda y + (1 - \lambda)z.
+$$
+
+- Ngược lại, các điểm $x_2$ là giao điểm của hai cạnh **là các điểm cực**, vì chúng không thể được biểu diễn dưới dạng tổ hợp lồi của hai điểm khác trong $P$.
+
+![Điểm cực](/content/MAT2407/C2/polygon.png)
+
+Trong hình trên, các điểm màu cam là các **điểm cực**, các điểm khác không phải điểm cực.
+
+---
+$$\\$$
+
+**▸ ĐỊNH NGHĨA 5 (Đỉnh)**
+
+Cho $P \subset \mathbb{R}^n$ là một đa diện. Một vector $x \in P$ được gọi là một **đỉnh (vertex)** của $P$ nếu tồn tại $c \in \mathbb{R}^n$ sao cho:
+$$
+c^\top x < c^\top y, \quad \forall y \in P \setminus \{x\}.
+$$
+
+Nói cách khác, tồn tại một siêu phẳng chỉ tiếp xúc với $P$ tại duy nhất điểm $x$.
+
+
+
+**▸ NHẬN XÉT**
+
+- Định nghĩa **đỉnh** và **điểm cực** đều mang tính hình học, khó kiểm tra trực tiếp bằng thuật toán.
+- Do đó, ta cần một khái niệm đại số tương đương: **nghiệm cơ sở chấp nhận được**.
+
+---
+$$\\$$
+
+**▸ ĐỊNH NGHĨA 6 (Ràng buộc active)**
+
+Xét đa diện:
+$$
+P = \{x \in \mathbb{R}^n \mid a_i^\top x \,\{\ge, \le, =\}\, b_i\}.
+$$
+
+Một ràng buộc được gọi là **active (binding)** tại $x^*$ nếu:
+$$
+a_i^\top x^* = b_i.
+$$
+
+---
+$$\\$$
+
+**▸ ĐỊNH NGHĨA 7 (Nghiệm cơ sở & nghiệm cơ sở chấp nhận được)**
+
+Cho $x^* \in \mathbb{R}^n$:
+
+- $x^*$ là một **nghiệm cơ sở (basic solution)** nếu nó:
+  
+  ⋇ Thỏa mãn các điều kiện đẳng thức.
+  
+  ⋇ Có **$m$ ràng buộc active độc lập tuyến tính**.
+
+- Nếu $x^*$ đồng thời thỏa mãn mọi ràng buộc của bài toán thì nó được gọi là **nghiệm cơ sở chấp nhận được (basic feasible solution - BFS)**
+
+---
+$$\\$$
+
+**▸ ĐỊNH LÝ 1**
+
+Cho $P \ne \varnothing$, với $x^* \in P$. Khi đó các điều sau là tương đương:
+
+1. $x^*$ là **đỉnh**.
+2. $x^*$ là **điểm cực**.
+3. $x^*$ là **nghiệm cơ sở chấp nhận được**.
+
+
+
+**▸ NHẬN XÉT**
+
+- Không phải đa diện nào cũng có đỉnh (Ví dụ: siêu phẳng, nửa không gian).
+
+- Số nghiệm cơ sở chấp nhận được là **hữu hạn**.
+
+---
+$$\\$$
+
+### ĐA DIỆN Ở DẠNG CHÍNH TẮC
+
+Xét đa diện:
+$$
+P = \{x \in \mathbb{R}^n \mid Ax = b,\ x \ge 0\}, \quad A \in \mathbb{R}^{m \times n}
+$$
+
+Giả sử các hàng của $A$ độc lập tuyến tính.
+
+
+
+**▸ CÁCH XÂY DỰNG NGHIỆM CƠ SỞ**
+
+1. Chọn $m$ cột độc lập tuyến tính của $A$.
+2. Đặt các biến còn lại bằng $0$.
+3. Giải hệ:
+$$
+Bx_B = b
+$$
+
+- Nếu nghiệm $\ge 0$ → là **nghiệm cơ sở chấp nhận được**.
+
+
+
+**▸ KHÁI NIỆM**
+
+- **Biến cơ sở**: các biến được chọn.
+- **Biến ngoài cơ sở**: các biến còn lại (bằng 0).
+- **Ma trận cơ sở**: $B$.
+
+**▸ VÍ DỤ**
+
+Xét đa diện ở dạng chính tắc:
+$$
+P = \{x \in \mathbb{R}^7 \mid Ax = b,\ x \ge 0\}
+$$
+
+với:
+$$
+A =
+\begin{pmatrix}
+1 & 1 & 2 & 1 & 0 & 0 & 0 \\
+0 & 1 & 6 & 0 & 1 & 0 & 0 \\
+1 & 0 & 0 & 0 & 0 & 1 & 0 \\
+0 & 1 & 0 & 0 & 0 & 0 & 1
+\end{pmatrix}, \quad
+b =
+\begin{pmatrix}
+8 \\
+12 \\
+4 \\
+6
+\end{pmatrix}
+$$
+
+Ở đây:
+- $m = 4$, $n = 7$.
+- Mỗi nghiệm cơ sở cần chọn **4 cột độc lập tuyến tính**.
+
+**TRƯỜNG HỢP 1: Chọn cơ sở $\{A_4, A_5, A_6, A_7\}$**
+
+Các cột này tạo thành ma trận đơn vị:
+$$
+B =
+\begin{pmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{pmatrix}
+$$
+
+**Bước 1:** Đặt các biến ngoài cơ sở bằng 0  
+$$
+x_1 = x_2 = x_3 = 0
+$$
+
+**Bước 2:** Giải hệ:
+$$
+Bx_B = b
+$$
+
+Suy ra:
+$$
+(x_4, x_5, x_6, x_7) = (8, 12, 4, 6)
+$$
+
+Nghiệm thu được là:
+$$
+x = (0, 0, 0, 8, 12, 4, 6)
+$$
+
+Vì $x \geq 0$ nên đây là **nghiệm cơ sở chấp nhận được (BFS)**.
+
+**TRƯỜNG HỢP 2: Chọn cơ sở $\{A_3, A_5, A_6, A_7\}$**
+
+**Bước 1:** Đặt:
+$$
+x_1 = x_2 = x_4 = 0
+$$
+
+**Bước 2:** Giải hệ:
+$$
+\begin{pmatrix}
+2 & 0 & 0 & 0 \\
+6 & 1 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{pmatrix}
+\begin{pmatrix}
+x_3 \\
+x_5 \\
+x_6 \\
+x_7
+\end{pmatrix}
+=
+\begin{pmatrix}
+8 \\
+12 \\
+4 \\
+6
+\end{pmatrix}
+$$
+
+Giải hệ, ta thu được:
+$$
+x_3 = 4,\quad x_5 = -12,\quad x_6 = 4,\quad x_7 = 6
+$$
+
+Nghiệm thu được là:
+$$
+x = (0, 0, 4, 0, -12, 4, 6)
+$$
+
+Có $x_5 < 0$ nên $x$ **không phải nghiệm cơ sở chấp nhận được**.
+
+---
+$$\\$$
+
+### SỰ SUY BIẾN
+
+**▸ ĐỊNH NGHĨA 8**
+
+Một nghiệm cơ sở được gọi là **suy biến (degenerate)** nếu có **nhiều hơn $n$ ràng buộc active**.
+
+Trong dạng chính tắc, nghiệm suy biến khi có **hơn $n - m$ biến bằng 0**.
+
+
+
+**▸ NHẬN XÉT**
+
+- Tính suy biến **phụ thuộc vào cách biểu diễn**.
+- Nhưng tính "điểm cực" thì **không phụ thuộc**.
+
+---
+$$\\$$
+
+### SỰ TỒN TẠI ĐIỂM CỰC
+
+**▸ ĐỊNH NGHĨA 9**
+
+$P$ **chứa đường thẳng** nếu tồn tại $x \in P$, $d \ne 0$ sao cho:
+$$
+x + \lambda d \in P, \ \forall \lambda \in \mathbb{R}
+$$
+
+
+
+**▸ ĐỊNH LÝ 2**
+
+Các điều sau là tương đương:
+
+1. $P$ có **điểm cực**.
+2. $P$ **không chứa đường thẳng**.
+3. Tồn tại **$n$ ràng buộc độc lập tuyến tính**.
+
+---
+$$\\$$
+
+### TÍNH TỐI ƯU
+
+**▸ ĐỊNH LÝ 3**
+
+Nếu bài toán quy hoạch tuyến tính có nghiệm tối ưu và $P$ có điểm cực thì tồn tại một nghiệm tối ưu là **điểm cực**.
+
+**▸ HỆ QUẢ**
+
+Một bài toán quy hoạch tuyến tính luôn rơi vào một trong 3 trường hợp:
+- Không có nghiệm chấp nhận được (như ở hình dưới, hai miền chấp nhận được tách biệt nhau).
+- Không bị chặn (giá trị hàm mục tiêu có thể tăng/giảm vô hạn trên miền chấp nhận được).
+- Có nghiệm tối ưu (như hình dưới).
+
+![Nghiệm LP](/content/MAT2407/C2/bfssolution.png)
+

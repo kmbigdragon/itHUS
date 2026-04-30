@@ -1,0 +1,89 @@
+---
+title: "1. Quy hoạch tuyến tính"
+author: "Trần Đăng Quang Minh"
+---
+
+Một bài toán **quy hoạch tuyến tính** là một bài toán tối ưu có hữu hạn biến, hàm mục tiêu tuyến tính và 
+miền chấp nhận được được định nghĩa bởi hữu hạn các đẳng thức hay bất đẳng thức tuyến tính.
+
+- Hàm số tuyến tính của các biến $x_1, x_2, ..., x_n$ là:
+  $$
+  f(x) = c_1x_1 + c_2x_2 + \ldots + c_nx_n
+  $$
+  với hằng số $c_i \in \mathbb{R}, i = 1, 2, ..., n$.
+
+- Một điều kiện đẳng thức tuyến tính có dạng:
+  $$
+  a_1x_1 + a_2x_2 + \ldots + a_nx_n = \alpha
+  $$
+  với $\alpha, a_1, a_2, ..., a_n \in \mathbb{R}$.
+
+
+- Một điều kiện bất đẳng thức tuyến tính có dạng:
+  $$
+  a_1x_1 + a_2x_2 + \ldots + a_nx_n \leq \alpha
+  $$
+  hoặc
+  $$
+  a_1x_1 + a_2x_2 + \ldots + a_nx_n \geq \alpha
+  $$
+  với $\alpha, a_1, a_2, ..., a_n \in \mathbb{R}$.
+
+Dạng thông thường của bài toán **quy hoạch tuyến tính tối đa hóa**:
+$$
+\begin{align*}
+\text{maximize} & \ \ c_1x_1 + c_2x_2 + \ldots + c_nx_n \\
+\text{subject to} & \ \ a_{i1}x_1 + a_{i2}x_2 + \ldots + a_{in}x_n \leq \alpha_i, \ i = 1, ..., s. \\
+& \ \ b_{j1}x_1 + b_{j2}x_2 + \ldots + b_{jn}x_n = \beta_j, \ j = 1, ..., r.
+\end{align*}
+$$
+Bài toán trên có $s$ điều kiện bất đẳng thức và $r$ điều kiện đẳng thức.
+
+Biểu diễn bài toán trên dưới dạng ma trận, ta có:
+$$
+\begin{align*}
+\text{maximize} & \ \ c^\top x \\
+\text{subject to} & \ \ Ax \leq a \\
+& \ \ Bx = b
+\end{align*}
+$$
+trong đó:
+$$
+c =
+\begin{bmatrix}
+c_1 \\
+\vdots \\
+c_n
+\end{bmatrix}
+, \ \
+a =
+\begin{bmatrix}
+\alpha_1 \\
+\vdots \\
+\alpha_n
+\end{bmatrix}
+, \ \
+b =
+\begin{bmatrix}
+\beta_1 \\
+\vdots \\
+\beta_n
+\end{bmatrix}
+$$
+$$
+A =
+\begin{bmatrix}
+a_{11} & \ldots & a_{1n} \\
+\vdots & \ddots & \vdots \\
+a_{s1} & \ldots & a_{sn}
+\end{bmatrix}
+, \ \
+B =
+\begin{bmatrix}
+b_{11} & \ldots & b_{1n} \\
+\vdots & \ddots & \vdots \\
+b_{r1} & \ldots & b_{rn}
+\end{bmatrix}
+$$
+
+Tương tự, ở bài toán **quy hoạch tuyến tính tối thiểu hóa**, ta chỉ cần đảo dấu $\leq$ thành $\geq$.

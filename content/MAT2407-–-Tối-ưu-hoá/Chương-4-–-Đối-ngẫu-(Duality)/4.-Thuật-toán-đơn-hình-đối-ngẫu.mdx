@@ -1,0 +1,187 @@
+---
+title: "4. Thuật toán đơn hình đối ngẫu"
+author: "Trần Đăng Quang Minh"
+---
+
+**Thuật toán đơn hình đối ngẫu** là một biến thể của thuật toán đơn hình.
+
+Nó giải bài toán quy hoạch tuyến tính bằng cách duy trì **tính chấp nhận được đối ngẫu** thay vì
+tính chấp nhận được của bài toán gốc.
+
+---
+$$\\$$
+
+**▸ Ý TƯỞNG CHÍNH**
+
+- **Thuật toán đơn hình:**  
+  Xuất phát với cơ sở chấp nhận được (primal feasible), có thể chưa chấp nhận được đối ngẫu.
+
+- **Thuật toán đơn hình đối ngẫu:**  
+  Xuất phát với cơ sở chấp nhận được đối ngẫu (dual feasible), có thể chưa chấp nhận được.
+
+- Thuật toán dừng khi cơ sở vừa chấp nhận được vừa chấp nhận được đối ngẫu ⇒ nghiệm tối ưu. 
+
+**▸ ĐIỀU KIỆN**
+
+Một cơ sở $B$:
+
+- Là **chấp nhận được** nếu:
+  $$
+  A_B^{-1} b \ge 0
+  $$
+  hay dễ thấy ở bài toán dạng chuẩn tắc là hệ số $b_i \ge 0$.
+
+- Là **chấp nhận được đối ngẫu** nếu:
+  $$
+  c^\top - c_B^\top A_B^{-1} A \le 0
+  $$
+  hay dễ thấy ở bài toán dạng chuẩn tắc là hệ số ở hàm mục tiêu $\le 0$.
+
+**▸ KHI NÀO DÙNG THUẬT TOÁN ĐƠN HÌNH ĐỐI NGẪU**
+
+- Khi đã có nghiệm tối ưu cũ, nhưng:
+  - thay đổi $b$
+  - hoặc thêm ràng buộc  
+
+→ Cơ sở cũ thường vẫn **chấp nhận được đối ngẫu** nhưng không còn chấp nhận được.
+
+
+**▸ THUẬT TOÁN ĐƠN HÌNH ĐỐI NGẪU**
+
+- **Bước 1:** Chọn hàng xoay (pivot row)  
+  → chọn hàng có $b_i < 0$ nhỏ nhất.
+
+- **Bước 2:** Chọn cột xoay (pivot column)  
+  → xét các $a_{ij} < 0$, chọn cột thỏa:
+$$
+\min \frac{c_j - z_j}{a_{ij}}
+$$
+
+- **Bước 3:** Pivot như đơn hình thường.
+
+- **Bước 4:** Lặp lại cho đến khi:
+$$
+b_i \ge 0 \quad \forall i
+$$
+
+→ Khi đó nghiệm là tối ưu.
+
+Về cơ bản, các bước của thuật toán đơn hình đối ngẫu tương tự thuật toán đơn hình,
+nhưng ta chọn hàng xoay trước rồi mới chọn cột xoay, và tính ratio theo hàng, chứ không tính theo cột.
+
+**▸ ⚠️ LƯU Ý**
+
+- Nếu trong hàng xoay **không có phần tử âm**  
+⇒ bài toán đối ngẫu **không bị chặn**  
+⇒ bài toán gốc **vô nghiệm** (theo định lý đối ngẫu yếu).
+
+**▸ VÍ DỤ**
+
+Giải bài toán sau bằng đơn hình đối ngẫu:
+
+$$
+\begin{align*}
+\max \quad 
+& -4x_1 & -\; & 2x_2 & -\; & \ \ x_3 & & \\
+\text{s.t.} \quad 
+& \ \ -x_1           & -\; & \ \ x_2 & -\; & 2x_3    & \le & -3 \\
+& -4x_1              & -\; & 2x_2    & +\; & \ \ x_3 & \le & -4 \\
+& \phantom{-}\ \ x_1 & +\; & \ \ x_2 & -\; & 4x_3    & \le & \phantom{-} 2
+\end{align*}
+$$
+$$
+x_1, x_2, x_3 \ge 0
+$$
+
+Dễ thấy bài toán không chấp nhận được, nhưng chấp nhận được đối ngẫu (Do các hệ số ở hàm mục tiêu đều âm).
+
+Ta tiến hành kẻ bảng đơn hình:
+$$
+\left[
+\begin{array}{c|cccccc|c}
+    & x_1 & x_2 & x_3 & y_1 & y_2 & y_3 & b \\
+\hline
+y_1 & -1 & -1 & -2 & 1 & 0 & 0 & -3 \\
+y_2 & -4 & -2 & 1 & 0 & 1 & 0 & -4 \\
+y_3 & 1 & 1 & -4 & 0 & 0 & 1 & 2 \\
+\hline
+-z  & -4 & -2 & -1 & 0 & 0 & 0 & 0
+\end{array}
+\right]
+$$
+
+Các bước làm tiếp theo, các ứng viên để chọn làm hàng xoay sẽ là các hàng có $b_i < 0$.
+Cột xoay sẽ là cột có tỉ số giữa hệ số của hàm mục tiêu và hệ số của hàng xoay ở cột tương ứng là số không âm nhỏ nhất và không phải cột $y$.
+
+$$
+\left[
+\begin{array}{c|cccccc|c}
+    & x_1 & x_2 & x_3 & y_1 & y_2 & y_3 & b \\
+\hline
+y_1 & -1 & \boxed{-1} & -2 & 1 & 0 & 0 & \boxed{-3} \\
+y_2 & -4 & -2 & 1 & 0 & 1 & 0 & -4 \\
+y_3 & 1 & 1 & -4 & 0 & 0 & 1 & 2 \\
+\hline
+-z  & -4 & -2 & -1 & 0 & 0 & 0 & 0 \\
+Ratio  & 4 & \boxed{2} & - & - & - & - & -
+\end{array}
+\right]
+$$
+$$
+\downarrow
+$$
+$$
+\left[
+\begin{array}{c|cccccc|c}
+    & x_1 & x_2 & x_3 & y_1 & y_2 & y_3 & b \\
+\hline
+x_2 & 1 & 1 & -2 & -1 & 0 & 0 & 3 \\
+y_2 & -2 & 0 & -3 & -2 & 1 & 0 & 2 \\
+y_3 & 0 & 0 & -2 & 1 & 0 & 1 & -1 \\
+\hline
+-z  & -2 & 0 & -5 & -2 & 0 & 0 & 6 \\
+\end{array}
+\right]
+$$
+$$
+\downarrow
+$$
+$$
+\left[
+\begin{array}{c|cccccc|c}
+    & x_1 & x_2 & x_3 & y_1 & y_2 & y_3 & b \\
+\hline
+x_2 & 1 & 1 & -2 & -1 & 0 & 0 & 3 \\
+y_2 & -2 & 0 & -3 & -2 & 1 & 0 & 2 \\
+y_3 & 0 & 0 & \boxed{-2} & 1 & 0 & 1 & \boxed{-1} \\
+\hline
+-z  & -2 & 0 & -5 & -2 & 0 & 0 & 6 \\
+Ratio  & - & - & \boxed{5/2} & - & - & - & - \\
+\end{array}
+\right]
+$$
+$$
+\downarrow
+$$
+$$
+\left[
+\begin{array}{c|cccccc|c}
+    & x_1 & x_2 & x_3 & y_1 & y_2 & y_3 & b \\
+\hline
+x_2 & 1 & 1 & 0 & -2 & 0 & -1 & 4 \\
+y_2 & -2 & 0 & 0 & -7/2 & 1 & -3/2 & 7/2 \\
+x_3 & 0 & 0 & 1 & -1/2 & 0 & -1/2 & 1/2 \\
+\hline
+-z  & -2 & 0 & 0 & -9/2 & 0 & -5/2 & 17/2 \\
+\end{array}
+\right]
+$$
+Đến bước này, do $b \ge 0$ nên ta đã tìm được nghiệm tối ưu của bài toán gốc là 
+$$
+(x_1, x_2, x_3)^\top = (0, 4, \frac{1}{2})^\top
+$$
+và của bài toán đối ngẫu là
+$$
+(y_1, y_2, y_3)^\top = (\frac{9}{2}, 0, \frac{5}{2})^\top
+$$
+với giá trị tối ưu là $z = -\frac{17}{2}$.

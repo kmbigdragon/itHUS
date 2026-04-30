@@ -1,0 +1,92 @@
+---
+title: "1. Ví dụ mở đầu"
+author: "Trần Đăng Quang Minh"
+---
+
+Một nhà máy cốc có thể sản xuất hai loại sản phẩm là **cốc nhựa** và **cốc giấy**.
+
+Để sản xuất được chúng, ta cần hai loại nguyên liệu:
+- Hạt nhựa  
+- Bột giấy  
+
+Nguồn cung nguyên liệu có hạn, mỗi sản phẩm mang lại lợi nhuận khác nhau.
+
+**Mục tiêu:** Lập kế hoạch sản xuất để **tối đa hóa lợi nhuận**.
+
+### ▸ Ví dụ cụ thể:
+
+<table className="w-full border border-gray-200 rounded-lg overflow-hidden text-sm">
+  <thead className="bg-gray-100">
+    <tr>
+      <th className="p-3 text-left">Sản phẩm</th>
+      <th className="p-3">Biến</th>
+      <th className="p-3 text-right">Hạt nhựa (g)</th>
+      <th className="p-3 text-right">Bột giấy (g)</th>
+      <th className="p-3 text-right">Lợi nhuận ($)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr className="hover:bg-gray-50">
+      <td className="p-3">Cốc nhựa</td>
+      <td className="p-3 text-center">$x_1$</td>
+      <td className="p-3 text-right">2</td>
+      <td className="p-3 text-right">0</td>
+      <td className="p-3 text-right">3</td>
+    </tr>
+    <tr className="hover:bg-gray-50">
+      <td className="p-3">Cốc giấy</td>
+      <td className="p-3 text-center">$x_2$</td>
+      <td className="p-3 text-right">1</td>
+      <td className="p-3 text-right">2</td>
+      <td className="p-3 text-right">5</td>
+    </tr>
+    <tr className="hover:bg-gray-50">
+      <td className="p-3">Giới hạn</td>
+      <td className="p-3 text-center">/</td>
+      <td className="p-3 text-right">100</td>
+      <td className="p-3 text-right">80</td>
+      <td className="p-3 text-right">/</td>
+    </tr>
+  </tbody>
+</table>
+
+### ▸ Mô hình toán học
+
+Gọi số lượng cốc nhựa là $x_1$, số lượng cốc giấy là $x_2$.
+
+**Hàm mục tiêu:**
+
+$$
+\text{max} \ \ z = 3x_1 + 5x_2
+$$
+
+**Ràng buộc:**
+
+$$
+s.t.
+\begin{cases}
+2x_1 + 1x_2 \le 100 \\
+0x_1 + 2x_2 \le 80 \\
+x_1, x_2 \ge 0
+\end{cases}
+$$
+
+Tương ứng với các điều kiện:
+- Lượng hạt nhựa sử dụng không vượt quá 100g.
+- Lượng bột giấy sử dụng không vượt quá 80g.
+- Số lượng các loại cốc không âm.
+
+### ▸ Giải bài toán tối ưu bằng phương pháp đồ thị
+![Phương pháp đồ thị](/content/MAT2407/C1/optimization.gif)
+
+Đường màu xanh dương là đường thẳng $2x_1 + x_2 = 100$.
+
+Đường màu cam là đường thẳng $2x_2 = 80$.
+
+Có thể thấy miền chấp nhận được của nghiệm là vùng màu xanh da trời.
+
+Đường màu đỏ là hàm mục tiêu $3x_1 + 5x_2 = z$ với giá trị $z$ tăng dần đến khi tiếp xúc với miền chấp nhận được.
+
+Từ đồ thị, ta thấy nghiệm của bài toán tối ưu là $x_1 = 30$ và $x_2 = 40$, với giá trị tối ưu là $z = 290$.
+
+**Kết luận:** Để đạt lợi nhuận tối đa có thể là **290$**, nhà máy phải sản xuất **30 cốc nhựa** và **40 cốc giấy**.

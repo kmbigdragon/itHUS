@@ -1,0 +1,109 @@
+---
+title: "1. Đạo hàm của hàm nhiều biến"
+author: "Trần Đăng Quang Minh"
+---
+
+Cho một hàm số nhiều biến số
+$$
+\begin{align*}
+f: & \quad \mathbb{R}^n \rightarrow \mathbb{R} \\
+& \quad x \ \ \mapsto f(x) = y
+\end{align*}
+$$
+
+**▸ GRADIENT (Đạo hàm cấp 1)** của $f$ là một ma trận cỡ $n \times 1$:
+- Ký hiệu: $\nabla f(x)$
+- Công thức tính:
+$$
+\nabla f(x) = 
+\left(
+\frac{\partial f}{\partial x_1},
+\frac{\partial f}{\partial x_2},
+\dots,
+\frac{\partial f}{\partial x_n}
+\right)^\top
+$$
+Trong đó, $\dfrac{\partial f}{\partial x_i}$ là đạo hàm riêng của hàm $f$ theo biến $x_i$.
+
+---
+$$\\$$
+
+**▸ HESSIAN (Đạo hàm cấp 2)** của $f$ là một ma trận cỡ $n \times n$:
+- Ký hiệu: $\nabla^2 f(x)$
+- Công thức tính:
+$$
+\nabla^2 f(x) =
+\begin{bmatrix}
+\frac{\partial^2 f}{\partial x_1^2} 
+& \frac{\partial^2 f}{\partial x_1 \partial x_2} 
+& \cdots 
+& \frac{\partial^2 f}{\partial x_1 \partial x_n} \\[8pt]
+
+\frac{\partial^2 f}{\partial x_2 \partial x_1} 
+& \frac{\partial^2 f}{\partial x_2^2} 
+& \cdots 
+& \frac{\partial^2 f}{\partial x_2 \partial x_n} \\[8pt]
+
+\vdots & \vdots & \ddots & \vdots \\[8pt]
+
+\frac{\partial^2 f}{\partial x_n \partial x_1} 
+& \frac{\partial^2 f}{\partial x_n \partial x_2} 
+& \cdots 
+& \frac{\partial^2 f}{\partial x_n^2}
+\end{bmatrix}
+$$
+
+Dưới đây là bảng Gradient và Hessian của một số hàm số thường gặp
+<div className="overflow-x-auto my-6">
+  <table className="min-w-full border border-gray-300 text-sm text-center">
+    <thead className="bg-gray-300">
+      <tr>
+        <th className="border px-4 py-2 min-w-30">$f(x)$</th>
+        <th className="border px-4 py-2 min-w-32">$\nabla f(x)$</th>
+        <th className="border px-4 py-2 min-w-30">$\nabla^2 f(x)$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr className="hover:bg-gray-50">
+        <td className="border px-4 py-2">$x$</td>
+        <td className="border px-4 py-2">$I$</td>
+        <td className="border px-4 py-2">$\mathbf{0}$</td>
+      </tr>
+      <tr className="hover:bg-gray-50">
+        <td className="border px-4 py-2">$A^\top x$</td>
+        <td className="border px-4 py-2">$A$</td>
+        <td className="border px-4 py-2">$\mathbf{0}$</td>
+      </tr>
+      <tr className="hover:bg-gray-50">
+        <td className="border px-4 py-2">$x^\top A x$</td>
+        <td className="border px-4 py-2">$(A + A^\top)x$</td>
+        <td className="border px-4 py-2">$A + A^\top$</td>
+      </tr>
+      <tr className="hover:bg-gray-50">
+        <td className="border px-4 py-2">$x^\top x = \|x\|^2$</td>
+        <td className="border px-4 py-2">$2x$</td>
+        <td className="border px-4 py-2">$2I$</td>
+      </tr>
+      <tr className="hover:bg-gray-50">
+        <td className="border px-4 py-2">$\|Ax - b\|^2$</td>
+        <td className="border px-4 py-2">$2A^\top (Ax - b)$</td>
+        <td className="border px-4 py-2">$2A^\top A$</td>
+      </tr>
+      <tr className="hover:bg-gray-50">
+        <td className="border px-4 py-2">$(A^\top x)^\top b$</td>
+        <td className="border px-4 py-2">$2A^\top b$</td>
+        <td className="border px-4 py-2">$0$</td>
+      </tr>
+      <tr className="hover:bg-gray-50">
+        <td className="border px-4 py-2">$b^\top x$</td>
+        <td className="border px-4 py-2">$b$</td>
+        <td className="border px-4 py-2">$0$</td>
+      </tr>
+      <tr className="hover:bg-gray-50">
+        <td className="border px-4 py-2">$x^\top A x + b^\top x$</td>
+        <td className="border px-4 py-2">$(A + A^\top)x + b$</td>
+        <td className="border px-4 py-2">$A + A^\top$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
