@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Allow: /subjects/
+
+Sitemap: https://ithus.bigdragon.info.vn/sitemap.xml
