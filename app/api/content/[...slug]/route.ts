@@ -5,10 +5,6 @@ import { findFileBySlug } from "@/utils/slug";
 
 const CONTENT_PATH = path.join(process.cwd(), "content");
 
-export const dynamic = "force-static";
-
-export { generateStaticParams } from "@/utils/slug";
-
 export async function GET(
   _: NextRequest,
   { params }: { params: Promise<{ slug: string[] }> }

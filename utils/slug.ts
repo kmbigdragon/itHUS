@@ -83,7 +83,7 @@ export const getContentBySlug = cache(function (slug: string[]) {
     return {
       type: "pdf" as const,
       title: getDisplayName(fileName.replace(/\.pdf$/i, "")),
-      url: `/pdfs/${slug.join("/")}.pdf`,
+      url: `/api/content/${slug.join("/")}`,
     };
   }
 
