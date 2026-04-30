@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/copy-pdf.js && next build",
     "start": "next start",
     "lint": "eslint"
   },
@@ -15,7 +15,6 @@
     "katex": "^0.16.45",
     "next": "16.2.4",
     "next-mdx-remote": "^6.0.0",
-    "next-nprogress-bar": "^2.4.7",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-icons": "^5.6.0",
