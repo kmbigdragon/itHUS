@@ -1,0 +1,41 @@
+---
+title: "1. Sai số làm tròn và sai số cắt cụt"
+author: "Trần Đăng Quang Minh"
+---
+
+Giả sử ta có một chữ số thập phân $a$ có $n$ chữ số như sau:
+$$
+a = \pm \ d_n \times 10^n + d_{n-1} \times 10^{n-1} + \cdots + d_{n-k} \times 10^{n-k} + d_{n-k-1} \times 10^{n-k-1} + \cdots
+$$
+
+**▸ ĐỊNH NGHĨA 1 (LÀM TRÒN)**
+
+Ta gọi việc thay $a$ bằng một số $\bar{a}$ có ít chữ số thập phân hơn sao cho sai số tuyệt đối 
+
+**▸ ĐỊNH NGHĨA 2 (CHỮ SỐ CÓ NGHĨA)**
+
+Trong biểu diễn thập phân của một số, các chữ số có nghĩa bao gồm:
+- Tất cả các chữ số khác 0.
+- Các chữ số khác 0 nằm giữa hai chữ số có nghĩa.
+- Chữ số 0 ở tận cùng nhưng đại diện cho hàng cần giữ lại.
+- Chữ số 0 ở cuối phần thập phân.
+
+
+**▸ VÍ DỤ**
+
+Số $a = 12001123.34500$ có 13 chữ số có nghĩa.
+
+Số $b = 1234500$ có thể có 5, 6 hoặc 7 chữ số có nghĩa. Có thể hiểu như sau:
+- **Nếu có 5 chữ số có nghĩa:** Số đó được biểu diễn chính xác (làm tròn) đến hàng trăm. Tức là
+  $$
+  b \in [1234450; 1234550)
+  $$
+- **Nếu có 6 chữ số có nghĩa:** Số đó được biểu diễn chính xác (làm tròn) đến hàng chục. Tức là
+  $$
+  b \in [1234495; 1234505)
+  $$
+- **Nếu có 7 chữ số có nghĩa:** Số đó đã được biểu diễn chính xác. Tức là
+  $$
+  b = 1234500
+  $$
+

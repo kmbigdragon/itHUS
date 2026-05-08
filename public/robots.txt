@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
 Allow: /subjects/
+Allow: /subjects/mat2404-giai-tich-so
+Allow: /subjects/mat2407-toi-uu-hoa
 
 Sitemap: https://ithus.bigdragon.info.vn/sitemap.xml
