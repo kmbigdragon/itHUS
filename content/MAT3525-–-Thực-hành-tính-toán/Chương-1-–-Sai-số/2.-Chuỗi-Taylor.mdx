@@ -1,0 +1,29 @@
+---
+title: "2. Chuỗi Taylor"
+author: "Trần Đăng Quang Minh"
+---
+
+### ▸ CHUỖI TAYLOR
+Nếu hàm $f$ và các đạo hàm tới bậc $n$ của nó liên tục trên khoảng chứa $a$ và $x$ thì giá trị của $f$ tại $x$ được tính bởi **Công thức Taylor** dưới đây:
+$$
+f(x) = f(a) + f'(a)(x-a) + \dfrac{f''(a)}{2!}(x-a)^2 + \cdots + \dfrac{f^{(n)}(a)}{n!}(x-a)^n + R_n
+$$
+Trong đó:
+$$
+R_n = \int_a^x \dfrac{(x-t)^n}{n!}f^{(n+1)}(t)dt = \dfrac{f^{(n+1)}(\xi)}{(n+1)!}(x-a)^{n+1}
+$$
+
+Nếu đã biết các giá trị của hàm $f$ và các đạo hàm của nó tại $x_i$, ta có thể tính được giá trị của $f$ tại $x_{i+1}$:
+$$
+f(x_{i+1}) = f(x_i) + f'(x_i)(x_{i+1}-{x_i}) + \dfrac{f''(x_i)}{2!}(x_{i+1}-{x_i})^2 + \cdots + \dfrac{f^{(n)}(x_i)}{n!}(x_{i+1}-{x_i})^n + R_n
+$$
+
+Trong đó:
+$$
+R_n = \dfrac{f^{(n+1)}(\xi)}{(n+1)!}(x_{i+1}-x_i)^{n+1}
+$$
+với $\xi$ là một giá trị nào đó nằm giữa $x_i$ và $x_{i+1}$.
+
+### ▸ VÍ DỤ
+Sử dụng khai triển chuỗi Taylor tại $x_0 = \dfrac{\pi}{4}$ với $n$ từ $0$ tới $6$ để tính xấp xỉ giá trị của hàm số
+$f(x) = cos(x)$ tại $x = \dfrac{\pi}{3}$. Cho biết giá trị thực của $f\left(\dfrac{\pi}{3}\right)$ là $0.5$. Hãy tính các sai số tương đối thực và sai số tương đối xấp xỉ tại mỗi bước.
