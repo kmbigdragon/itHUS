@@ -12,7 +12,7 @@ Thuật toán **Newton** giúp ta tính gần đúng giá trị $x^*$.
 - **Bước 1:** Chọn giá trị khởi tạo $x_0 \in \mathbb{R}^n$.
 - **Bước 2:** Thực hiện dãy lặp:
   $$
-  x^{(k)} = x^{(k-1)} + (\nabla^2 f(x^{(k-1)}))^{-1} \times \nabla f(x^{(k-1)}), \quad k = 1, 2, 3,...
+  x^{(k)} = x^{(k-1)} - (\nabla^2 f(x^{(k-1)}))^{-1} \times \nabla f(x^{(k-1)}), \quad k = 1, 2, 3,...
   $$
 
 **▸ VÍ DỤ**
@@ -24,15 +24,26 @@ Có $f'(x) = 2x$; $f''(x) = 2$.
 Công thức lặp: $x^{(k)} = x^{(k-1)} - \alpha \cdot 2x^{(k-1)}$
 
 Ta kẻ bảng cho dễ quan sát
+
 <div className="overflow-x-auto my-6">
   <table className="border-collapse text-sm">
     <thead>
       <tr className="bg-primary/10">
-        <th className="border border-primary/20 px-6 py-3 text-center font-semibold">$k$</th>
-        <th className="border border-primary/20 px-6 py-3 text-center font-semibold">$x^{(k-1)}$</th>
-        <th className="border border-primary/20 px-6 py-3 text-center font-semibold">$f'(x^{(k-1)})$</th>
-        <th className="border border-primary/20 px-6 py-3 text-center font-semibold">$f''(x^{(k-1)})$</th>
-        <th className="border border-primary/20 px-6 py-3 text-center font-semibold">$x^{(k)}$</th>
+        <th className="border border-primary/20 px-6 py-3 text-center font-semibold">
+          $k$
+        </th>
+        <th className="border border-primary/20 px-6 py-3 text-center font-semibold">
+          $x^{k - 1}$
+        </th>
+        <th className="border border-primary/20 px-6 py-3 text-center font-semibold">
+          $f'(x^{k - 1})$
+        </th>
+        <th className="border border-primary/20 px-6 py-3 text-center font-semibold">
+          $f''(x^{k - 1})$
+        </th>
+        <th className="border border-primary/20 px-6 py-3 text-center font-semibold">
+          $x^{k}$
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -41,14 +52,20 @@ Ta kẻ bảng cho dễ quan sát
         <td className="border border-primary/20 px-6 py-3 text-center">$4$</td>
         <td className="border border-primary/20 px-6 py-3 text-center">$8$</td>
         <td className="border border-primary/20 px-6 py-3 text-center">$2$</td>
-        <td className="border border-primary/20 px-6 py-3 text-center">$4 - \frac{8}{2} = 0$</td>
+        <td className="border border-primary/20 px-6 py-3 text-center">
+          $4 - \frac{8}
+          {2} = 0$
+        </td>
       </tr>
       <tr className="bg-primary/5">
         <td className="border border-primary/20 px-6 py-3 text-center">$2$</td>
         <td className="border border-primary/20 px-6 py-3 text-center">$0$</td>
         <td className="border border-primary/20 px-6 py-3 text-center">$0$</td>
         <td className="border border-primary/20 px-6 py-3 text-center">$2$</td>
-        <td className="border border-primary/20 px-6 py-3 text-center">$0 - \frac{0}{2} = 0$</td>
+        <td className="border border-primary/20 px-6 py-3 text-center">
+          $0 - \frac{0}
+          {2} = 0$
+        </td>
       </tr>
     </tbody>
   </table>
