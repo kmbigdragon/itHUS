@@ -1,0 +1,67 @@
+---
+title: "2. Lặp lũy thừa"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ DẠNG MA TRẬN**
+
+**Ma trận kề ngẫu nhiên** $M$: nếu $i \to j$ thì $M_{ji} = 1 / d_i$, ngược lại $M_{ji} = 0$. Mỗi cột của $M$ có tổng bằng 1.
+
+<Formula title="Phương trình luồng dạng ma trận">
+
+$$
+r = M \cdot r
+$$
+
+</Formula>
+
+Như vậy $r$ là **vector riêng** của $M$ ứng với trị riêng 1. Vì $M$ ngẫu nhiên theo cột, 1 là trị riêng lớn nhất.
+
+**▸ THUẬT TOÁN LẶP LŨY THỪA**
+
+- **Bước 1:** khởi tạo $r^{(0)} = [1/N, \dots, 1/N]^T$.
+- **Bước 2:** lặp:
+
+<Formula title="Bước lặp lũy thừa">
+
+$$
+r^{(t+1)} = M r^{(t)}, \qquad \text{tức} \quad r_j^{(t+1)} = \sum_{i \to j} \frac{r_i^{(t)}}{d_i}
+$$
+
+</Formula>
+
+- **Bước 3:** dừng khi $|r^{(t+1)} - r^{(t)}|_1 \lt \varepsilon$, với $|x|_1 = \sum_i |x_i|$ là chuẩn L1.
+
+Khoảng 50 vòng lặp là đủ.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Lập ma trận M rồi lặp lũy thừa đến khi hội tụ](/content/MAT3565/C6/power-steps.svg)
+
+**▸ LIÊN HỆ VỚI BƯỚC NGẪU NHIÊN**
+
+Gọi $p(t)$ là phân phối xác suất người lướt web đang ở trang nào tại thời điểm $t$. Khi đó $p(t+1) = M p(t)$. Nếu đạt trạng thái $p(t+1) = M p(t) = p(t)$ thì $p(t)$ là **phân phối dừng**.
+
+Vì $r = Mr$, nên $r$ là phân phối dừng của bước ngẫu nhiên. Theo lý thuyết về chuỗi Markov, với các đồ thị thỏa một số điều kiện, phân phối dừng là duy nhất và luôn đạt được, bất kể phân phối ban đầu.
+
+**▸ VÌ SAO LẶP LŨY THỪA HỘI TỤ**
+
+Giả sử $M$ có $n$ vector riêng độc lập $x_1, \dots, x_n$ với trị riêng $\lambda_1 \gt \lambda_2 \gt \dots \gt \lambda_n$. Viết $r^{(0)} = c_1 x_1 + \dots + c_n x_n$. Khi đó:
+
+<Formula title="Lũy thừa M lên vector ban đầu">
+
+$$
+M^k r^{(0)} = \lambda_1^k \left[ c_1 x_1 + c_2 \left( \frac{\lambda_2}{\lambda_1} \right)^k x_2 + \dots + c_n \left( \frac{\lambda_n}{\lambda_1} \right)^k x_n \right]
+$$
+
+</Formula>
+
+Vì $\lambda_i / \lambda_1 \lt 1$ nên các số hạng sau tiến về 0, và $M^k r^{(0)}$ tiến về hướng $c_1 x_1$. Nếu $c_1 = 0$ thì không hội tụ về $x_1$.
+
+**▸ TRƯỜNG HỢP ĐỒ THỊ VÔ HƯỚNG**
+
+Với đồ thị vô hướng $m$ cạnh, $r_v = d_v / 2m$ là một nghiệm. Thay vào bước lặp:
+
+$$
+r_j = \sum_{i \to j} \frac{r_i}{d_i} = \sum_{i \to j} \frac{1}{2m} = \frac{d_j}{2m}
+$$

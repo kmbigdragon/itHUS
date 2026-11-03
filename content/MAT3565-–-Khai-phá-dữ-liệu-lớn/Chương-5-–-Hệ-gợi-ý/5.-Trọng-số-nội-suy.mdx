@@ -1,0 +1,61 @@
+---
+title: "5. Trọng số nội suy"
+author: "Trần Đăng Quang Minh"
+---
+
+Đội thắng Netflix Prize kết hợp ba mức:
+- **Toàn cục:** độ lệch tổng thể của user và phim.
+- **Vùng:** phân rã ma trận.
+- **Cục bộ:** lọc cộng tác.
+
+**Ví dụ:** trung bình toàn bộ là 3.7 sao. Phim The Sixth Sense cao hơn trung bình 0.5 sao, Joe chấm thấp hơn trung bình 0.2 sao. Ước lượng cơ sở: $3.7 + 0.5 - 0.2 = 4$ sao. Nhờ lọc cộng tác, thấy Joe không thích phim tương tự là Signs, nên ước lượng cuối cùng là 3.8 sao.
+
+**▸ VẤN ĐỀ CỦA LỌC CỘNG TÁC**
+
+- Độ đo tương đồng được chọn khá tùy ý.
+- Độ tương đồng từng cặp bỏ qua sự phụ thuộc lẫn nhau giữa các item.
+- Lấy trung bình có trọng số thì bị bó buộc.
+
+**Giải pháp:** thay $s_{ij}$ bằng $w_{ij}$ học trực tiếp từ dữ liệu, và dùng tổng có trọng số thay vì trung bình có trọng số.
+
+<Formula title="Mô hình trọng số nội suy">
+
+$$
+\hat{r}_{xi} = b_{xi} + \sum_{j \in N(i; x)} w_{ij} (r_{xj} - b_{xj})
+$$
+
+</Formula>
+
+$w_{ij}$ là số thực bất kỳ, mô tả tương tác giữa hai phim và không phụ thuộc user. Không cần $\sum w_{ij} = 1$.
+
+**▸ HỌC TRỌNG SỐ**
+
+Mục tiêu thật là dự đoán tốt các đánh giá chưa biết, nhưng không tối ưu trực tiếp được. Vì vậy ta tối ưu trên đánh giá đã biết và hy vọng nó cũng tốt với phần chưa biết.
+
+<Formula title="Hàm mục tiêu">
+
+$$
+J(w) = \sum_{x, i \in R} \Big( \Big[ b_{xi} + \sum_{j \in N(i; x)} w_{ij} (r_{xj} - b_{xj}) \Big] - r_{xi} \Big)^2
+$$
+
+</Formula>
+
+Dùng gradient descent, lặp đến khi hội tụ với tốc độ học $\eta$:
+
+<Formula title="Bước gradient descent">
+
+$$
+w \leftarrow w - \eta \nabla_w J
+$$
+
+</Formula>
+
+<Formula title="Đạo hàm theo trọng số, với j thuộc N(i; x)">
+
+$$
+\frac{\partial J}{\partial w_{ij}} = 2 \sum_{x, i \in R} \Big( \Big[ b_{xi} + \sum_{k \in N(i; x)} w_{ik} (r_{xk} - b_{xk}) \Big] - r_{xi} \Big) (r_{xj} - b_{xj})
+$$
+
+</Formula>
+
+Nếu $j$ không thuộc $N(i; x)$ thì đạo hàm bằng 0.

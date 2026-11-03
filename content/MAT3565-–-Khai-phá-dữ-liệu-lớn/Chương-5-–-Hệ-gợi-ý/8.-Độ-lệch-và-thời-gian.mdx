@@ -1,0 +1,64 @@
+---
+title: "8. Độ lệch và thời gian"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ THÊM ĐỘ LỆCH VÀO MÔ HÌNH**
+
+Ngay cả khi chưa xét sở thích, ta đã có kỳ vọng về đánh giá của user $x$ cho phim $i$:
+- **Độ lệch user:** thang chấm điểm của user, các đánh giá gần đây (tâm trạng trong ngày, nhiều người dùng chung tài khoản).
+- **Độ lệch phim:** độ phổ biến gần đây, lựa chọn thiên lệch liên quan đến số phim user chấm trong ngày.
+
+<Formula title="Mô hình có độ lệch">
+
+$$
+\hat{r}_{xi} = \mu + b_x + b_i + q_i \cdot p_x
+$$
+
+</Formula>
+
+$\mu$ là trung bình toàn bộ, $b_x$ là độ lệch của user, $b_i$ là độ lệch của phim, còn $q_i \cdot p_x$ là tương tác user-phim.
+
+**Ví dụ:** $\mu = 3.7$. Bạn khó tính, chấm thấp hơn 1 sao: $b_x = -1$. Star Wars được chấm cao hơn 0.5 sao: $b_i = +0.5$. Ước lượng là $3.7 - 1 + 0.5 = 3.2$, và điểm cuối là $3.2 + q_i \cdot p_x$.
+
+**Bài toán tối ưu:** cả $b_x, b_i$ và $q_i, p_x$ đều là tham số cần học, bằng SGD.
+
+<Formula title="Hàm mục tiêu có độ lệch">
+
+$$
+\min_{Q, P, b} \sum_{(x, i) \in R} (r_{xi} - (\mu + b_x + b_i + q_i \cdot p_x))^2 + \lambda_1 \sum_i \|q_i\|^2 + \lambda_2 \sum_x \|p_x\|^2 + \lambda_3 \sum_x b_x^2 + \lambda_4 \sum_i b_i^2
+$$
+
+</Formula>
+
+Các $\lambda$ được chọn bằng tìm kiếm lưới trên tập kiểm định.
+
+**▸ THÊM YẾU TỐ THỜI GIAN**
+
+Điểm trung bình của phim tăng đột ngột đầu năm 2004, có thể do giao diện Netflix đổi hoặc ý nghĩa điểm số đổi. Điểm cũng tăng theo tuổi của phim.
+
+<Formula title="Mô hình có thời gian">
+
+$$
+\hat{r}_{xi} = \mu + b_x(t) + b_i(t) + q_i \cdot p_x
+$$
+
+</Formula>
+
+- Tham số hóa sự phụ thuộc thời gian bằng xu hướng tuyến tính, mỗi đoạn là 10 tuần liên tiếp.
+- Có thể thêm thời gian vào yếu tố: $p_x(t)$ là sở thích của user tại ngày $t$.
+
+**▸ KẾT QUẢ TRÊN NETFLIX**
+
+![RMSE của các mô hình trên dữ liệu Netflix](/content/MAT3565/C5/netflix-rmse.svg)
+
+Kể cả khi thêm thời gian vẫn chưa đạt giải. Các đội phải ghép rất nhiều mô hình lại với nhau.
+
+**▸ KẾT THÚC CUỘC THI**
+
+- Ngày 26/6, một bài nộp vượt mức 10%, kích hoạt giai đoạn 30 ngày cuối.
+- Các đội còn lại liên kết thành đội **Ensemble**, ghép mô hình của nhau và cũng vượt 10%. **BellKor** tiếp tục cải thiện từng chút.
+- Mỗi ngày chỉ được nộp 1 lần, trong 24 giờ cuối chỉ được nộp thêm 1 lần cuối.
+- BellKor nộp trước hạn 40 phút, Ensemble nộp sau đó 20 phút.
+
+Bài học của slide: nộp sớm.

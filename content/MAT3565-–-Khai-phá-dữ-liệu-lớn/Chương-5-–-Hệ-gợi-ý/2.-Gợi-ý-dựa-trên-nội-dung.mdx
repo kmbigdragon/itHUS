@@ -1,0 +1,58 @@
+---
+title: "2. Gợi ý dựa trên nội dung"
+author: "Trần Đăng Quang Minh"
+---
+
+**Ý tưởng:** gợi ý cho user $x$ những item giống các item mà $x$ đã đánh giá cao.
+
+**▸ HỒ SƠ ITEM**
+
+Mỗi item có một **hồ sơ**, là một vector đặc trưng. Ví dụ phim thì có tác giả, tên, diễn viên, đạo diễn; văn bản thì có tập các từ quan trọng.
+
+Cách chọn đặc trưng quan trọng thường dùng là **TF-IDF**. Trong đó đặc trưng ứng với từ, và item ứng với tài liệu.
+
+<Formula title="TF-IDF">
+
+$$
+TF_{ij} = \frac{f_{ij}}{\max_k f_{kj}}, \qquad IDF_i = \log \frac{N}{n_i}, \qquad w_{ij} = TF_{ij} \times IDF_i
+$$
+
+</Formula>
+
+- $f_{ij}$: tần suất của từ $i$ trong tài liệu $j$. Chia cho giá trị lớn nhất để không thiên vị tài liệu dài.
+- $n_i$: số tài liệu chứa từ $i$.
+- $N$: tổng số tài liệu.
+
+Hồ sơ tài liệu là tập các từ có điểm TF-IDF cao nhất cùng với điểm của chúng.
+
+**▸ HỒ SƠ USER VÀ DỰ ĐOÁN**
+
+Hồ sơ user là trung bình có trọng số của hồ sơ các item user đã đánh giá. Có thể lấy trọng số theo độ lệch so với đánh giá trung bình của item.
+
+<Formula title="Dự đoán bằng cosine">
+
+$$
+u(x, i) = \cos(x, i) = \frac{x \cdot i}{\|x\| \cdot \|i\|}
+$$
+
+</Formula>
+
+Muốn tìm nhanh các item gần hồ sơ user nhất thì dùng LSH.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Tính TF-IDF, lập hồ sơ user rồi so cosine với các tài liệu chưa xem](/content/MAT3565/C5/content-based.svg)
+
+**▸ ƯU VÀ NHƯỢC ĐIỂM**
+
+**Ưu:**
+- Không cần dữ liệu của user khác, nên không có vấn đề khởi động lạnh của item hay ma trận thưa.
+- Gợi ý được cho user có sở thích riêng biệt.
+- Gợi ý được item mới và ít phổ biến.
+- Giải thích được, bằng cách liệt kê các đặc trưng đã dẫn đến gợi ý.
+
+**Nhược:**
+- Khó tìm đặc trưng phù hợp, ví dụ cho ảnh, phim, nhạc.
+- User mới chưa có hồ sơ.
+- Quá chuyên biệt: không bao giờ gợi ý ngoài hồ sơ của user, trong khi con người có thể có nhiều sở thích.
+- Không tận dụng được đánh giá chất lượng của user khác.

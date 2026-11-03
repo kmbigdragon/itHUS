@@ -1,0 +1,86 @@
+---
+title: "4. Các bài toán trên đồ thị"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ CẶP GHÉP**
+
+Tìm cặp ghép có tổng trọng số lớn nhất. $x_e = 1$ nếu cạnh $e$ được chọn.
+
+$$
+\begin{align*}
+\max \quad & \sum_{e \in E} w_e x_e \\
+\text{s.t.} \quad & \sum_{e \in E : v \in e} x_e \le 1, \quad \forall v \in V \\
+& x_e \in \{0, 1\}, \quad \forall e \in E
+\end{align*}
+$$
+
+Ràng buộc nói rằng mỗi đỉnh kề tối đa một cạnh được chọn. Khi đồ thị hai phía, đây chính là bài toán phân công.
+
+**▸ PHỦ ĐỈNH (VERTEX COVER)**
+
+Chọn tập đỉnh $S$ nhỏ nhất sao cho mỗi cạnh có ít nhất một đầu thuộc $S$.
+
+$$
+\begin{align*}
+\min \quad & \sum_{v \in V} x_v \\
+\text{s.t.} \quad & x_v + x_u \ge 1, \quad \forall uv \in E \\
+& x_v \in \{0, 1\}, \quad \forall v \in V
+\end{align*}
+$$
+
+**Thuật toán xấp xỉ bằng LP.** Giải bài toán nới lỏng được nghiệm $x^*$, rồi lấy
+$$
+S_{LP} = \{ v \in V : x_v^* \ge 1/2 \}
+$$
+
+Đây là một phủ đỉnh: vì $x_v^* + x_u^* \ge 1$ nên có ít nhất một trong hai giá trị không nhỏ hơn $1/2$.
+
+**Mệnh đề.** Thuật toán này là 2-xấp xỉ, tức là $|S_{LP}| \le 2 |S_{OPT}|$.
+
+**Chứng minh.** Gọi $\bar{x}$ là nghiệm tối ưu của bài toán nguyên. Do bài toán nới lỏng có miền lớn hơn nên $\sum x_v^* \le \sum \bar{x}_v$. Mỗi đỉnh thuộc $S_{LP}$ có $2x_v^* \ge 1$, nên
+$$
+|S_{LP}| = \sum_{v \in S_{LP}} 1 \le \sum_{v \in V} 2 x_v^* \le 2 \sum_{v \in V} \bar{x}_v = 2 |S_{OPT}|
+$$
+
+**▸ TẬP ĐỘC LẬP LỚN NHẤT**
+
+Tìm tập đỉnh $S$ lớn nhất sao cho không có cạnh nào nối hai đỉnh trong $S$.
+
+$$
+\begin{align*}
+\max \quad & \sum_{v \in V} x_v \\
+\text{s.t.} \quad & x_v + x_u \le 1, \quad \forall uv \in E \\
+& x_v \in \{0, 1\}, \quad \forall v \in V
+\end{align*}
+$$
+
+Cách dùng LP ở đây gần như vô ích. Nghiệm $x_v = 1/2$ luôn chấp nhận được, nên giá trị bài toán nới lỏng ít nhất là $|V|/2$. Với đồ thị đầy đủ, nghiệm nguyên tối ưu chỉ bằng 1, nên độ lệch lên đến $O(n)$ lần.
+
+**▸ BÀI TOÁN NGƯỜI DU LỊCH (TSP)**
+
+Có $n$ thành phố, $c_{ij}$ là chi phí đi từ $i$ đến $j$. Tìm chu trình đi qua mỗi thành phố đúng một lần với chi phí nhỏ nhất. Ví dụ: tìm đường đi ngắn nhất cho mũi khoan khi sản xuất bảng mạch.
+
+**Biến:** $x_{ij} = 1$ nếu đi từ $i$ sang $j$, ngược lại $x_{ij} = 0$.
+
+$$
+\begin{align*}
+\min \quad & \sum_{i=1}^{n} \sum_{j=1}^{n} c_{ij} x_{ij} \\
+\text{s.t.} \quad & \sum_{j : j \ne i} x_{ij} = 1, \quad i = 1, \dots, n \\
+& \sum_{i : i \ne j} x_{ij} = 1, \quad j = 1, \dots, n
+\end{align*}
+$$
+
+Chỉ với các ràng buộc trên thì nghiệm có thể gồm nhiều chu trình nhỏ tách rời. Để loại bỏ chúng, thêm một trong hai họ ràng buộc tương đương sau:
+
+**Ràng buộc lát cắt (cut set):**
+$$
+\sum_{i \in S} \sum_{j \notin S} x_{ij} \ge 1, \quad \forall S \subset N, \ S \ne \varnothing
+$$
+
+**Ràng buộc loại chu trình con (subtour elimination):**
+$$
+\sum_{i \in S} \sum_{j \in S} x_{ij} \le |S| - 1, \quad \forall S \subset N, \ 2 \le |S| \le n - 1
+$$
+
+Số ràng buộc này là hàm mũ theo $n$. Cách xử lý được trình bày ở Chương 9.

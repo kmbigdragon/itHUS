@@ -1,0 +1,55 @@
+---
+title: "2. Cách xây dựng mô hình"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ CÁC BƯỚC MÔ HÌNH HÓA**
+
+- **Bước 1:** Xác định người ra quyết định cần biết gì. Ví dụ: đầu tư vào đâu, ai làm việc gì.
+- **Bước 2:** Định nghĩa **biến quyết định**, chọn loại biến phù hợp (liên tục, nguyên, nhị phân), và các **tham số** đã biết.
+- **Bước 3:** Viết **hàm mục tiêu**.
+- **Bước 4:** Viết các **ràng buộc** biểu diễn quan hệ giữa các biến.
+
+**▸ CÁCH VIẾT MỘT RÀNG BUỘC**
+
+- **Bước 1:** Viết quan hệ giữa các biến bằng lời.
+- **Bước 2:** Viết lại bằng các phép logic: và, hoặc, không, kéo theo.
+- **Bước 3:** Chuyển thành ràng buộc toán học.
+
+**Ví dụ:** "Nhà máy điện không được chạy trong hai khoảng thời gian liên tiếp."
+- Trạng thái bật/tắt là biến nhị phân $x_i \in \{0, 1\}$.
+- Nếu $x_i = 1$ thì $x_{i+1} = 0$.
+- Viết thành ràng buộc: $x_i + x_{i+1} \le 1$.
+
+**▸ BÀI TOÁN PHÂN CÔNG**
+
+Có $n$ người, $n$ việc. $\rho_{ij}$ là năng lực của người $i$ khi làm việc $j$. Tìm cách phân công để tổng năng lực lớn nhất.
+
+**Biến:** $x_{ij} = 1$ nếu người $i$ làm việc $j$, ngược lại $x_{ij} = 0$.
+
+$$
+\begin{align*}
+\max \quad & \sum_{i=1}^{n} \sum_{j=1}^{n} \rho_{ij} x_{ij} \\
+\text{s.t.} \quad & \sum_{j=1}^{n} x_{ij} = 1, \quad i = 1, \dots, n \\
+& \sum_{i=1}^{n} x_{ij} = 1, \quad j = 1, \dots, n \\
+& x_{ij} \in \{0, 1\}
+\end{align*}
+$$
+
+Ràng buộc đầu: mỗi người làm đúng một việc. Ràng buộc sau: mỗi việc do đúng một người làm.
+
+**▸ BÀI TOÁN CÁI TÚI (KNAPSACK)**
+
+Có $n$ đồ vật, đồ vật $i$ có giá trị $v_i$ và trọng lượng $w_i$. Chọn các đồ vật sao cho tổng trọng lượng không quá $W$ và tổng giá trị lớn nhất. Mỗi đồ vật lấy tối đa một lần.
+
+**Biến:** $x_i = 1$ nếu lấy đồ vật $i$, ngược lại $x_i = 0$.
+
+$$
+\begin{align*}
+\max \quad & \sum_{i=1}^{n} v_i x_i \\
+\text{s.t.} \quad & \sum_{i=1}^{n} w_i x_i \le W \\
+& x_i \in \{0, 1\}
+\end{align*}
+$$
+
+Mô hình này dùng trong lập ngân sách đầu tư, lựa chọn dự án.

@@ -1,0 +1,248 @@
+---
+title: "9. Chuẩn bị dữ liệu cho mô hình ngôn ngữ lớn"
+author: "Trần Đăng Quang Minh"
+---
+
+Bài giảng khách mời của Ruiyang Wang (Anthropic), dựa trên các bài báo công khai. Phần này cho thấy các kỹ thuật trong môn học được dùng thực tế ở quy mô hàng chục nghìn tỉ token.
+
+**▸ QUY TRÌNH**
+
+![Các bước chuẩn bị dữ liệu huấn luyện trước](/content/MAT3565/C9/llm-pipeline.svg)
+
+Tập trung vào văn bản web tiếng Anh. Mã nguồn, toán và đa ngôn ngữ có quy trình riêng. Mọi thứ chạy bằng MapReduce hoặc Spark trên hàng tỉ trang.
+
+**▸ TRÍCH VĂN BẢN**
+
+FineWeb trích lại từ WARC bằng trafilatura thay vì dùng bản WET có sẵn, vì WET còn lẫn menu, thông báo cookie. Kết quả là mô hình tốt hơn đo được. Llama 3 dùng bộ phân tích HTML riêng để giữ công thức toán.
+
+**▸ KHỬ TRÙNG LẶP**
+
+Tỉ lệ trùng tăng theo số bản crawl gộp lại (DeepSeek V1):
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Số bản crawl</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">1</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">2</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">6</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">12</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">16</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">22</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">41</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">91</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">% trùng</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">22.2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">46.7</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">55.7</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">69.9</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">75.7</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">76.3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">81.6</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">89.8</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Ba mức:
+- **URL:** băm URL, giữ bản mới nhất. Rẻ, bỏ được rất nhiều.
+- **Tài liệu:** MinHash và LSH để bắt gần trùng.
+- **Dòng:** bỏ các dòng xuất hiện quá 6 lần trong mỗi nhóm 30 triệu tài liệu (Llama 3). Bắt được thông báo cookie, menu.
+
+**▸ MINHASH Ở QUY MÔ 15 NGHÌN TỈ TOKEN**
+
+Cấu hình của FineWeb:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Tham số</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Giá trị</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Shingle</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">5 từ</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Số hàm băm</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">112</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Dải băng</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$b = 14$, $r = 8$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Ngưỡng Jaccard</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Khoảng 75%</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Gộp bắc cầu</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Có, $A \sim B$, $B \sim C$ thì bỏ cả $C$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Mỗi chữ ký 112 số nguyên, 448 byte. 15 tỉ tài liệu cần khoảng 6 TB.
+
+<Formula title="Xác suất thành cặp ứng viên (đúng công thức ở chương 3)">
+
+$$
+P = 1 - (1 - s^r)^b
+$$
+
+</Formula>
+
+![Xác suất khớp theo độ tương đồng của FineWeb và RefinedWeb](/content/MAT3565/C9/minhash-match.svg)
+
+Đường dốc hơn cho ngưỡng chính xác hơn, nhưng tốn nhiều hàm băm hơn.
+
+**Băm dải bằng MapReduce:**
+
+```python
+# MAP: mỗi tài liệu sinh 14 cặp
+for band in range(14):
+    chunk = sig[band * 8 : (band + 1) * 8]
+    emit((band, hash(chunk)), doc_id)
+
+# REDUCE: tài liệu cùng khóa là cặp ứng viên
+if len(values) >= 2:
+    for di, dj in pairs(values):
+        emit(di, dj)
+```
+
+Các tài liệu không so sánh trực tiếp với nhau, nên chi phí là $O(n)$ thay vì $O(n^2)$.
+
+**Gộp bắc cầu:** đưa các cặp ứng viên vào Union-Find. Mỗi thành phần liên thông giữ lại 1 tài liệu ngẫu nhiên. FineWeb không kiểm tra thêm, tin luôn vào dải băng $(14, 8)$.
+
+**▸ LỌC BẰNG HEURISTIC**
+
+Bảng lọc của Gopher trở thành chuẩn chung: tỉ lệ dòng trùng tối đa 0.30, tỉ lệ đoạn trùng tối đa 0.30, tỉ lệ ký tự của n-gram trùng giảm dần từ 0.15 với 5-gram đến 0.10 với 10-gram. Ngoài ra có giới hạn số từ, độ dài từ trung bình, tỉ lệ từ không phải chữ cái.
+
+**Cách tạo luật mới:**
+- **Bước 1:** lấy hai tập chất lượng cao và thấp.
+- **Bước 2:** tính thống kê như độ dài dòng, tỉ lệ dấu câu.
+- **Bước 3:** vẽ biểu đồ và tìm chỗ hai phân phối tách nhau.
+- **Bước 4:** đặt ngưỡng tại đó. Ví dụ bỏ tài liệu có dưới 12% dòng kết thúc bằng dấu câu.
+
+Llama 3 thêm: phủ n-gram trùng trong tài liệu, đếm từ nhạy cảm theo tên miền, và độ lệch KL của phân phối token để bắt base64, tệp log, hex.
+
+**Khử nhiễm bộ kiểm thử:** nếu câu hỏi của bộ kiểm thử có trong dữ liệu huấn luyện thì điểm cao chỉ là học thuộc. Cách phát hiện: trùng 13-gram (GPT-3, Llama 2), 8-gram (Llama 3), hoặc n-gram kết hợp xâu con chung dài nhất (Qwen).
+
+**▸ LỌC BẰNG MÔ HÌNH**
+
+Lọc rẻ trước, lọc đắt sau:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Bộ lọc</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Kích thước</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Danh sách chặn URL, khử trùng</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Gần như miễn phí</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Heuristic</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Gần như miễn phí</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">fastText (nhận diện ngôn ngữ)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Khoảng 1 triệu tham số</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">DistilRoBERTa (chất lượng)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">82 triệu tham số</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">LLM lớn (chỉ để gán nhãn)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">70 tỉ tham số</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**Mẫu chung:** dùng LLM đắt tiền gán nhãn một mẫu nhỏ, rồi chưng cất thành bộ phân loại rẻ, và chạy trên toàn bộ dữ liệu.
+
+**Ví dụ FineWeb-Edu:** Llama 3 70B chấm 460 nghìn tài liệu từ 0 đến 5. Học hồi quy tuyến tính trên vector Snowflake-Arctic 768 chiều, rồi chạy trên 15 nghìn tỉ token. Giữ điểm từ 3 trở lên, còn 1.3 nghìn tỉ token.
+
+**▸ TRỘN DỮ LIỆU**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Mô hình</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Số token</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Tỉ lệ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Llama 3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">15 nghìn tỉ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">50% web, 25% toán, 17% mã, 8% đa ngôn ngữ</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Qwen3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">36 nghìn tỉ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">119 ngôn ngữ, cộng dữ liệu theo lĩnh vực</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">DeepSeek</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">14.8 nghìn tỉ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tăng mẫu lĩnh vực ít dữ liệu</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Qwen2.5-Coder</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">5.2 nghìn tỉ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">70% mã, 20% văn bản, 10% toán</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Các tỉ lệ này tìm bằng thực nghiệm: huấn luyện mô hình nhỏ với nhiều cách trộn, đo kết quả rồi mở rộng.
+
+**▸ TÁCH TỪ VÀ BPE**
+
+Mạng nơ-ron nhận vector, còn văn bản là dãy byte. Dùng byte trực tiếp thì chuỗi quá dài, mà chi phí attention là $O(n^2)$. Giải pháp là gom các byte thành **token**.
+
+**Tối ưu:** mẫu byte hay gặp thành một token, mẫu hiếm thì tách nhỏ. Bộ tách từ không dùng luật ngôn ngữ mà học từ dữ liệu, nên dùng được cho mọi ngôn ngữ.
+
+**Thuật toán BPE:**
+- **Bước 1:** tách trước kho văn bản thành các đoạn (từ) bằng biểu thức chính quy. Phép ghép không vượt qua ranh giới này.
+- **Bước 2:** từ vựng ban đầu là mọi byte.
+- **Bước 3:** đếm cặp liền kề xuất hiện nhiều nhất.
+- **Bước 4:** ghép thành token mới. Từ vựng tăng thêm 1.
+- **Bước 5:** lặp lại đến khi đạt kích thước từ vựng mong muốn.
+
+![Tám lần ghép của BPE trên kho văn bản nhỏ](/content/MAT3565/C9/bpe-steps.svg)
+
+Mọi LLM lớn đều dùng BPE hoặc biến thể của nó. Từ vựng ngày càng lớn: từ 32 nghìn lên 256 nghìn, chuỗi ngắn đi nên huấn luyện nhanh hơn. Hạn chế: bộ tách từ học trên tiếng Anh thì tách tiếng Trung kém.
+
+**▸ ĐÓNG GÓI VÀ HUẤN LUYỆN THEO GIAI ĐOẠN**
+
+- **Đóng gói:** GPU cần lô đồng đều. DeepSeek dùng đóng gói best-fit để giảm phần đệm.
+- **Fill-in-the-Middle:** khoảng 10% token mã được đổi thành dạng tiền tố, hậu tố, phần giữa. Nhờ đó mô hình học điền mã còn thiếu.
+- **Giai đoạn:** ngữ cảnh ngắn trước vì attention là $O(n^2)$, rồi ngữ cảnh dài, cuối cùng giảm tốc độ học trên dữ liệu chọn lọc. Dữ liệu trộn thay đổi theo giai đoạn.
+
+**▸ ĐIỀU CẦN NHỚ**
+
+- **Chất lượng hơn số lượng:** cùng tính toán, cùng mô hình, nhưng token lấy từ tập đã lọc cho điểm cao hơn.
+- **Bước nào cũng là đánh đổi:** lọc mạnh thì sạch hơn nhưng ít dữ liệu hơn. Mỗi quyết định cần thử bỏ từng phần để kiểm chứng.
+- **Đây là kỹ thuật, không phải khoa học:** không có công thức đóng. FineWeb dùng 80 nghìn giờ H100 cho các thử nghiệm này.
+- **Xếp bộ lọc từ rẻ đến đắt**, và chất lượng trích văn bản là nền móng.

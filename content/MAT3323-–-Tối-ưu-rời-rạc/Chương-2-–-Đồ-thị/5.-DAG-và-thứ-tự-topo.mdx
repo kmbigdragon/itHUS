@@ -1,0 +1,91 @@
+---
+title: "5. DAG và thứ tự topo"
+author: "Trần Đăng Quang Minh"
+---
+
+**DAG (Directed Acyclic Graph)** là đồ thị có hướng không chứa chu trình có hướng.
+
+**Thứ tự topo (topological order)** của đồ thị có hướng là cách xếp các đỉnh thành dãy $v_1, v_2, \dots, v_n$ sao cho với mọi cung $(v_i, v_j)$ ta có $i < j$. Nói cách khác, mọi cung đều đi từ trái sang phải.
+
+**▸ MỐI LIÊN HỆ**
+
+**Bổ đề 1.** Nếu $G$ có thứ tự topo thì $G$ là DAG.
+
+**Chứng minh.** Giả sử $G$ có thứ tự topo $v_1, \dots, v_n$ và có chu trình có hướng $C$. Gọi $v_i$ là đỉnh có chỉ số nhỏ nhất trong $C$ và $v_j$ là đỉnh ngay trước $v_i$ trên $C$, nên $(v_j, v_i)$ là một cung. Theo cách chọn thì $i < j$. Nhưng theo thứ tự topo thì $j < i$. Mâu thuẫn.
+
+**Bổ đề 2.** Nếu $G$ là DAG thì $G$ có một đỉnh không có cung đi vào.
+
+**Chứng minh.** Giả sử mọi đỉnh đều có cung đi vào. Xuất phát từ một đỉnh, ta luôn đi ngược chiều cung được. Do số đỉnh hữu hạn nên sẽ có lúc gặp lại một đỉnh $w$ hai lần, tức là có chu trình. Mâu thuẫn.
+
+**Bổ đề 3.** Nếu $G$ là DAG thì $G$ có thứ tự topo.
+
+Chứng minh bằng quy nạp theo $n$: lấy đỉnh $v$ không có cung đi vào (Bổ đề 2) xếp lên đầu. Đồ thị $G - \{v\}$ vẫn là DAG nên có thứ tự topo, ghép nó vào sau $v$.
+
+**Kết luận:** $G$ là DAG khi và chỉ khi $G$ có thứ tự topo.
+
+**▸ THUẬT TOÁN TÌM THỨ TỰ TOPO**
+
+- **Bước 1:** Tìm một đỉnh $v$ không có cung đi vào, xếp nó lên đầu.
+- **Bước 2:** Xóa $v$ khỏi đồ thị.
+- **Bước 3:** Lặp lại với đồ thị còn lại.
+
+**Định lý.** Thuật toán chạy được trong $O(m + n)$. Để đạt được thời gian này, ta lưu số cung đi vào của mỗi đỉnh và danh sách các đỉnh có số cung đi vào bằng 0.
+
+**▸ VÍ DỤ**
+
+Tìm thứ tự topo của DAG sau.
+
+![Một DAG có 6 đỉnh](/content/MAT3323/C2/dag.svg)
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Bước</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Các đỉnh không có cung đi vào</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Chọn</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thứ tự hiện tại</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$a$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$a$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$a$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$b, c$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$b$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$a, b$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$c$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$c$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$a, b, c$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$d, e$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$d$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$a, b, c, d$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">5</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$e$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$e$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$a, b, c, d, e$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">6</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$f$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$f$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$a, b, c, d, e, f$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Một DAG có thể có nhiều thứ tự topo. Ở đây $a, c, b, e, d, f$ cũng là một thứ tự topo hợp lệ.

@@ -1,0 +1,65 @@
+---
+title: "4. Đếm phần tử khác nhau"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ BÀI TOÁN**
+
+Luồng gồm các phần tử lấy từ tập kích thước $N$. Cần đếm số phần tử khác nhau đã gặp.
+
+**Ví dụ:**
+- Trong tháng này website có bao nhiêu user khác nhau?
+- Một trang web có bao nhiêu từ khác nhau? Số quá thấp hoặc quá cao có thể là trang spam.
+- Tuần trước bán được bao nhiêu sản phẩm khác nhau?
+
+Dùng từ điển thì hiển nhiên, nhưng không đủ chỗ khi có nhiều phần tử hoặc nhiều luồng. Ta dùng băm và ngẫu nhiên để ước lượng, chấp nhận sai số nhỏ nhưng giới hạn xác suất sai số lớn.
+
+**▸ THUẬT TOÁN FLAJOLET-MARTIN**
+
+- **Bước 1:** chọn hàm băm $h$ ánh xạ mỗi phần tử thành ít nhất $\log_2 N$ bit.
+- **Bước 2:** với mỗi phần tử $a$, gọi $r(a)$ là số số 0 ở cuối của $h(a)$. Ví dụ $h(a) = 12 = 1100_2$ thì $r(a) = 2$.
+- **Bước 3:** giữ $R = \max_a r(a)$.
+
+<Formula title="Ước lượng số phần tử khác nhau">
+
+$$
+\hat{m} = 2^R
+$$
+
+</Formula>
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Tính số số 0 cuối của giá trị băm và ước lượng số phần tử khác nhau](/content/MAT3565/C8/fm-steps.svg)
+
+**▸ VÌ SAO HOẠT ĐỘNG**
+
+**Trực giác:** $h$ băm đều, nên khoảng 50% phần tử có đuôi `0`, 25% có đuôi `00`. Thấy đuôi dài $r$ nghĩa là đã thấy khoảng $2^r$ phần tử.
+
+**Chứng minh:** xác suất một giá trị băm có ít nhất $r$ số 0 cuối là $2^{-r}$. Với $m$ phần tử khác nhau, xác suất **không** thấy đuôi dài $r$ là:
+
+<Formula title="Xác suất không gặp đuôi dài r">
+
+$$
+(1 - 2^{-r})^m = \left( (1 - 2^{-r})^{2^r} \right)^{m 2^{-r}} \approx e^{-m 2^{-r}}
+$$
+
+</Formula>
+
+- Nếu $m \ll 2^r$: xác suất này tiến về 1, tức xác suất thấy đuôi dài $r$ tiến về 0.
+- Nếu $m \gg 2^r$: xác suất này tiến về 0, tức xác suất thấy đuôi dài $r$ tiến về 1.
+
+Do đó $2^R$ hầu như luôn nằm quanh $m$.
+
+![Xác suất gặp đuôi dài r chuyển nhanh từ 0 sang 1 quanh m bằng 2 mũ r](/content/MAT3565/C8/fm-prob.svg)
+
+**▸ DÙNG NHIỀU HÀM BĂM**
+
+$E[2^R]$ thực ra là vô hạn: khi $R$ tăng 1 thì xác suất giảm một nửa, nhưng giá trị tăng gấp đôi. Vì vậy ta dùng nhiều hàm băm $h_i$ và lấy nhiều mẫu $R_i$.
+
+Gộp các mẫu thế nào?
+- **Trung bình:** một giá trị rất lớn sẽ kéo lệch kết quả.
+- **Trung vị:** mọi ước lượng đều là lũy thừa của 2.
+- **Giải pháp:** chia các mẫu thành các nhóm nhỏ, lấy trung vị từng nhóm, rồi lấy trung bình các trung vị.
+
+![So sánh các cách gộp ước lượng từ nhiều hàm băm](/content/MAT3565/C8/fm-combine.svg)

@@ -1,0 +1,61 @@
+---
+title: "5. Phân tích SVD"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ Ý TƯỞNG**
+
+Dữ liệu thường là ma trận $m \times n$ xấp xỉ được bằng tích ba ma trận có chung một chiều nhỏ. Lý do là có các **yếu tố ẩn** giải thích vì sao các giá trị lại như vậy.
+
+Các trục mới được chọn như sau:
+- Trục 1 là hướng dữ liệu có phương sai lớn nhất.
+- Trục 2 vuông góc với trục 1, có phương sai lớn thứ hai.
+- Tiếp tục như vậy đến khi phương sai rất nhỏ.
+
+**Hạng** của ma trận là số hàng độc lập tuyến tính. Ví dụ 3 điểm trong 3D có tọa độ theo 2 vector cơ sở mới $[1, 2, 1]$ và $[-2, -3, 1]$ thì chỉ cần 2 tọa độ cho mỗi điểm.
+
+**▸ ĐỊNH NGHĨA**
+
+<Formula title="Phân tích giá trị suy biến">
+
+$$
+A = U \Sigma V^T = \sum_{i} \sigma_i u_i v_i^T
+$$
+
+</Formula>
+
+![Kích thước các ma trận trong SVD](/content/MAT3565/C4/svd-shape.svg)
+
+- $A$: ma trận dữ liệu $m \times n$.
+- $U$: $m \times r$, vector suy biến trái.
+- $\Sigma$: đường chéo $r \times r$, là độ mạnh của mỗi khái niệm, với $r$ là hạng của $A$.
+- $V$: $n \times r$, vector suy biến phải.
+
+**▸ TÍNH CHẤT**
+
+Mọi ma trận thực đều phân tích được, và:
+- $U$, $V$ trực chuẩn theo cột: $U^T U = I$, $V^T V = I$.
+- $\Sigma$ có các phần tử không âm, giảm dần: $\sigma_1 \ge \sigma_2 \ge \dots \ge 0$.
+- $U, \Sigma, V$ là duy nhất (sai khác dấu của từng cặp $u_i, v_i$).
+
+**▸ VÍ DỤ: USER VÀ PHIM**
+
+![SVD của ma trận đánh giá phim với các khái niệm khoa học viễn tưởng và lãng mạn](/content/MAT3565/C4/svd-example.svg)
+
+- $U$ là ma trận user đến khái niệm.
+- $V$ là ma trận phim đến khái niệm.
+- $\sigma_i$ là độ mạnh của khái niệm. Khái niệm SciFi mạnh nhất.
+
+**▸ ⚠️ LƯU Ý**
+
+Các số ở đây được tính lại bằng numpy, nên có chỗ khác slide một chút (slide ghi $\sigma_1 = 12.4$, chính xác là $12.48$). Ngoài ra hàng 3 của $V^T$ trong slide bị ngược dấu so với cột 3 của $U$.
+
+**▸ Ý NGHĨA HÌNH HỌC**
+
+Thay vì dùng 2 tọa độ để mô tả một điểm, ta dùng 1 tọa độ là vị trí của điểm trên trục $v_1$.
+
+![Chiếu các điểm lên trục suy biến đầu tiên](/content/MAT3565/C4/svd-projection.svg)
+
+- $v_1$ là trục chiếu tốt nhất.
+- $\sigma_1$ thể hiện độ trải của dữ liệu trên trục $v_1$.
+- $U \Sigma$ cho tọa độ của các điểm trên các trục chiếu.

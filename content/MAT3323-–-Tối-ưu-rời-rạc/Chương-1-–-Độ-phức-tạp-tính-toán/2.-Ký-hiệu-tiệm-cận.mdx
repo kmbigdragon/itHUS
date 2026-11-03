@@ -1,0 +1,132 @@
+---
+title: "2. Ký hiệu tiệm cận"
+author: "Trần Đăng Quang Minh"
+---
+
+Khi đánh giá thuật toán, ta chỉ quan tâm thời gian chạy tăng nhanh thế nào khi $n$ lớn, không quan tâm hằng số.
+
+**▸ CẬN TRÊN: O LỚN**
+
+$f(n)$ là $O(g(n))$ nếu tồn tại hằng số $c > 0$ và $n_0 \ge 0$ sao cho
+$$
+0 \le f(n) \le c \cdot g(n), \quad \forall n \ge n_0
+$$
+
+**Ví dụ:** $f(n) = 32n^2 + 17n + 1$.
+- $f(n)$ là $O(n^2)$, chọn $c = 50$, $n_0 = 1$.
+- $f(n)$ không phải $O(n)$ hay $O(n \log n)$.
+
+![Minh họa cận trên O lớn](/content/MAT3323/C1/big-o.svg)
+
+Từ $n_0$ trở đi, đồ thị của $f(n)$ luôn nằm dưới đồ thị của $c \cdot g(n)$. Phần trước $n_0$ có thế nào cũng không quan trọng.
+
+**▸ CẬN DƯỚI: OMEGA LỚN**
+
+$f(n)$ là $\Omega(g(n))$ nếu tồn tại hằng số $c > 0$ và $n_0 \ge 0$ sao cho
+$$
+f(n) \ge c \cdot g(n) \ge 0, \quad \forall n \ge n_0
+$$
+
+Tương đương: $f(n)$ là $\Omega(g(n))$ khi và chỉ khi $g(n)$ là $O(f(n))$.
+
+![Minh họa cận dưới Omega lớn](/content/MAT3323/C1/big-omega.svg)
+
+Từ $n_0$ trở đi, đồ thị của $f(n)$ luôn nằm trên đồ thị của $c \cdot g(n)$.
+
+**▸ CẬN CHẶT: THETA LỚN**
+
+$f(n)$ là $\Theta(g(n))$ nếu tồn tại hằng số $c_1, c_2 > 0$ và $n_0 \ge 0$ sao cho
+$$
+0 \le c_1 \cdot g(n) \le f(n) \le c_2 \cdot g(n), \quad \forall n \ge n_0
+$$
+
+Tương đương: $f(n)$ vừa là $O(g(n))$ vừa là $\Omega(g(n))$.
+
+**Ví dụ:** $f(n) = 32n^2 + 17n + 1$ là $\Theta(n^2)$, chọn $c_1 = 32$, $c_2 = 50$, $n_0 = 1$.
+
+![Minh họa cận chặt Theta lớn](/content/MAT3323/C1/big-theta.svg)
+
+Từ $n_0$ trở đi, đồ thị của $f(n)$ bị kẹp giữa $c_1 \cdot g(n)$ và $c_2 \cdot g(n)$.
+
+**▸ TÍNH CHẤT CỦA O LỚN**
+
+- **Phản xạ:** $f$ là $O(f)$.
+- **Hằng số:** Nếu $f$ là $O(g)$ và $c > 0$ thì $cf$ là $O(g)$.
+- **Tích:** Nếu $f_1$ là $O(g_1)$ và $f_2$ là $O(g_2)$ thì $f_1 f_2$ là $O(g_1 g_2)$.
+- **Tổng:** Nếu $f_1$ là $O(g_1)$ và $f_2$ là $O(g_2)$ thì $f_1 + f_2$ là $O(\max\{g_1, g_2\})$.
+- **Bắc cầu:** Nếu $f$ là $O(g)$ và $g$ là $O(h)$ thì $f$ là $O(h)$.
+
+Nhờ các tính chất này ta có thể bỏ qua các bậc thấp. Ví dụ $5n^3 + 3n^2 + n + 1234$ là $O(n^3)$.
+
+**▸ DÙNG GIỚI HẠN ĐỂ SO SÁNH**
+
+- Nếu $\lim\limits_{n \to \infty} \dfrac{f(n)}{g(n)} = c$ với $0 \lt c \lt \infty$ thì $f(n)$ là $\Theta(g(n))$.
+- Nếu giới hạn bằng $0$ thì $f(n)$ là $O(g(n))$ nhưng không phải $\Omega(g(n))$.
+- Nếu giới hạn bằng $\infty$ thì $f(n)$ là $\Omega(g(n))$ nhưng không phải $O(g(n))$.
+
+**▸ ⚠️ LƯU Ý**
+
+Chiều ngược lại của mệnh đề đầu tiên không đúng: $f$ có thể là $\Theta(g)$ mà giới hạn không tồn tại. Ví dụ $f(n) = 2n$ với $n$ chẵn, $f(n) = 3n$ với $n$ lẻ, và $g(n) = n$.
+
+**▸ CẬN CỦA MỘT SỐ HÀM THƯỜNG GẶP**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Loại hàm</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Kết quả</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Đa thức bậc $d$ với $a_d > 0$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$a_0 + a_1 n + \dots + a_d n^d$ là $\Theta(n^d)$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Lôgarit</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\log_a n$ là $\Theta(\log_b n)$ với mọi $a, b > 1$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Lôgarit và đa thức</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\log_a n$ là $O(n^d)$ với mọi $a > 1$, $d > 0$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Đa thức và hàm mũ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$n^d$ là $O(r^n)$ với mọi $r > 1$, $d > 0$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Giai thừa</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$n!$ là $2^{\Theta(n \log n)}$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Do $\log_a n$ và $\log_b n$ chỉ khác nhau một hằng số nên trong ký hiệu $O$ không cần ghi cơ số. Cận của giai thừa suy ra từ công thức Stirling $n! \sim \sqrt{2 \pi n} \left(\dfrac{n}{e}\right)^n$.
+
+**▸ SO SÁNH TỐC ĐỘ TĂNG**
+
+Biểu đồ dưới đây vẽ thời gian chạy $t$ theo kích thước đầu vào $n$ của các độ phức tạp thường gặp. Hình vẽ lấy hằng số bằng 1 và lôgarit cơ số 2.
+
+![Thời gian chạy t theo n của các độ phức tạp thường gặp](/content/MAT3323/C1/growth-rates.svg)
+
+Đường càng dốc thì thời gian chạy càng tăng nhanh khi $n$ tăng. Theo thứ tự tăng dần, ta có
+$$
+O(1) < O(\log n) < O(n) < O(n \log n) < O(n^2) < O(2^n) < O(n!)
+$$
+
+Ví dụ với giới hạn $t = 100$ bước, $O(n!)$ chỉ xử lý được đến $n = 4$, $O(2^n)$ đến $n = 6$, $O(n^2)$ đến $n = 10$, còn $O(n \log n)$ thì $n = 20$ vẫn chưa hết giới hạn.
+
+**▸ ⚠️ LƯU Ý**
+
+- Màu trên biểu đồ chỉ để minh họa. Theo định nghĩa ở bài trước, mọi thời gian đa thức như $O(n^2)$ đều được coi là hữu hiệu.
+- Thứ tự trên chỉ đúng khi $n$ đủ lớn. Với $n$ nhỏ thì có thể đảo, ví dụ khi $n = 3$ thì $2^n = 8 < n^2 = 9$. Thời gian chạy thực tế còn phụ thuộc vào hằng số.
+
+**▸ NHIỀU BIẾN**
+
+$f(m, n)$ là $O(g(m, n))$ nếu tồn tại $c > 0$, $m_0, n_0 \ge 0$ sao cho $f(m, n) \le c \cdot g(m, n)$ với mọi $n \ge n_0$ và $m \ge m_0$.
+
+**Ví dụ:** $f(m, n) = 32mn^2 + 17mn + 32n^3$ là $O(mn^2 + n^3)$ và cũng là $O(mn^3)$, nhưng không phải $O(n^3)$ hay $O(mn^2)$.
+
+Trên đồ thị $n$ đỉnh, $m$ cạnh, ta hay gặp cách viết này. Ví dụ BFS chạy trong $O(m + n)$.

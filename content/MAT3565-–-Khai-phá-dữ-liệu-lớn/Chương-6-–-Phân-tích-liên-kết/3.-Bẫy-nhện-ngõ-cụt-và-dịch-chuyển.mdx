@@ -1,0 +1,52 @@
+---
+title: "3. Bẫy nhện, ngõ cụt và dịch chuyển"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ HAI VẤN ĐỀ**
+
+- **Ngõ cụt:** trang không có liên kết ra. Bước ngẫu nhiên không có chỗ đi, nên độ quan trọng bị **rò rỉ**.
+- **Bẫy nhện:** nhóm trang mà mọi liên kết ra đều nằm trong nhóm. Bước ngẫu nhiên bị **kẹt**, và bẫy hút hết độ quan trọng.
+
+![Bẫy nhện hút hết điểm và ngõ cụt làm rò rỉ hết điểm](/content/MAT3565/C6/problems.svg)
+
+Hai vấn đề này khác nhau:
+- **Bẫy nhện** về mặt toán học không phải vấn đề, chỉ là kết quả không như ta muốn.
+- **Ngõ cụt** là vấn đề thật: $M$ không còn ngẫu nhiên theo cột.
+
+**▸ GIẢI PHÁP: DỊCH CHUYỂN NGẪU NHIÊN**
+
+Mỗi bước, người lướt web có hai lựa chọn:
+- Với xác suất $\beta$: đi theo một liên kết ngẫu nhiên.
+- Với xác suất $1 - \beta$: nhảy đến một trang ngẫu nhiên.
+
+$\beta$ thường từ $0.8$ đến $0.9$, tức trung bình mỗi 5 bước nhảy một lần.
+
+- Với bẫy nhện: người lướt web sẽ thoát ra sau vài bước.
+- Với ngõ cụt: luôn dịch chuyển với xác suất 1 từ ngõ cụt. Điều này làm cho $M$ ngẫu nhiên theo cột.
+
+<Formula title="Phương trình PageRank (Brin và Page, 1998)">
+
+$$
+r_j = \sum_{i \to j} \beta \frac{r_i}{d_i} + (1 - \beta) \frac{1}{N}
+$$
+
+</Formula>
+
+Công thức này giả sử $M$ không có ngõ cụt. Có thể tiền xử lý để bỏ ngõ cụt, hoặc xử lý trực tiếp như bài sau.
+
+<Formula title="Ma trận Google">
+
+$$
+A = \beta M + (1 - \beta) \left[ \frac{1}{N} \right]_{N \times N}, \qquad r = A \cdot r
+$$
+
+</Formula>
+
+Phương pháp lũy thừa vẫn dùng được.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+Dùng đồ thị có bẫy nhện $m$ ở trên.
+
+![Tạo ma trận Google và lặp trên đồ thị có bẫy nhện](/content/MAT3565/C6/teleport.svg)

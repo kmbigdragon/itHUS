@@ -1,0 +1,79 @@
+---
+title: "6. Tham lam lười và cá nhân hóa"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ THAM LAM LƯỜI**
+
+Tham lam chậm: mỗi vòng phải tính lại lợi ích biên của mọi tài liệu còn lại, tổng cộng $O(|D| \cdot K)$ lần để chọn $K$ tài liệu.
+
+**Nhận xét:** lợi ích biên chỉ giảm khi $i$ tăng, theo tính submodular:
+
+<Formula title="Lợi ích biên chỉ giảm">
+
+$$
+\Delta_i(d) \ge \Delta_j(d) \quad \text{với } i \lt j
+$$
+
+</Formula>
+
+Vì vậy lợi ích biên cũ là cận trên của lợi ích biên mới.
+
+**Thuật toán (Leskovec và cộng sự, 2007):**
+- **Bước 1:** giữ danh sách sắp xếp theo lợi ích biên từ vòng trước.
+- **Bước 2:** chỉ tính lại cho phần tử đầu danh sách.
+- **Bước 3:** sắp xếp lại. Nếu nó vẫn đứng đầu thì chọn luôn, vì mọi phần tử khác có cận trên nhỏ hơn.
+
+![So sánh số lần tính của tham lam thường và tham lam lười](/content/MAT3565/C9/lazy-greedy.svg)
+
+**▸ HÀM PHỦ XÁC SUẤT**
+
+Hàm phủ đơn giản có 2 hạn chế: không tính độ quan trọng của khái niệm, và phủ theo kiểu "có hoặc không" là quá cứng.
+
+- $w_c$: trọng số độ quan trọng của khái niệm $c$.
+- $\text{cover}_d(c)$: xác suất tài liệu $d$ phủ khái niệm $c$. Cũng có thể mô tả độ liên quan của $c$ với user.
+
+<Formula title="Xác suất có ít nhất một tài liệu trong A phủ c">
+
+$$
+\text{cover}_A(c) = 1 - \prod_{d \in A} (1 - \text{cover}_d(c))
+$$
+
+</Formula>
+
+<Formula title="Hàm mục tiêu">
+
+$$
+\max_{A : |A| \le k} F(A) = \sum_c w_c \, \text{cover}_A(c)
+$$
+
+</Formula>
+
+Hàm này vẫn submodular, nên tham lam vẫn đạt $(1 - 1/e) \approx 63\%$.
+
+**▸ CÁ NHÂN HÓA: TRỌNG SỐ NHÂN**
+
+Mỗi user có trọng số $w_c(u)$ riêng cho các khái niệm. Ta học từ phản hồi của user.
+
+**Thuật toán trọng số nhân:** gợi ý tài liệu $d$ và nhận phản hồi $r = +1$ hoặc $-1$. Với mỗi $c \in X_d$:
+
+<Formula title="Cập nhật trọng số">
+
+$$
+w_c \leftarrow \beta^r w_c, \qquad \beta \gt 1
+$$
+
+</Formula>
+
+Phản hồi tốt thì nhân với $\beta$, phản hồi xấu thì chia cho $\beta$. Sau đó chuẩn hóa để $\sum_c w_c = 1$.
+
+![Tính phủ xác suất, hàm mục tiêu và cập nhật trọng số theo phản hồi](/content/MAT3565/C9/prob-cover.svg)
+
+**▸ TỔNG KẾT QUY TRÌNH**
+
+- **Bước 1:** xác định các item cần gợi ý.
+- **Bước 2:** xác định khái niệm, tức điều gì làm cho item trùng lặp.
+- **Bước 3:** gán trọng số khái niệm theo độ quan trọng chung.
+- **Bước 4:** định nghĩa hàm phủ item-khái niệm.
+- **Bước 5:** chọn item bằng phủ xác suất.
+- **Bước 6:** nhận phản hồi rồi cập nhật trọng số.

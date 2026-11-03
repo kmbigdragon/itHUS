@@ -1,0 +1,111 @@
+---
+title: "7. Thuật toán Dinic (Blocking Flow)"
+author: "Trần Đăng Quang Minh"
+---
+
+Edmonds-Karp phải chạy lại BFS từ đầu sau mỗi lần tăng luồng, rất lãng phí. Dinic giữ lại đồ thị lớp và tìm nhiều đường tăng cùng độ dài trong một lượt.
+
+**▸ LUỒNG CHẶN**
+
+**Luồng chặn (blocking flow)** là luồng $g$ sao cho mọi đường đi từ $s$ đến $t$ đều có ít nhất một cạnh bị đầy.
+
+Luồng chặn chưa chắc là luồng cực đại, vì nó không được dùng cạnh ngược. Nhưng luồng cực đại thì luôn là luồng chặn.
+
+**▸ THUẬT TOÁN**
+
+Lặp lại các pha sau đến khi không còn đường đi từ $s$ đến $t$ trong $G_f$:
+- **Bước 1:** Dựng đồ thị lớp $L_f$ từ $G_f$ bằng BFS.
+- **Bước 2:** Tìm luồng chặn $g$ trong $L_f$.
+- **Bước 3:** Đặt $f = f + g$.
+
+**Bổ đề (Dinic).** Sau mỗi pha, khoảng cách từ $s$ đến $t$ trong mạng còn dư tăng ngặt. Do đó có tối đa $n$ pha.
+
+**▸ TÌM LUỒNG CHẶN**
+
+Đi từ $s$ theo chiều sâu trong $L_f$ và luôn nhớ đường $P$ đang đi. Có ba thao tác:
+- **Advance (tiến):** Nếu đỉnh hiện tại $v$ có cạnh $(v, w)$ trong $L_f$ thì thêm cạnh vào $P$ và đi đến $w$.
+- **Augment (tăng luồng):** Nếu đến được $t$ thì tăng luồng dọc theo $P$, xóa các cạnh đã đầy khỏi $L_f$, rồi quay về $s$.
+- **Retreat (lùi):** Nếu $v$ không còn cạnh ra thì xóa $v$ khỏi $L_f$ và lùi về đỉnh trước. Nếu $v = s$ thì kết thúc pha.
+
+**▸ THỜI GIAN CHẠY**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thao tác</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Số lần trong một pha</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thời gian trong một pha</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Dựng đồ thị lớp</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(m)$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Augment</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tối đa $m$, vì mỗi lần xóa ít nhất 1 cạnh</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(mn)$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Retreat</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tối đa $n$, vì mỗi lần xóa 1 đỉnh</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(m + n)$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Advance</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tối đa $mn$, vì có tối đa $n$ lần tiến trước mỗi lần augment hoặc retreat</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(mn)$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**Định lý (Dinitz, 1970).** Thuật toán chạy trong $O(mn^2)$: mỗi pha $O(mn)$ và có tối đa $n$ pha.
+
+Dùng thêm cấu trúc dynamic trees (Sleator, Tarjan 1983) thì đạt $O(mn \log n)$.
+
+Ngoài ra, Malhotra, Pramodh-Kumar và Maheshwari (1978) cũng dùng cấu trúc theo pha này và đạt $O(n^3)$.
+
+**▸ VÍ DỤ**
+
+Xét mạng ví dụ ở các bài trước.
+
+**Pha 1.** Các lớp là $\ell(s) = 0$, $\ell(a) = \ell(b) = 1$, $\ell(c) = \ell(d) = 2$, $\ell(t) = 3$.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Đường tăng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Cổ chai</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Giá trị luồng</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$s \to a \to c \to t$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$s \to a \to d \to t$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">6</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">10</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$s \to b \to d \to t$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">14</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Lúc này mọi đường đi trong đồ thị lớp đều có cạnh đầy, nên đây là luồng chặn với giá trị 14. Nó chưa phải luồng cực đại.
+
+**Pha 2.** Dựng lại đồ thị lớp: $\ell(s) = 0$, $\ell(b) = 1$, $\ell(d) = 2$, $\ell(a) = \ell(c) = 3$, $\ell(t) = 4$. Khoảng cách đến $t$ đã tăng từ 3 lên 4. Đường tăng duy nhất là $s \to b \to d \to c \to t$ với cổ chai 5, giá trị luồng là 19.
+
+**Pha 3.** BFS chỉ đến được $\{s, b\}$, không đến được $t$. Thuật toán dừng. Tập này cũng chính là phía $A$ của lát cắt cực tiểu.

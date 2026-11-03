@@ -1,0 +1,35 @@
+---
+title: "7. Truy vấn trong không gian khái niệm"
+author: "Trần Đăng Quang Minh"
+---
+
+**Bài toán:** tìm các user thích phim Matrix.
+
+**Ý tưởng:** đưa truy vấn vào không gian khái niệm bằng cách lấy tích vô hướng với từng vector khái niệm $v_i$.
+
+<Formula title="Chiếu vào không gian khái niệm">
+
+$$
+q_{\text{concept}} = q V
+$$
+
+</Formula>
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+User $q$ chỉ đánh giá Matrix. User $d$ chỉ đánh giá Alien và Serenity.
+
+![Đưa hai user vào không gian khái niệm rồi so sánh](/content/MAT3565/C4/concept-query.svg)
+
+**Nhận xét:** hai user không có phim chung nào, nên trong không gian gốc độ tương đồng bằng 0. Nhưng trong không gian khái niệm họ rất gần nhau, vì cùng thích khoa học viễn tưởng.
+
+**▸ ⚠️ LƯU Ý**
+
+Slide ghi $d \cdot V = (5.2, 0.4)$. Nhân với $V$ ở slide thì ô thứ hai là $4 \cdot (-0.02) + 5 \cdot 0.12 = 0.52$, không phải $0.4$. Kết luận không đổi.
+
+**▸ ƯU VÀ NHƯỢC ĐIỂM CỦA SVD**
+
+- **Ưu:** xấp xỉ hạng thấp tối ưu theo chuẩn Frobenius.
+- **Nhược:**
+  - Khó diễn giải, vì mỗi vector suy biến là tổ hợp tuyến tính của mọi cột hoặc mọi hàng.
+  - Không thưa: các vector suy biến đặc, kể cả khi $A$ rất thưa.

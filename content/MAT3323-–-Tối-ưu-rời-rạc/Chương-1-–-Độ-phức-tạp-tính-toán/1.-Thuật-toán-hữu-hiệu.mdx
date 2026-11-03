@@ -1,0 +1,46 @@
+---
+title: "1. Thuật toán hữu hiệu"
+author: "Trần Đăng Quang Minh"
+---
+
+Trước khi giải một bài toán, ta cần biết thế nào là giải "nhanh".
+
+**Bài toán giải được (tractable)** là bài toán giải được trong thực tế. **Bài toán khó (intractable)** là bài toán về lý thuyết thì giải được, nhưng mọi cách giải đều tốn quá nhiều tài nguyên (thường là thời gian) nên không dùng được.
+
+**▸ MÔ HÌNH TÍNH TOÁN**
+
+Để đo thời gian chạy, ta cần một mô hình máy tính. **Máy Turing** là mô hình đơn giản nhất, gồm một băng dài vô hạn, một đầu đọc/ghi và một tập trạng thái.
+- **Thời gian chạy:** số bước.
+- **Bộ nhớ:** số ô trên băng được sử dụng.
+
+Nhược điểm của máy Turing là không truy cập ngẫu nhiên bộ nhớ được. Ví dụ, kiểm tra xâu đối xứng $n$ bit cần khoảng $n^2$ bước trên máy Turing một băng, trong khi máy tính thật chỉ cần khoảng $n$ bước.
+
+**▸ VÉT CẠN (BRUTE FORCE)**
+
+Với nhiều bài toán, ta luôn có thể kiểm tra hết mọi nghiệm có thể có. Cách này thường cần $2^n$ bước trở lên với đầu vào kích thước $n$, nên không dùng được trong thực tế.
+
+**Ví dụ:** Bài toán ghép cặp ổn định có $n!$ cách ghép. Thử hết tất cả là không khả thi ngay cả khi $n$ chỉ khoảng vài chục.
+
+**▸ THỜI GIAN ĐA THỨC**
+
+Một thuật toán tốt thì khi kích thước đầu vào tăng gấp đôi, thời gian chạy chỉ tăng tối đa $C$ lần với $C$ là hằng số.
+
+**Định nghĩa.** Thuật toán có **thời gian đa thức (poly-time)** nếu tồn tại các hằng số $c > 0$ và $d > 0$ sao cho với mọi đầu vào kích thước $n$, thời gian chạy bị chặn bởi $c n^d$ bước tính toán cơ bản.
+
+Ta gọi một thuật toán là **hữu hiệu (efficient)** nếu nó có thời gian đa thức.
+
+Trong thực tế, các thuật toán đa thức thường có hằng số và số mũ nhỏ. Cũng có ngoại lệ, chẳng hạn thuật toán $20 n^{120}$ về lý thuyết là đa thức nhưng không dùng được.
+
+**▸ ĐÁNH GIÁ THEO TRƯỜNG HỢP XẤU NHẤT**
+
+**Trường hợp xấu nhất (worst-case):** thời gian chạy lớn nhất trên mọi đầu vào có kích thước $n$.
+
+Cách đánh giá này khá ngặt, nhưng nhìn chung phản ánh được hiệu quả của thuật toán trong thực tế và khó tìm được cách khác thay thế.
+
+**▸ ⚠️ LƯU Ý**
+
+Một số thuật toán có thời gian mũ trong trường hợp xấu nhất nhưng vẫn được dùng rộng rãi, vì trường hợp xấu đó hiếm khi xảy ra. Ví dụ: thuật toán đơn hình, lệnh `grep` trên Linux, thuật toán k-means.
+
+Ngoài worst-case còn có các cách đánh giá khác:
+- **Kỳ vọng:** dùng cho thuật toán ngẫu nhiên. Ví dụ quicksort có thời gian chạy kỳ vọng khoảng $2n \ln n$.
+- Amortized analysis, average-case analysis, smoothed analysis, competitive analysis.

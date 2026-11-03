@@ -1,0 +1,96 @@
+---
+title: "1. Bài toán đường đi ngắn nhất"
+author: "Trần Đăng Quang Minh"
+---
+
+**Bài toán.** Cho đồ thị có hướng $G = (V, E)$, độ dài cạnh $\ell_e$, đỉnh nguồn $s$ và đỉnh đích $t$. Tìm đường đi ngắn nhất từ $s$ đến $t$. Độ dài đường đi là tổng độ dài các cạnh trên đường đi.
+
+**▸ CÁC BIẾN THỂ**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Biến thể</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Yêu cầu</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Một nguồn (single source)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Từ một đỉnh $s$ đến mọi đỉnh khác</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Một đích (single sink)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Từ mọi đỉnh đến một đỉnh $t$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Một cặp (source-sink)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Từ một đỉnh $s$ đến một đỉnh $t$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Mọi cặp (all pairs)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Giữa mọi cặp đỉnh</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Kết quả của bài toán một nguồn có thể biểu diễn bằng **cây đường đi ngắn nhất (shortest-paths tree)** gốc $s$.
+
+**▸ ⚠️ LƯU Ý**
+
+- Nếu nhân mọi độ dài với cùng một số dương thì đường đi ngắn nhất không đổi.
+- Nếu cộng mọi độ dài với cùng một số thì đường đi ngắn nhất **có thể đổi**, vì đường đi nhiều cạnh sẽ bị cộng nhiều hơn. Điểm này khác với MST: cộng hằng số vào mọi cạnh không làm MST thay đổi.
+
+**▸ NÊN DÙNG THUẬT TOÁN NÀO?**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thuật toán</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Điều kiện</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thông thường</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Xấu nhất</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Bộ nhớ thêm</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Theo thứ tự topo</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không có chu trình có hướng</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$E + V$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$E + V$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$V$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Dijkstra (heap nhị phân)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không có trọng số âm</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$E \log V$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$E \log V$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$V$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bellman-Ford</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không có chu trình âm</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$EV$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$EV$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$V$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Bellman-Ford dùng hàng đợi</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không có chu trình âm</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$E + V$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$EV$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$V$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Có thể thấy chu trình có hướng và trọng số âm làm bài toán khó hơn. Nếu có chu trình âm thì bài toán tìm đường đi ngắn nhất không còn giải được nữa.
+
+**▸ ỨNG DỤNG**
+
+Tìm đường trên bản đồ, điều hướng robot, định tuyến trong mạng (OSPF, BGP, RIP), lập lịch (PERT/CPM), ngắt dòng trong LaTeX, thay đổi kích thước ảnh (seam carving).

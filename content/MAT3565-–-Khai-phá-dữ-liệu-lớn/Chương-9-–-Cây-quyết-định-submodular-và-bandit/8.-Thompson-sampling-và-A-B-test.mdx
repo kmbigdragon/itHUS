@@ -1,0 +1,96 @@
+---
+title: "8. Thompson sampling và A/B test"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ A/B TEST**
+
+Chia lưu lượng thành hai phần, phần thấy phương án A, phần thấy phương án B, rồi kiểm định giả thuyết.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Phân phối</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Ví dụ</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Kiểm định</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Gauss</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Doanh thu trung bình mỗi user trả tiền</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Welch t-test</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Nhị thức</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tỉ lệ nhấp</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Fisher exact test</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Poisson</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Số giao dịch mỗi user trả tiền</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">E-test</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Đa thức</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Số lượng mỗi sản phẩm được mua</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Khi bình phương</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**Ví dụ:** A có tỉ lệ tương tác 5%, B có 4%. Muốn kết luận A tốt hơn với độ tin cậy 95%, t-test cần 22330 quan sát (11165 mỗi nhánh). Với 100 quan sát mỗi ngày, mất 223 ngày.
+
+**Ý tưởng bandit:** phân bổ lưu lượng có thể thay đổi trong quá trình thử nghiệm. Vài lần mỗi ngày, xem kết quả và tăng lưu lượng cho nhánh đang tốt.
+
+**▸ THOMPSON SAMPLING**
+
+Phân lưu lượng cho các nhánh **tỉ lệ với xác suất mỗi nhánh là tốt nhất**.
+
+Mỗi lần thử có kết quả 0 hoặc 1, tức phân phối Bernoulli với tham số $\mu_a$. Với $a$ lần thành công, $b$ lần thất bại, phân phối của $\mu$ là Beta:
+
+<Formula title="Phân phối Beta">
+
+$$
+\text{Beta}(\mu; \alpha, \beta) \propto \mu^{\alpha - 1} (1 - \mu)^{\beta - 1}
+$$
+
+</Formula>
+
+<Formula title="Phân phối hậu nghiệm">
+
+$$
+\mu_a \sim \text{Beta}(\alpha_a + \text{số thành công}, \; \beta_a + \text{số thất bại})
+$$
+
+</Formula>
+
+$\alpha, \beta$ ban đầu là số đếm giả (prior), thường là $\text{Beta}(1, 1)$.
+
+![Phân phối hậu nghiệm thu hẹp dần khi có thêm dữ liệu](/content/MAT3565/C9/beta.svg)
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** chọn phân phối tiền nghiệm, thường là $\text{Beta}(1, 1)$.
+- **Bước 2:** lấy mẫu từ phân phối hậu nghiệm của mỗi cánh tay để được một ước lượng.
+- **Bước 3:** kéo cánh tay có ước lượng cao nhất.
+- **Bước 4:** lặp lại từ bước 2.
+
+**Khi phân lưu lượng theo đợt:**
+- **Bước 1:** mô phỏng nhiều lần rút từ các phân phối Beta, mỗi lần được một hàng các giá trị.
+- **Bước 2:** xác suất cánh tay $a$ tốt nhất là tỉ lệ số hàng mà $a$ có giá trị lớn nhất.
+- **Bước 3:** phân lưu lượng cho $a$ đúng bằng tỉ lệ này.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+Ngày đầu chia đều mỗi nhánh 50 phiên. Nếu A may mắn và có 70% khả năng tốt hơn thì ngày hôm sau A nhận 70% lưu lượng. Cuối mỗi ngày, gộp mọi dữ liệu rồi tính lại.
+
+![Xác suất A tốt nhất theo ngày với Thompson sampling](/content/MAT3565/C9/thompson.svg)
+
+Slide nêu ví dụ xong sau 66 ngày, tiết kiệm 157 ngày. Đây là kết quả của một lần chạy. Kết quả mô phỏng thay đổi nhiều giữa các lần chạy, như số liệu trong hình. Cách làm này mở rộng dễ dàng cho nhiều nhánh.
+
+**▸ ⚠️ LƯU Ý**
+
+Dừng khi "xác suất là tốt nhất" đạt 95% không giống hẳn với độ tin cậy 95% của t-test. Hai số ngày trên không đo cùng một loại đảm bảo, nên chỉ dùng để hình dung.

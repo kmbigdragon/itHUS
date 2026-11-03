@@ -1,0 +1,56 @@
+---
+title: "4. Thời gian đa thức yếu, mạnh và giả đa thức"
+author: "Trần Đăng Quang Minh"
+---
+
+Với các bài toán có số trong đầu vào, ta cần phân biệt "giá trị của số" và "số bit để viết số đó".
+
+**Độ dài mã hóa (encoding length)** là số bit cần dùng để biểu diễn đầu vào trên máy tính. Số tự nhiên $n$ có độ dài mã hóa khoảng $\log_2 n$.
+
+**▸ ĐỊNH NGHĨA**
+
+- **Đa thức yếu (weakly polynomial):** thời gian chạy là đa thức theo kích thước đầu vào, trong đó có tính cả độ dài mã hóa của các số.
+- **Đa thức mạnh (strongly polynomial):** thời gian chạy là đa thức và không phụ thuộc vào độ dài mã hóa của các số, chỉ phụ thuộc vào số lượng các số.
+- **Giả đa thức (pseudo-polynomial):** thời gian chạy là đa thức theo giá trị của đầu vào.
+
+**▸ VÍ DỤ**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thuật toán</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thời gian</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Loại</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Sắp xếp, Prim, Kruskal, Dijkstra, Bellman-Ford</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không phụ thuộc giá trị trọng số</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Đa thức mạnh</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Điểm trong giải quy hoạch tuyến tính</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Phụ thuộc độ dài mã hóa</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Đa thức yếu</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Kiểm tra nguyên tố bằng cách thử chia đến $\sqrt{k}$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(k^{1/2})$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Giả đa thức</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Kiểm tra nguyên tố AKS (2002)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Khoảng $(\log k)^{12}$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Đa thức yếu</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**Vì sao thử chia không phải đa thức?** Đầu vào $k$ chỉ dài $\log k$ bit. So với độ dài này, $k^{1/2}$ là một hàm mũ.
+
+Các chương sau còn có thêm ví dụ:
+- **Ford-Fulkerson** $O(mnC)$ là giả đa thức, **Capacity Scaling** $O(m^2 \log C)$ là đa thức yếu, **Edmonds-Karp** $O(m^2 n)$ là đa thức mạnh. Ở đây $C$ là dung lượng lớn nhất.
+- **Quy hoạch động cho bài toán cái túi** $O(NW)$ là giả đa thức, với $W$ là giới hạn trọng lượng.

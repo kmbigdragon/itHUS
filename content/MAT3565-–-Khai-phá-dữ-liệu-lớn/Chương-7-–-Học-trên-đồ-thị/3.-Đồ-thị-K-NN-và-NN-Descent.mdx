@@ -1,0 +1,38 @@
+---
+title: "3. Đồ thị K-NN và NN-Descent"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ VÍ DỤ: XÁC ĐỊNH LOẠI TẾ BÀO**
+
+Cho biểu hiện gen của các tế bào (khoảng 20000 gen, từ 1 nghìn đến 1 triệu tế bào), cần nhóm các tế bào cùng loại. K-means chạy không tốt vì:
+- Dữ liệu rất nhiều chiều, nhiễu và thưa.
+- Không biết trước số cụm.
+- Các loại tế bào tổ chức theo thứ bậc.
+
+**Ý tưởng:** dựng đồ thị giữa các tế bào rồi tìm cộng đồng phân cấp trên đồ thị.
+
+Quy trình gồm 3 bước:
+- **Bước 1:** SVD về khoảng 50 chiều.
+- **Bước 2:** dựng đồ thị K-NN với $K = 15$, dùng khoảng cách L2.
+- **Bước 3:** chạy Louvain để tìm cộng đồng.
+
+**▸ ĐỒ THỊ K-NN**
+
+**Đồ thị K-NN** là đồ thị có hướng, với cạnh từ mỗi đỉnh đến $K$ đỉnh giống nó nhất theo một độ đo.
+
+Cách vét cạn tốn $O(n^2)$, chỉ dùng được với dữ liệu nhỏ. **NN-Descent** (Dong, Charikar, Li, 2011) tạo đồ thị K-NN xấp xỉ, thực nghiệm tốn khoảng $O(n^{1.14})$ và chạy phân tán được.
+
+**▸ THUẬT TOÁN NN-DESCENT**
+
+**Ý tưởng:** láng giềng của láng giềng cũng có thể là láng giềng của tôi.
+
+- **Bước 1:** với mỗi đỉnh, lấy ngẫu nhiên $K$ đỉnh làm láng giềng ban đầu.
+- **Bước 2:** với mỗi đỉnh $v$:
+  - $B[v]$: các láng giềng xấp xỉ hiện tại.
+  - $R[v] = \{u : v \in B[u]\}$: láng giềng ngược.
+  - $\bar{B}[v] = B[v] \cup R[v]$: láng giềng chung.
+- **Bước 3:** với mỗi $u \in \bar{B}[v]$ và mỗi $u' \in \bar{B}[u]$, tính độ tương đồng giữa $v$ và $u'$. Nếu tốt hơn láng giềng kém nhất hiện tại thì thay vào.
+- **Bước 4:** lặp đến khi không còn cập nhật.
+
+![NN-Descent cải thiện dần danh sách láng giềng sau mỗi vòng](/content/MAT3565/C7/nn-descent.svg)

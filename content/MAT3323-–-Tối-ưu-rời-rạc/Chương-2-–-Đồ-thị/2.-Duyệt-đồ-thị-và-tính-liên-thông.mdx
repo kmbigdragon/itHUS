@@ -1,0 +1,46 @@
+---
+title: "2. Duyệt đồ thị và tính liên thông"
+author: "Trần Đăng Quang Minh"
+---
+
+**Bài toán liên thông s-t.** Cho hai đỉnh $s$ và $t$, có đường đi giữa chúng không?
+
+**Bài toán đường đi ngắn nhất s-t.** Độ dài (số cạnh) đường đi ngắn nhất giữa $s$ và $t$ là bao nhiêu?
+
+**▸ TÌM KIẾM THEO CHIỀU RỘNG (BFS)**
+
+**Ý tưởng:** Đi từ $s$ ra mọi hướng, thăm các đỉnh theo từng lớp.
+
+- $L_0 = \{s\}$.
+- $L_1$ gồm các đỉnh kề với $L_0$.
+- $L_{i+1}$ gồm các đỉnh chưa thuộc lớp nào trước đó và có cạnh nối với một đỉnh thuộc $L_i$.
+
+**Ví dụ:** BFS từ đỉnh 1 trên đồ thị ở bài trước, ta được $L_0 = \{1\}$, $L_1 = \{2, 3\}$, $L_2 = \{4, 5, 7, 8\}$, $L_3 = \{6\}$.
+
+![Các lớp BFS xuất phát từ đỉnh 1](/content/MAT3323/C2/bfs-layers.svg)
+
+**▸ TÍNH CHẤT**
+
+**Định lý.** Với mọi $i$, $L_i$ chứa đúng các đỉnh có khoảng cách $i$ từ $s$. Có đường đi từ $s$ đến $t$ khi và chỉ khi $t$ xuất hiện trong một lớp nào đó.
+
+**Tính chất.** Cho $T$ là cây BFS của $G$ và $(x, y)$ là một cạnh của $G$. Khi đó lớp của $x$ và $y$ chênh lệch nhau tối đa 1.
+
+**Định lý.** BFS chạy trong $O(m + n)$ nếu đồ thị cho dưới dạng danh sách kề.
+
+Thật vậy, khi xét đỉnh $u$ ta duyệt $\deg(u)$ cạnh kề, mỗi cạnh mất $O(1)$. Mỗi cạnh được tính đúng 2 lần nên tổng số lần xử lý là
+$$
+\sum_{u \in V} \deg(u) = 2m
+$$
+
+**▸ THÀNH PHẦN LIÊN THÔNG**
+
+**Thành phần liên thông chứa $s$** là tập tất cả các đỉnh đi đến được từ $s$. Có thể tìm bằng BFS hoặc DFS.
+
+**Ứng dụng: Flood fill.** Chọn một điểm ảnh rồi đổi màu cả vùng cùng màu quanh nó. Mô hình hóa như sau:
+- **Đỉnh:** điểm ảnh.
+- **Cạnh:** hai điểm ảnh cùng màu, nằm cạnh nhau.
+- **Vùng cần đổi màu:** thành phần liên thông chứa điểm ảnh đã chọn.
+
+**▸ ⚠️ LƯU Ý**
+
+Slide không trình bày lại DFS (tìm kiếm theo chiều sâu) vì đã học ở môn Toán rời rạc.

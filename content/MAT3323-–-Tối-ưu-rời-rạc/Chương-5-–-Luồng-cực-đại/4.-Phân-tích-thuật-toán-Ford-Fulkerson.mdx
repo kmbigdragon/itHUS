@@ -1,0 +1,50 @@
+---
+title: "4. Phân tích thuật toán Ford-Fulkerson"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ DUNG TÍCH NGUYÊN**
+
+Giả sử các dung tích là số nguyên từ $1$ đến $C$.
+
+**Bất biến.** Trong suốt thuật toán, các luồng $f(e)$ và dung tích còn dư $c_f(e)$ đều là số nguyên.
+
+**Định lý.** Thuật toán dừng sau tối đa $val(f^*) \le nC$ vòng lặp, vì mỗi vòng tăng luồng ít nhất 1.
+
+**Hệ quả.** Ford-Fulkerson chạy trong $O(mnC)$. Khi $C = 1$ thì chạy trong $O(mn)$.
+
+**Định lý tính nguyên.** Nếu các dung tích nguyên thì tồn tại luồng cực đại $f^*$ mà mọi $f^*(e)$ đều nguyên. Định lý này suy ra trực tiếp từ bất biến trên và sẽ được dùng cho bài toán cặp ghép.
+
+**▸ TRƯỜNG HỢP XẤU**
+
+Ford-Fulkerson không phải thuật toán đa thức, vì kích thước đầu vào chỉ phụ thuộc vào $m$, $n$ và $\log C$.
+
+![Mạng có trường hợp xấu cho Ford-Fulkerson](/content/MAT3323/C5/bad-case.svg)
+
+Nếu luân phiên chọn hai đường tăng $s \to v \to w \to t$ và $s \to w \to v \to t$, mỗi đường chỉ tăng được 1. Cần $2C$ vòng lặp mới đạt luồng cực đại $2C$, trong khi chọn đúng thì chỉ cần 2 vòng. Với $C = 2^{100}$ thì thuật toán không bao giờ chạy xong.
+
+**▸ DUNG TÍCH VÔ TỈ**
+
+Nếu dung tích là số vô tỉ, thuật toán có thể **không dừng**, thậm chí **hội tụ về đáp án sai**.
+
+Gọi $r = \dfrac{\sqrt{5} - 1}{2} \approx 0.618$, là nghiệm dương của $r^2 = 1 - r$. Suy ra $r^{n+2} = r^n - r^{n+1}$.
+
+Xét mạng có ba cạnh ở giữa với dung tích $1, r, r^2$, và các cạnh còn lại có dung tích đủ lớn. Lát cắt qua ba cạnh này cho luồng cực đại bằng $1 + r + r^2 = 2$.
+
+- Đầu tiên đẩy 1 đơn vị qua cạnh dung tích 1. Dung tích còn dư trên ba cạnh là $0, r, r^2$.
+- Mỗi vòng tiếp theo, dung tích còn dư có dạng $0, r^n, r^{n+1}$. Lấy $d = r^{n+1}$, đẩy $d$ đơn vị đi tới qua cạnh dư $r^{n+1}$, đi ngược qua cạnh đã đầy, rồi đi tới qua cạnh dư $r^n$. Dung tích còn dư mới là $r^{n+1}, r^n - r^{n+1} = r^{n+2}, 0$.
+
+Vòng lặp này không bao giờ kết thúc, giá trị luồng chỉ tiến dần đến 2. Nếu thêm một cạnh $s \to t$ dung tích 1 mà thuật toán không chọn, luồng vẫn tiến đến 2, trong khi đáp án đúng là 3.
+
+Demo trong slide cũng cho kết quả tương tự. Mạng có ba cạnh đặc biệt với dung tích $r, 1, 1$, các cạnh còn lại có dung tích $C$ đủ lớn, nên luồng cực đại bằng $2C + 1$. Nếu chọn các đường tăng theo đúng chu kỳ, thì sau $1 + 4k$ đường tăng, giá trị luồng là $1 + 2r + 2r^2 + \dots + 2r^{2k}$. Giá trị này hội tụ về
+$$
+1 + \frac{2r}{1 - r} = 3 + 2r \approx 4.24
+$$
+khác xa đáp án đúng.
+
+**▸ KẾT LUẬN**
+
+Phải cẩn thận khi chọn đường tăng: chọn kém dẫn đến thời gian mũ, chọn khéo thì được thuật toán đa thức. Các tiêu chí thường dùng:
+- Đường có dung lượng cổ chai lớn nhất (fattest path).
+- Đường có dung lượng cổ chai đủ lớn (capacity scaling).
+- Đường có ít cạnh nhất (Edmonds-Karp, Dinic).

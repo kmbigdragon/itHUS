@@ -1,0 +1,47 @@
+---
+title: "1. Lát cắt và cây bao trùm"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ LÁT CẮT**
+
+- **Lát cắt (cut)** là cách chia tập đỉnh thành hai tập con khác rỗng $S$ và $V - S$.
+- **Tập cạnh cắt (cutset)** của lát cắt $S$ là tập các cạnh có đúng một đầu thuộc $S$.
+
+**Mệnh đề.** Một chu trình và một tập cạnh cắt luôn có chung một số chẵn cạnh.
+
+Lý do: mỗi lần chu trình đi ra khỏi $S$ thì phải có một lần đi vào lại $S$.
+
+**▸ CÂY BAO TRÙM**
+
+Cho $H = (V, T)$ là đồ thị con của đồ thị vô hướng $G = (V, E)$. $H$ là **cây bao trùm (spanning tree)** của $G$ nếu $H$ không có chu trình và liên thông. Lưu ý $H$ chứa mọi đỉnh của $G$.
+
+**Tính chất.** Các khẳng định sau là tương đương:
+- $H$ là cây bao trùm của $G$.
+- $H$ không có chu trình và liên thông.
+- $H$ liên thông và có $|V| - 1$ cạnh.
+- $H$ không có chu trình và có $|V| - 1$ cạnh.
+- $H$ **liên thông tối thiểu**: xóa cạnh bất kỳ thì mất liên thông.
+- $H$ **phi chu trình tối đa**: thêm cạnh bất kỳ thì tạo ra chu trình.
+
+**▸ BÀI TOÁN CÂY BAO TRÙM NHỎ NHẤT (MST)**
+
+Cho đồ thị vô hướng liên thông $G = (V, E)$ với trọng số cạnh $c_e$. **Cây bao trùm nhỏ nhất (Minimum Spanning Tree)** là cây bao trùm có tổng trọng số các cạnh nhỏ nhất.
+
+**Định lý Cayley.** Đồ thị đầy đủ $n$ đỉnh có $n^{n-2}$ cây bao trùm. Vì vậy không thể giải bằng vét cạn.
+
+**Ứng dụng:** thiết kế mạng (điện, nước, viễn thông, đường bộ), phân cụm, thuật toán xấp xỉ cho các bài toán NP-khó như TSP.
+
+**▸ ⚠️ LƯU Ý**
+
+MST chỉ phụ thuộc vào **thứ tự** của các trọng số, không phụ thuộc giá trị cụ thể. Vì vậy với $c(e) > 0$, nếu đổi trọng số thành $c(e) + 17$, $17 c(e)$ hoặc $\log_{17} c(e)$ thì MST không thay đổi.
+
+**▸ CHU TRÌNH CƠ BẢN VÀ TẬP CẠNH CẮT CƠ BẢN**
+
+Cho $H = (V, T)$ là một cây bao trùm của $G$.
+
+**Chu trình cơ bản (fundamental cycle).** Với mỗi cạnh $e \notin T$, tập $T \cup \{e\}$ chứa đúng một chu trình $C$. Với mọi cạnh $f \in C$, tập $T \cup \{e\} - \{f\}$ là một cây bao trùm.
+
+**Tập cạnh cắt cơ bản (fundamental cutset).** Với mỗi cạnh $f \in T$, tập $T - \{f\}$ có hai thành phần liên thông. Gọi $D$ là tập cạnh cắt tương ứng. Với mọi cạnh $e \in D$, tập $T - \{f\} \cup \{e\}$ là một cây bao trùm.
+
+**Nhận xét.** Nếu đổi được như trên mà $c_e < c_f$ thì $T$ không phải cây bao trùm nhỏ nhất, vì cây mới có trọng số nhỏ hơn.

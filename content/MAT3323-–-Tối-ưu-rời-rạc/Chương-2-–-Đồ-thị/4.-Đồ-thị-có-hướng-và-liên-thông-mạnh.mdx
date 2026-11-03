@@ -1,0 +1,77 @@
+---
+title: "4. Đồ thị có hướng và liên thông mạnh"
+author: "Trần Đăng Quang Minh"
+---
+
+**Đồ thị có hướng** $D = (V, A)$ gồm tập đỉnh $V$ và tập **cung (arc)**. Cung $(u, v)$ đi từ $u$ vào $v$, hướng của cung là quan trọng.
+
+**▸ ỨNG DỤNG**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Đồ thị có hướng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Đỉnh</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Cung</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Giao thông</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Giao lộ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Đường một chiều</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Web</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Trang web</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Hyperlink</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Lập lịch</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Công việc</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Ràng buộc trước sau</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Trích dẫn</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bài báo</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Trích dẫn</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Dịch bệnh</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Người</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Lây nhiễm</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ TÌM KIẾM TRÊN ĐỒ THỊ CÓ HƯỚNG**
+
+BFS mở rộng được cho đồ thị có hướng, chỉ cần đi theo chiều của cung. Từ đó giải được:
+- Tìm tất cả các đỉnh đi đến được từ $s$.
+- Tìm đường đi ngắn nhất (theo số cung) từ $s$ đến $t$.
+
+**Ví dụ:** Web crawler xuất phát từ một trang $s$ và tìm mọi trang có link từ $s$, trực tiếp hoặc gián tiếp.
+
+**▸ LIÊN THÔNG MẠNH**
+
+- $u$ và $v$ **đến được lẫn nhau (mutually reachable)** nếu có đường đi từ $u$ đến $v$ và từ $v$ đến $u$.
+- Đồ thị **liên thông mạnh (strongly connected)** nếu mọi cặp đỉnh đến được lẫn nhau.
+
+**Bổ đề.** Cho $s$ là một đỉnh bất kỳ. $G$ liên thông mạnh khi và chỉ khi mọi đỉnh đi đến được từ $s$ và $s$ đi đến được từ mọi đỉnh.
+
+Lý do: muốn đi từ $u$ đến $v$, ta nối đường đi $u \to s$ với đường đi $s \to v$. Hai đường này có chung đỉnh cũng không sao.
+
+**Định lý.** Kiểm tra được $G$ có liên thông mạnh không trong $O(m + n)$.
+
+- **Bước 1:** Lấy một đỉnh $s$ bất kỳ.
+- **Bước 2:** Chạy BFS từ $s$ trong $G$.
+- **Bước 3:** Đảo chiều mọi cung, rồi chạy BFS từ $s$ trong đồ thị đảo $G^{reverse}$.
+- **Bước 4:** Trả lời có nếu cả hai lần BFS đều đến được mọi đỉnh.
+
+**▸ THÀNH PHẦN LIÊN THÔNG MẠNH**
+
+**Thành phần liên thông mạnh (strong component)** là tập con cực đại các đỉnh đến được lẫn nhau.
+
+**Định lý (Tarjan, 1972).** Có thể tìm tất cả các thành phần liên thông mạnh trong $O(m + n)$.

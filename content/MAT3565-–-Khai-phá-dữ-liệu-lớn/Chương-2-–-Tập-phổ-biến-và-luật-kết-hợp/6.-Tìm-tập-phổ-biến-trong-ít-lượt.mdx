@@ -1,0 +1,50 @@
+---
+title: "6. Tìm tập phổ biến trong ít lượt"
+author: "Trần Đăng Quang Minh"
+---
+
+A-Priori và PCY cần $k$ lượt để tìm tập $k$ phần tử. Ba thuật toán sau chỉ dùng tối đa 2 lượt, đổi lại có thể bỏ sót hoặc phải chạy lại.
+
+**▸ LẤY MẪU NGẪU NHIÊN**
+
+- **Bước 1:** lấy mẫu ngẫu nhiên các giỏ và đọc vào bộ nhớ.
+- **Bước 2:** chạy A-Priori hoặc PCY ngay trong bộ nhớ, không tốn thêm đọc đĩa.
+- **Bước 3:** giảm ngưỡng theo tỉ lệ mẫu. Ví dụ mẫu bằng $1/100$ dữ liệu thì dùng ngưỡng $s/100$.
+- **Bước 4 (tùy chọn):** đọc thêm một lượt toàn bộ dữ liệu để kiểm tra các ứng viên có thật sự phổ biến không, nhằm loại dương tính giả.
+
+Cách này không bắt được những tập phổ biến trong dữ liệu nhưng không phổ biến trong mẫu. Dùng ngưỡng nhỏ hơn như $s/125$ sẽ bắt được nhiều hơn, nhưng tốn bộ nhớ hơn.
+
+**▸ THUẬT TOÁN SON**
+
+Không lấy mẫu mà chia toàn bộ tệp thành các phần vừa bộ nhớ.
+
+- **Lượt 1:** với mỗi phần chiếm tỉ lệ $p$ của tệp, tìm các tập phổ biến trong phần đó với ngưỡng $ps$. Một tập là ứng viên nếu phổ biến trong ít nhất một phần.
+- **Lượt 2:** đếm mọi ứng viên trên toàn bộ dữ liệu và giữ lại các tập thực sự phổ biến.
+
+![SON qua ba bước với hai phần dữ liệu](/content/MAT3565/C2/son-steps.svg)
+
+**Vì sao không bỏ sót:** nếu một tập không phổ biến trong mọi phần thì tổng số đếm của nó nhỏ hơn $s$, theo nguyên lý chuồng bồ câu. Do đó tập phổ biến toàn cục luôn phổ biến ở ít nhất một phần.
+
+**▸ THUẬT TOÁN TOIVONEN**
+
+**Biên âm (negative border):** một tập thuộc biên âm nếu nó không phổ biến trong mẫu, nhưng mọi tập con trực tiếp của nó (bỏ đúng một phần tử) đều phổ biến trong mẫu.
+
+![Tập phổ biến trong mẫu và biên âm trên dàn các tập con](/content/MAT3565/C2/negative-border.svg)
+
+- **Lượt 1:** lấy mẫu, dùng ngưỡng thấp hơn một chút (mẫu 1% thì dùng $s/125$ thay vì $s/100$). Tìm các tập phổ biến trong mẫu và thêm biên âm của chúng.
+- **Lượt 2:** đếm trên toàn bộ dữ liệu cả các tập phổ biến trong mẫu lẫn biên âm.
+- **Kết luận:**
+  - Nếu không tập nào trong biên âm phổ biến trên toàn bộ dữ liệu thì đã tìm đủ mọi tập phổ biến.
+  - Nếu có, phải làm lại với mẫu khác.
+
+Nên chọn ngưỡng sao cho xác suất thất bại thấp mà số tập phải đếm ở lượt 2 vẫn vừa bộ nhớ.
+
+**▸ ĐỊNH LÝ TOIVONEN**
+
+Nếu có tập $S$ phổ biến trong toàn bộ dữ liệu nhưng không phổ biến trong mẫu, thì biên âm chứa ít nhất một tập phổ biến trong toàn bộ dữ liệu.
+
+**Chứng minh:** giả sử không có tập nào như vậy trong biên âm. Gọi $T$ là tập con nhỏ nhất của $S$ không phổ biến trong mẫu, tức mọi tập con của $T$ đều phổ biến trong mẫu.
+- $T$ phổ biến trong toàn bộ dữ liệu, do $S$ phổ biến và tính đơn điệu.
+- $T$ thuộc biên âm theo định nghĩa.
+
+Hai điều này mâu thuẫn với giả thiết.

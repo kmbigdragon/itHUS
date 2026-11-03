@@ -1,0 +1,77 @@
+---
+title: "4. Thuật toán BFR"
+author: "Trần Đăng Quang Minh"
+---
+
+**BFR** (Bradley, Fayyad, Reina) là biến thể của k-means cho dữ liệu rất lớn nằm trên đĩa.
+
+**▸ GIẢ THIẾT**
+
+- Không gian Euclid.
+- Mỗi cụm phân phối chuẩn quanh tâm, độ lệch chuẩn có thể khác nhau theo từng chiều, nên cụm là các elip **thẳng hàng với trục**.
+
+Mục tiêu là tìm các tâm cụm. Việc gán điểm làm ở một lượt đọc sau.
+
+**▸ BA TẬP ĐIỂM**
+
+Bộ nhớ chỉ tỉ lệ với số cụm, không tỉ lệ với số điểm, vì BFR giữ thống kê thay vì giữ điểm.
+
+![Tập DS, CS và RS trong BFR](/content/MAT3565/C4/bfr-sets.svg)
+
+- **DS (Discard set):** đủ gần một tâm, chỉ giữ thống kê rồi bỏ điểm.
+- **CS (Compressed set):** nhóm điểm gần nhau nhưng xa mọi tâm. Giữ thống kê nhưng chưa gán vào cụm nào.
+- **RS (Retained set):** điểm lẻ, giữ nguyên.
+
+**▸ THỐNG KÊ CỦA MỖI CỤM**
+
+Mỗi cụm trong DS có $2d + 1$ giá trị với $d$ là số chiều:
+- $N$: số điểm.
+- $\text{SUM}$: vector, thành phần $i$ là tổng tọa độ chiều $i$.
+- $\text{SUMSQ}$: vector, thành phần $i$ là tổng bình phương tọa độ chiều $i$.
+
+<Formula title="Tâm và phương sai theo chiều i">
+
+$$
+c_i = \frac{\text{SUM}_i}{N}, \qquad \sigma_i^2 = \frac{\text{SUMSQ}_i}{N} - \left( \frac{\text{SUM}_i}{N} \right)^2
+$$
+
+</Formula>
+
+Vì sao giả thiết thẳng hàng với trục: nếu bỏ giả thiết này thì phải lưu cả ma trận hiệp phương sai $d \times d$, quá lớn.
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** khởi tạo $k$ tâm từ phần dữ liệu đầu tiên, bằng $k$ điểm ngẫu nhiên, hoặc phân cụm một mẫu nhỏ, hoặc chọn các điểm xa nhau.
+- **Bước 2:** đọc một phần dữ liệu vừa bộ nhớ.
+- **Bước 3:** điểm nào đủ gần tâm thì thêm vào cụm đó và vào DS, rồi bỏ điểm.
+- **Bước 4:** phân cụm các điểm còn lại cùng RS cũ bằng thuật toán trong bộ nhớ. Cụm tìm được đưa vào CS, điểm lẻ đưa vào RS.
+- **Bước 5:** cộng $N$, $\text{SUM}$, $\text{SUMSQ}$ cho các cụm DS, xem xét gộp các nhóm CS.
+- **Bước 6:** lặp lại từ bước 2. Ở vòng cuối, gộp tất cả CS và RS vào cụm gần nhất.
+
+**▸ ĐIỂM NÀO ĐỦ GẦN?**
+
+Dùng **khoảng cách Mahalanobis**, tức khoảng cách Euclid đã chuẩn hóa theo độ lệch chuẩn từng chiều:
+
+<Formula title="Khoảng cách Mahalanobis">
+
+$$
+d(x, c) = \sqrt{\sum_{i=1}^{d} \left( \frac{x_i - c_i}{\sigma_i} \right)^2}
+$$
+
+</Formula>
+
+- **Bước 1:** chuẩn hóa từng chiều $y_i = (x_i - c_i) / \sigma_i$.
+- **Bước 2:** lấy tổng bình phương các $y_i$.
+- **Bước 3:** lấy căn bậc hai.
+
+Nếu cụm phân phối chuẩn, sau khi chuẩn hóa thì một độ lệch chuẩn bằng $\sqrt{d}$, tức $68\%$ số điểm có khoảng cách nhỏ hơn $\sqrt{d}$. Nhận điểm vào cụm nếu khoảng cách nhỏ hơn một ngưỡng, ví dụ 2 độ lệch chuẩn.
+
+![Đường đồng mức của khoảng cách Euclid và Mahalanobis trên cụm hình elip](/content/MAT3565/C4/mahalanobis.svg)
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![BFR tóm tắt cụm, đo khoảng cách Mahalanobis và cộng thống kê cho điểm mới](/content/MAT3565/C4/bfr-update.svg)
+
+**▸ GỘP HAI NHÓM CS**
+
+Tính phương sai của nhóm gộp từ $N$, $\text{SUM}$, $\text{SUMSQ}$. Gộp nếu phương sai dưới một ngưỡng. Cũng có cách khác, như xử lý từng chiều riêng hoặc dùng mật độ.

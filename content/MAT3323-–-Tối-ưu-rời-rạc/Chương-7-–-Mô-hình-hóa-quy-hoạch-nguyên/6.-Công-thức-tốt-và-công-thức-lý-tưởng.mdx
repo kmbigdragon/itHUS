@@ -1,0 +1,65 @@
+---
+title: "6. Công thức tốt và công thức lý tưởng"
+author: "Trần Đăng Quang Minh"
+---
+
+Cùng một bài toán có thể viết theo nhiều cách. Cách viết khác nhau làm tốc độ giải khác nhau rất nhiều.
+
+**▸ BÀI TOÁN ĐỊA ĐIỂM KHÔNG GIỚI HẠN CÔNG SUẤT (UFL)**
+
+Cho các kho $N = \{1, \dots, n\}$, các khách hàng $M = \{1, \dots, m\}$. Chi phí cố định khi dùng kho $j$ là $f_j$, chi phí vận chuyển nếu kho $j$ đáp ứng toàn bộ đơn của khách $i$ là $c_{ij}$. Cần chọn kho nào mở và kho nào phục vụ khách nào.
+
+**Biến:** $y_j = 1$ nếu mở kho $j$. $x_{ij}$ là tỷ lệ nhu cầu của khách $i$ do kho $j$ đáp ứng.
+
+$$
+\begin{align*}
+\min \quad & \sum_{i \in M} \sum_{j \in N} c_{ij} x_{ij} + \sum_{j \in N} f_j y_j \\
+\text{s.t.} \quad & \sum_{j=1}^{n} x_{ij} = 1, \quad i = 1, \dots, m \\
+& \sum_{i \in M} x_{ij} \le m y_j, \quad j \in N
+\end{align*}
+$$
+
+Ràng buộc cuối nói rằng kho chưa mở thì không phục vụ ai.
+
+**▸ CÔNG THỨC VÀ BAO LỒI**
+
+**Công thức (formulation).** Đa diện $P \subseteq \mathbb{R}^{n+p}$ là công thức của tập $X \subseteq \mathbb{Z}^n \times \mathbb{R}^p$ nếu
+$$
+X = P \cap (\mathbb{Z}^n \times \mathbb{R}^p)
+$$
+Tức là $P$ không bỏ sót nghiệm nào của $X$ và cũng không thêm điểm nguyên nào khác. Có vô số công thức như vậy.
+
+**Bao lồi (convex hull)** của $X$ là tập các tổ hợp lồi của các điểm thuộc $X$:
+$$
+\text{conv}(X) = \left\{ x : x = \sum_{i=1}^{t} \lambda_i x^i, \ \sum_{i=1}^{t} \lambda_i = 1, \ \lambda_i \ge 0, \ x^i \in X \right\}
+$$
+
+**Mệnh đề.** $\text{conv}(X)$ là một đa diện, và các đỉnh của nó đều thuộc $X$.
+
+Do đó
+$$
+\max \{ c^\top x : x \in X \} = \max \{ c^\top x : x \in \text{conv}(X) \}
+$$
+
+Như vậy nếu viết được $\text{conv}(X)$ thì chỉ cần giải một LP. Đây là **công thức lý tưởng**. Tuy nhiên, để mô tả $\text{conv}(X)$ có thể cần số bất đẳng thức mũ.
+
+**▸ CÔNG THỨC NÀO TỐT HƠN?**
+
+Cho $P_1$, $P_2$ là hai công thức của $X$. $P_2$ **tốt hơn** $P_1$ nếu $P_2 \subset P_1$.
+
+Công thức càng sát $\text{conv}(X)$ thì cận từ LP càng chặt:
+$$
+X \subseteq \text{conv}(X) \subseteq P_2 \subset P_1
+$$
+
+**▸ VÍ DỤ**
+
+Với bài toán UFL, xét hai cách viết ràng buộc "kho chưa mở thì không phục vụ":
+- $P_1$: $\sum_{i \in M} x_{ij} \le m y_j, \quad \forall j \in N$.
+- $P_2$: $x_{ij} \le y_j, \quad \forall i \in M, \ j \in N$.
+
+Khi đó $P_2$ tốt hơn $P_1$.
+- $P_2 \subseteq P_1$: cộng các bất đẳng thức $x_{ij} \le y_j$ theo $i \in M$ thì được $\sum_{i \in M} x_{ij} \le m y_j$.
+- $P_2 \ne P_1$: Xét $m = 6$ khách, $n = 2$ kho, kho 1 phục vụ khách 1, 2, 3, kho 2 phục vụ khách 4, 5, 6. Lấy $y_1 = y_2 = 1/2$ thì $\sum_i x_{i1} = 3 \le 6 y_1$ nên điểm này thuộc $P_1$. Nhưng $x_{11} = 1 > y_1$ nên điểm này không thuộc $P_2$.
+
+$P_2$ có nhiều ràng buộc hơn nhưng lại cho cận tốt hơn.

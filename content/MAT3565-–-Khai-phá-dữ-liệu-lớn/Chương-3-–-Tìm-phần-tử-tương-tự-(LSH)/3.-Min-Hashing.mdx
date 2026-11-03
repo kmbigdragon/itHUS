@@ -1,0 +1,121 @@
+---
+title: "3. Min-Hashing"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ MỤC TIÊU**
+
+Băm mỗi cột $C$ thành một chữ ký nhỏ $h(C)$ sao cho:
+- Nếu $\text{sim}(C_1, C_2)$ cao thì với xác suất cao $h(C_1) = h(C_2)$.
+- Nếu $\text{sim}(C_1, C_2)$ thấp thì với xác suất cao $h(C_1) \ne h(C_2)$.
+
+Không phải độ đo nào cũng có hàm băm như vậy. Với Jaccard, hàm đó là **Min-Hashing**.
+
+**▸ ĐỊNH NGHĨA**
+
+Lấy một hoán vị ngẫu nhiên $\pi$ của các hàng. Giá trị min-hash của cột $C$ là vị trí đầu tiên theo thứ tự hoán vị mà cột $C$ có số 1.
+
+<Formula title="Hàm Min-Hash">
+
+$$
+h_\pi(C) = \min_{x \in C} \pi(x)
+$$
+
+</Formula>
+
+Lấy nhiều hoán vị ngẫu nhiên, mỗi hoán vị cho một hàng của **ma trận chữ ký** $M$: cột là tập, hàng là giá trị min-hash của mỗi hoán vị.
+
+**▸ TÍNH CHẤT QUAN TRỌNG**
+
+<Formula title="Tính chất của Min-Hash">
+
+$$
+\Pr[h_\pi(C_1) = h_\pi(C_2)] = \text{sim}(C_1, C_2)
+$$
+
+</Formula>
+
+**Vì sao:** phân loại các hàng theo hai cột $C_1, C_2$:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Loại</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$C_1$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$C_2$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Số hàng</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">A</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$a$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">B</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$b$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">C</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$c$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">D</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$d$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Ta có $\text{sim}(C_1, C_2) = \dfrac{a}{a + b + c}$. Đi dọc hai cột đã hoán vị cho đến khi gặp số 1 đầu tiên. Hàng đó là loại A, B hoặc C với xác suất tỉ lệ thuận với số hàng. Nếu là loại A thì $h(C_1) = h(C_2)$, còn loại B hoặc C thì khác nhau. Xác suất gặp loại A trước chính là $\dfrac{a}{a + b + c}$.
+
+**▸ ĐỘ TƯƠNG ĐỒNG CỦA CHỮ KÝ**
+
+Độ tương đồng của hai chữ ký là tỉ lệ số hàm băm mà chúng trùng nhau. Kỳ vọng của nó bằng Jaccard của hai tập, và chữ ký càng dài thì sai số kỳ vọng càng nhỏ.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+Lấy ma trận 7 hàng, 4 cột và 3 hoán vị. Mỗi bảng dưới đây đã xếp lại hàng theo hoán vị. Ô vàng là số 1 đầu tiên của mỗi cột, và số thứ tự của hàng đó chính là giá trị min-hash.
+
+![Tính ma trận chữ ký từ ba hoán vị và so với Jaccard thật](/content/MAT3565/C3/minhash-steps.svg)
+
+**▸ ⚠️ LƯU Ý**
+
+Giá trị min-hash lấy số thứ tự trong hoán vị hay số hàng gốc đều được. Chỉ cần nhất quán, sao cho hai cột cùng giá trị khi và chỉ khi số 1 đầu tiên của chúng nằm trên cùng một hàng.
+
+**▸ CÀI ĐẶT THỰC TẾ: BĂM HÀNG**
+
+Hoán vị thật sự thì quá tốn kém. Thay vào đó, chọn khoảng $K = 100$ hàm băm $h_i$. Thứ tự theo $h_i$ coi như một hoán vị ngẫu nhiên của các hàng.
+
+<Formula title="Hàm băm phổ quát">
+
+$$
+h_{a,b}(x) = ((a \cdot x + b) \bmod p) \bmod N
+$$
+
+</Formula>
+
+Trong đó $a, b$ là số nguyên ngẫu nhiên, $p$ là số nguyên tố lớn hơn $N$.
+
+Thuật toán một lượt:
+- **Bước 1:** với mỗi cột $c$ và hàm $h_i$, giữ một ô $M(i, c)$, khởi tạo bằng $\infty$.
+- **Bước 2:** quét từng hàng $j$. Với mỗi cột $c$ mà hàng $j$ có số 1, và với mỗi hàm $h_i$:
+
+<Formula title="Cập nhật ô chữ ký">
+
+$$
+M(i, c) \leftarrow \min \big( M(i, c),\; h_i(j) \big)
+$$
+
+</Formula>
+
+![Cập nhật ma trận chữ ký qua từng hàng với hai hàm băm](/content/MAT3565/C3/minhash-onepass.svg)

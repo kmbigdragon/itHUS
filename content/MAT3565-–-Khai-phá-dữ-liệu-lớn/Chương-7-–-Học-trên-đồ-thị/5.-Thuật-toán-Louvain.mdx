@@ -1,0 +1,59 @@
+---
+title: "5. Thuật toán Louvain"
+author: "Trần Đăng Quang Minh"
+---
+
+**Louvain** là thuật toán tham lam tối đa hóa modularity:
+- Thời gian $O(n \log n)$.
+- Dùng được cho đồ thị có trọng số.
+- Cho kết quả cộng đồng phân cấp.
+- Nhanh, hội tụ nhanh, modularity đầu ra cao.
+
+**▸ THUẬT TOÁN**
+
+Mỗi lượt có 2 pha, lặp đến khi modularity không tăng được nữa.
+
+**Pha 1: thay đổi cộng đồng cục bộ.**
+- Ban đầu mỗi đỉnh là một cộng đồng.
+- Với mỗi đỉnh $i$: tính $\Delta Q$ khi đưa $i$ vào cộng đồng của từng láng giềng $j$, rồi chuyển $i$ đến cộng đồng cho $\Delta Q$ dương lớn nhất.
+- Chạy đến khi không còn phép chuyển nào làm tăng $Q$.
+
+Kết quả phụ thuộc thứ tự xét đỉnh, nhưng theo nghiên cứu thì không ảnh hưởng đáng kể đến modularity cuối cùng.
+
+**Pha 2: gộp cộng đồng.**
+- Mỗi cộng đồng thành một siêu đỉnh.
+- Hai siêu đỉnh nối nhau nếu có ít nhất một cạnh giữa hai cộng đồng, trọng số là tổng trọng số các cạnh đó.
+- Quay lại pha 1 trên đồ thị siêu đỉnh.
+
+**▸ ĐỘ TĂNG MODULARITY**
+
+<Formula title="Độ tăng khi đưa đỉnh i vào cộng đồng C">
+
+$$
+\Delta Q(i \to C) = \left[ \frac{\Sigma_{in} + k_{i, in}}{2m} - \left( \frac{\Sigma_{tot} + k_i}{2m} \right)^2 \right] - \left[ \frac{\Sigma_{in}}{2m} - \left( \frac{\Sigma_{tot}}{2m} \right)^2 - \left( \frac{k_i}{2m} \right)^2 \right]
+$$
+
+</Formula>
+
+- $\Sigma_{in}$: tổng trọng số cạnh giữa các đỉnh trong $C$.
+- $\Sigma_{tot}$: tổng trọng số mọi cạnh của các đỉnh trong $C$.
+- $k_{i, in}$: tổng trọng số cạnh giữa $i$ và $C$.
+- $k_i$: tổng trọng số mọi cạnh của $i$, tức bậc của $i$.
+
+Vì chuyển $i$ từ $D$ sang $C$ gồm hai việc, nên cần tính cả:
+
+<Formula title="Độ tăng khi chuyển i từ D sang C">
+
+$$
+\Delta Q(D \to i \to C) = \Delta Q(D \to i) + \Delta Q(i \to C)
+$$
+
+</Formula>
+
+**▸ ⚠️ LƯU Ý**
+
+Slide viết $\Sigma_{in} + k_{i, in}$. Trong bài báo gốc của Blondel và cộng sự là $\Sigma_{in} + 2 k_{i, in}$, vì $k_{i, in}$ chỉ đếm mỗi cạnh một lần. Kiểm tra bằng số cho thấy dạng có hệ số 2 khớp đúng với $Q$ tính trực tiếp từ định nghĩa, nên hình dưới dùng dạng này.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Louvain trên đồ thị 12 đỉnh qua hai pha](/content/MAT3565/C7/louvain-steps.svg)

@@ -1,0 +1,109 @@
+---
+title: "4. Tiền xử lý"
+author: "Trần Đăng Quang Minh"
+---
+
+Trước khi giải, bộ giải kiểm tra mô hình để bỏ ràng buộc thừa, bỏ biến thừa và làm chặt cận. Việc này rất quan trọng, vì nhánh cận có thể phải giải hàng chục nghìn LP. Mô hình càng nhỏ và chặt thì giải càng nhanh.
+
+**▸ CÁC QUY TẮC**
+
+Xét tập $S = \{ x : a_0 x_0 + \sum_{j=1}^{n} a_j x_j \le b, \ l_j \le x_j \le u_j, \ j = 0, \dots, n \}$.
+
+**Làm chặt cận của biến.** Nếu $a_0 > 0$ thì
+$$
+x_0 \le \left( b - \sum_{j : a_j > 0} a_j l_j - \sum_{j : a_j < 0} a_j u_j \right) / a_0
+$$
+Nếu $a_0 < 0$ thì
+$$
+x_0 \ge \left( b - \sum_{j : a_j > 0} a_j l_j - \sum_{j : a_j < 0} a_j u_j \right) / a_0
+$$
+
+**Ràng buộc thừa.** Ràng buộc $\sum_{j=0}^{n} a_j x_j \le b$ là thừa nếu
+$$
+\sum_{j : a_j > 0} a_j u_j + \sum_{j : a_j < 0} a_j l_j \le b
+$$
+
+**Vô nghiệm.** $S = \varnothing$ nếu
+$$
+\sum_{j : a_j > 0} a_j l_j + \sum_{j : a_j < 0} a_j u_j > b
+$$
+
+**Cố định biến.** Với bài toán $\max \{ c^\top x : Ax \le b, \ l \le x \le u \}$:
+- Nếu $a_{ij} \ge 0$ với mọi $i$ và $c_j < 0$ thì đặt $x_j = l_j$.
+- Nếu $a_{ij} \le 0$ với mọi $i$ và $c_j > 0$ thì đặt $x_j = u_j$.
+
+**Biến nguyên.** Nếu $x_j$ nguyên thì làm tròn được cận: $\lceil l_j \rceil \le x_j \le \lfloor u_j \rfloor$.
+
+**▸ VÍ DỤ 1**
+
+$$
+\begin{align*}
+\max \quad & 2x_1 + x_2 - x_3 \\
+\text{s.t.} \quad & 5x_1 - 2x_2 + 8x_3 \le 15 \\
+& 8x_1 + 3x_2 - x_3 \ge 9 \\
+& x_1 + x_2 + x_3 \le 6 \\
+& 0 \le x_1 \le 3, \quad 0 \le x_2 \le 1, \quad 1 \le x_3
+\end{align*}
+$$
+
+**Làm chặt cận.** Từ ràng buộc 1:
+$$
+\begin{align*}
+5x_1 &\le 15 + 2x_2 - 8x_3 \le 15 + 2 \cdot 1 - 8 \cdot 1 = 9 &\Rightarrow\ & x_1 \le \frac{9}{5} \\
+8x_3 &\le 15 + 2x_2 - 5x_1 \le 15 + 2 \cdot 1 - 5 \cdot 0 = 17 &\Rightarrow\ & x_3 \le \frac{17}{8}
+\end{align*}
+$$
+
+Từ ràng buộc 2:
+$$
+8x_1 \ge 9 - 3x_2 + x_3 \ge 9 - 3 + 1 = 7 \ \Rightarrow \ x_1 \ge \frac{7}{8}
+$$
+
+Do cận đã thay đổi, xét lại ràng buộc 1:
+$$
+8x_3 \le 15 + 2x_2 - 5x_1 \le 15 + 2 - 5 \cdot \frac{7}{8} = \frac{101}{8} \ \Rightarrow \ x_3 \le \frac{101}{64}
+$$
+
+**Bỏ ràng buộc thừa.** Với cận mới, ràng buộc 3 luôn đúng:
+$$
+x_1 + x_2 + x_3 \le \frac{9}{5} + 1 + \frac{101}{64} < 6
+$$
+
+**Cố định biến.**
+- Tăng $x_2$ thì các ràng buộc còn lại đều lỏng hơn, mà $x_2$ có hệ số mục tiêu dương. Vậy đặt $x_2 = 1$.
+- Giảm $x_3$ thì các ràng buộc đều lỏng hơn, mà $x_3$ có hệ số mục tiêu âm. Vậy đặt $x_3 = 1$.
+
+Bài toán chỉ còn $\max \{ 2x_1 : \frac{7}{8} \le x_1 \le \frac{9}{5} \}$. Nghiệm là $x_1 = \frac{9}{5}$.
+
+**▸ VÍ DỤ 2: SUY RA RÀNG BUỘC LOGIC CHO BIẾN 0-1**
+
+$$
+\begin{align*}
+7x_1 + 3x_2 - 4x_3 - 2x_4 &\le 1 \\
+-2x_1 + 7x_2 + 3x_3 + x_4 &\le 6 \\
+-2x_2 - 3x_3 - 6x_4 &\le -5 \\
+3x_1 - 2x_3 &\ge -1 \\
+x &\in \{0, 1\}^4
+\end{align*}
+$$
+
+Xét từng hàng:
+- **Hàng 1:** nếu $x_1 = 1$ thì buộc $x_3 = 1$ và $x_4 = 1$. Không thể có $x_1 = x_2 = 1$. Vậy $x_1 \le x_3$, $x_1 \le x_4$, $x_1 + x_2 \le 1$.
+- **Hàng 2:** $x_2 \le x_1$ và $x_2 + x_3 \le 1$.
+- **Hàng 3:** $x_2 + x_4 \ge 1$ và $x_3 + x_4 \ge 1$.
+- **Hàng 4:** $x_1 \ge x_3$.
+
+Kết hợp các cặp:
+- $x_1 \le x_3$ và $x_1 \ge x_3$ cho $x_1 = x_3$.
+- $x_1 + x_2 \le 1$ và $x_2 \le x_1$ cho $x_2 = 0$.
+- $x_2 + x_4 \ge 1$ và $x_2 = 0$ cho $x_4 = 1$.
+
+Chỉ còn lại hai nghiệm chấp nhận được là $(1, 0, 1, 1)$ và $(0, 0, 0, 1)$.
+
+**▸ TIỀN XỬ LÝ BÀI TOÁN PHỦ VÀ PHÂN HOẠCH**
+
+Với ma trận 0-1 $A$, ràng buộc $Ax \ge \mathbf{1}$ hoặc $Ax = \mathbf{1}$:
+- **Hàng toàn số 0:** bài toán vô nghiệm, vì không thể thỏa mãn hàng này.
+- **Hàng chỉ có một số 1 ở cột $k$:** $x_k = 1$ trong mọi nghiệm. Với bài toán phân hoạch, bỏ thêm được mọi hàng $t$ có $a_{tk} = 1$ và đặt $x_j = 0$ cho mọi cột phủ hàng $t$.
+- **Hàng $t$ có mọi số 1 của hàng $p$:** bỏ được hàng $t$, vì phủ hàng $p$ thì đã phủ hàng $t$. Với bài toán phân hoạch, bỏ thêm được mọi cột $j$ có $a_{tj} = 1$, $a_{pj} = 0$.
+- **Một nhóm cột $S$ có tổng bằng cột $k$** và $\sum_{j \in S} c_j \le c_k$: đặt được $x_k = 0$, vì dùng nhóm $S$ rẻ hơn.

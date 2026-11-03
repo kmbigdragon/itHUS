@@ -1,0 +1,49 @@
+---
+title: "4. Thuật toán A-Priori"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ Ý TƯỞNG: TÍNH ĐƠN ĐIỆU**
+
+<Formula title="Tính đơn điệu">
+
+$$
+J \subseteq I \;\Rightarrow\; \text{support}(J) \ge \text{support}(I)
+$$
+
+</Formula>
+
+Nếu $I$ xuất hiện ít nhất $s$ lần thì mọi tập con của $I$ cũng vậy. Phản đảo: nếu item $i$ không xuất hiện trong $s$ giỏ thì không cặp nào chứa $i$ có thể xuất hiện trong $s$ giỏ.
+
+**▸ THUẬT TOÁN CHO CẶP (2 LƯỢT)**
+
+- **Lượt 1:** đọc các giỏ và đếm từng item. Bộ nhớ tỉ lệ với số item. Item xuất hiện ít nhất $s$ lần là item phổ biến.
+- **Lượt 2:** đọc lại các giỏ, chỉ đếm những cặp có cả hai item đều phổ biến. Bộ nhớ tỉ lệ với bình phương số item phổ biến, không phải bình phương tổng số item.
+
+Có thể dùng ma trận tam giác với $n$ là số item phổ biến, bằng cách đánh số lại các item phổ biến là $1, 2, \dots$ và giữ bảng đổi số cũ sang số mới.
+
+**▸ MỞ RỘNG CHO TẬP k PHẦN TỬ**
+
+Với mỗi $k$ ta xây hai tập:
+- $C_k$: các **ứng viên** $k$ phần tử, có thể phổ biến dựa theo kết quả của lượt $k - 1$.
+- $L_k$: các tập $k$ phần tử **thực sự** phổ biến.
+
+$$
+C_1 \xrightarrow{\text{đếm, lọc}} L_1 \xrightarrow{\text{tạo}} C_2 \xrightarrow{\text{đếm, lọc}} L_2 \xrightarrow{\text{tạo}} C_3 \to \cdots
+$$
+
+Mỗi $k$ cần một lượt đọc dữ liệu. Với dữ liệu thông thường và ngưỡng hợp lý (như 1%), $k = 2$ tốn bộ nhớ nhất.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+Dùng 8 giỏ của bài trước với $s = 3$. Mỗi ô ghi tập và số đếm của nó.
+
+![A-Priori qua ba lượt, ô xanh là phổ biến và ô xám bị loại](/content/MAT3565/C2/apriori-steps.svg)
+
+- **Lượt 1:** đếm 6 item. $p$ và $n$ bị loại, còn $L_1 = \{b, c, j, m\}$.
+- **Lượt 2:** $C_2$ chỉ gồm 6 cặp tạo từ $L_1$. Nếu không có A-Priori thì phải đếm $\binom{6}{2} = 15$ cặp. Kết quả $L_2 = \{b,c\}, \{b,m\}, \{c,j\}, \{c,m\}$.
+- **Lượt 3:** bộ ba nào có một cặp con không nằm trong $L_2$ thì không cần đếm. Chỉ còn $\{b, c, m\}$ với số đếm 3, nên $L_3 = \{b, c, m\}$.
+
+**▸ ⚠️ LƯU Ý**
+
+Slide liệt kê $C_3$ gồm cả 4 bộ ba rồi mới ghi chú rằng có thể loại bớt. Hình ở trên đã loại luôn các bộ ba có cặp con không phổ biến.

@@ -1,0 +1,133 @@
+---
+title: "3. Lọc cộng tác"
+author: "Trần Đăng Quang Minh"
+---
+
+Không xây hồ sơ item hay hồ sơ user. Thay vào đó dùng trực tiếp hàng hoặc cột trong ma trận tiện ích.
+
+**▸ LỌC CỘNG TÁC USER-USER**
+
+Với user $x$, tìm tập $N$ các user có đánh giá giống $x$, rồi ước lượng đánh giá của $x$ dựa trên đánh giá của $N$.
+
+**▸ CÁC ĐỘ ĐO TƯƠNG ĐỒNG**
+
+Với $r_x$ là vector đánh giá của user $x$:
+
+<Formula title="Độ tương đồng cosine">
+
+$$
+\text{sim}(x, y) = \cos(r_x, r_y) = \frac{r_x \cdot r_y}{\|r_x\| \cdot \|r_y\|}
+$$
+
+</Formula>
+
+<Formula title="Hệ số tương quan Pearson">
+
+$$
+\text{sim}(x, y) = \frac{\sum_{s \in S_{xy}} (r_{xs} - \bar{r}_x)(r_{ys} - \bar{r}_y)}{\sqrt{\sum_{s \in S_{xy}} (r_{xs} - \bar{r}_x)^2} \sqrt{\sum_{s \in S_{xy}} (r_{ys} - \bar{r}_y)^2}}
+$$
+
+</Formula>
+
+$S_{xy}$ là tập item mà cả $x$ và $y$ đều đã đánh giá, $\bar{r}_x$ là đánh giá trung bình của $x$.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Độ đo</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Cách nhìn $r_x$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Vấn đề</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Jaccard</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tập hợp</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bỏ qua giá trị đánh giá</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Cosine</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Điểm, ô trống bằng 0</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Coi đánh giá thiếu là đánh giá thấp</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Pearson</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Đã trừ trung bình</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Giải quyết hai vấn đề trên</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+![So sánh Jaccard, cosine và Pearson trên ví dụ bốn user](/content/MAT3565/C5/sim-compare.svg)
+
+**▸ ⚠️ LƯU Ý**
+
+Số $0.092$ và $-0.559$ trong slide là cosine sau khi trừ trung bình mỗi hàng và cho ô trống bằng 0. Công thức Pearson ở trên chỉ tính trên item cùng đánh giá, nên có thể ra số khác.
+
+**▸ TỪ ĐỘ TƯƠNG ĐỒNG ĐẾN DỰ ĐOÁN**
+
+Gọi $N$ là $k$ user giống $x$ nhất và đã đánh giá item $i$.
+
+<Formula title="Dự đoán đánh giá theo user">
+
+$$
+r_{xi} = \frac{1}{k} \sum_{y \in N} r_{yi} \qquad \text{hoặc tốt hơn} \qquad r_{xi} = \frac{\sum_{y \in N} s_{xy} r_{yi}}{\sum_{y \in N} s_{xy}}
+$$
+
+</Formula>
+
+với $s_{xy} = \text{sim}(x, y)$.
+
+**▸ LỌC CỘNG TÁC ITEM-ITEM**
+
+Làm tương tự nhưng theo cột: với item $i$, tìm các item giống nó, rồi ước lượng đánh giá từ đánh giá của user trên các item đó.
+
+<Formula title="Dự đoán đánh giá theo item">
+
+$$
+r_{xi} = \frac{\sum_{j \in N(i; x)} s_{ij} r_{xj}}{\sum_{j \in N(i; x)} s_{ij}}
+$$
+
+</Formula>
+
+- $s_{ij}$: độ tương đồng của item $i$ và $j$.
+- $N(i; x)$: tập các item user $x$ đã đánh giá và giống $i$.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Lọc cộng tác item-item dự đoán đánh giá của user 5 cho phim 1](/content/MAT3565/C5/item-cf-steps.svg)
+
+**▸ TÍNH THÊM ĐỘ LỆCH**
+
+Trong thực tế, mô hình hóa độ lệch sẽ tốt hơn:
+
+<Formula title="Dự đoán có độ lệch">
+
+$$
+r_{xi} = b_{xi} + \frac{\sum_{j \in N(i; x)} s_{ij} (r_{xj} - b_{xj})}{\sum_{j \in N(i; x)} s_{ij}}, \qquad b_{xi} = \mu + b_x + b_i
+$$
+
+</Formula>
+
+- $\mu$: đánh giá trung bình toàn bộ.
+- $b_x$: độ lệch của user $x$, bằng trung bình của $x$ trừ $\mu$.
+- $b_i$: độ lệch của item $i$, bằng trung bình của $i$ trừ $\mu$.
+
+**▸ ITEM-ITEM HAY USER-USER**
+
+Thực tế item-item thường tốt hơn, vì item "đơn giản" hơn, còn user có nhiều sở thích khác nhau.
+
+**▸ ƯU VÀ NHƯỢC ĐIỂM**
+
+- **Ưu:** dùng được cho mọi loại item, không cần chọn đặc trưng.
+- **Nhược:**
+  - **Khởi động lạnh:** cần đủ user để tìm được người giống.
+  - **Thưa:** khó tìm user đã đánh giá cùng các item.
+  - **Người đánh giá đầu tiên:** không gợi ý được item chưa ai đánh giá.
+  - **Thiên về item phổ biến:** khó gợi ý cho user có sở thích riêng.
+
+**▸ KẾT HỢP**
+
+Cài đặt nhiều hệ gợi ý rồi kết hợp dự đoán, ví dụ bằng mô hình tuyến tính. Có thể thêm phương pháp dựa trên nội dung vào lọc cộng tác: hồ sơ item cho vấn đề item mới, thông tin nhân khẩu học cho vấn đề user mới.

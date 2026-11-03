@@ -1,0 +1,162 @@
+---
+title: "2. Luật kết hợp"
+author: "Trần Đăng Quang Minh"
+---
+
+**Luật kết hợp** $I \to j$ có nghĩa: giỏ nào chứa mọi item của $I$ thì nhiều khả năng cũng chứa $j$.
+
+**▸ CÁC ĐỘ ĐO**
+
+<Formula title="Độ tin cậy">
+
+$$
+\text{conf}(I \to j) = \frac{\text{support}(I \cup \{j\})}{\text{support}(I)} = P(j \mid I)
+$$
+
+</Formula>
+
+Độ tin cậy cao chưa chắc đã thú vị. Ví dụ luật $X \to \text{sữa}$ có thể có độ tin cậy cao chỉ vì sữa được mua rất nhiều, không liên quan đến $X$.
+
+<Formula title="Độ quan tâm">
+
+$$
+\text{Interest}(I \to j) = \left| \text{conf}(I \to j) - P(j) \right|
+$$
+
+</Formula>
+
+Trong đó $P(j)$ là tỉ lệ giỏ chứa $j$. Luật thú vị là luật có độ quan tâm cao, thường trên $0.5$. Lấy trị tuyệt đối để bắt cả liên hệ dương lẫn liên hệ âm.
+
+**Ví dụ:** với 8 giỏ ở bài trước, xét luật $\{m, b\} \to c$.
+- Độ hỗ trợ bằng 2.
+- Độ tin cậy bằng $2/4 = 0.5$.
+- $c$ xuất hiện trong $5/8$ số giỏ, nên độ quan tâm bằng $|0.5 - 5/8| = 1/8$. Luật này không thú vị lắm.
+
+**▸ TÌM LUẬT KẾT HỢP**
+
+Bài toán: tìm mọi luật có độ hỗ trợ ít nhất $s$ và độ tin cậy ít nhất $c$. Độ hỗ trợ của luật là độ hỗ trợ của toàn bộ item ở cả hai vế.
+
+- **Bước 1:** tìm mọi tập phổ biến $I$. Đây là phần khó.
+- **Bước 2:** với mỗi tập con $A$ của $I$, sinh luật $A \to I \setminus A$. Vì $I$ phổ biến nên $A$ cũng phổ biến. Tính độ tin cậy và giữ lại luật đạt ngưỡng.
+
+Có thể bớt tính toán nhờ nhận xét: nếu $A, B, C \to D$ dưới ngưỡng tin cậy thì $A, B \to C, D$ cũng dưới ngưỡng.
+
+**Ví dụ:** $s = 3$, $c = 0.75$, với 8 giỏ (ở đây $B_3 = \{m, c, b, n\}$).
+
+Các tập phổ biến: $\{b, m\}, \{b, c\}, \{c, m\}, \{c, j\}, \{m, c, b\}$.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Luật</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Độ tin cậy</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Giữ?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$b \to m$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$4/6$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$b \to c$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$5/6$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Có</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$m \to b$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$4/5$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Có</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$b, c \to m$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$3/5$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$b, m \to c$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$3/4$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Có</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$b \to c, m$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$3/6$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ GIẢM SỐ LUẬT**
+
+- **Tập phổ biến tối đại:** không có tập cha trực tiếp nào phổ biến.
+- **Tập đóng:** không có tập cha trực tiếp nào có cùng độ hỗ trợ. Tập đóng giữ được cả số đếm chính xác.
+
+**Ví dụ:** với $s = 3$:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Tập</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Độ hỗ trợ</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Tối đại?</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Đóng?</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Lý do</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$A$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$AB$ phổ biến, cùng độ hỗ trợ</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$B$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">5</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Có</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$AB$ phổ biến, nhưng độ hỗ trợ nhỏ hơn</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$C$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$BC$ phổ biến, cùng độ hỗ trợ</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$AB$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Có</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Có</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$ABC$ không phổ biến</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$AC$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không phổ biến, $ABC$ cùng độ hỗ trợ</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$BC$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Có</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Có</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$ABC$ không phổ biến, độ hỗ trợ nhỏ hơn</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$ABC$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Có</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không phổ biến nên không tối đại, không có tập cha nên đóng</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

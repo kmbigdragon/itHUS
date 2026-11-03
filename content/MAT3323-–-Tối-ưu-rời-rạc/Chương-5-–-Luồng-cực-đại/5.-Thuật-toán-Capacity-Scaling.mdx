@@ -1,0 +1,94 @@
+---
+title: "5. Thuật toán Capacity Scaling"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ ĐƯỜNG TĂNG CÓ CỔ CHAI LỚN NHẤT**
+
+Trực giác: mỗi vòng nên chọn đường có dung lượng cổ chai lớn nhất để luồng tăng nhiều nhất có thể. Đường này tìm được bằng cách sửa Dijkstra như đã nói ở Chương 4.
+
+**Bổ đề (phân rã luồng).** Mọi luồng có thể viết thành tổng của tối đa $m$ luồng trên đường đi, cộng với một luồng có giá trị 0.
+
+**Định lý.** Với dung tích nguyên, chọn đường cổ chai lớn nhất thì đạt luồng cực đại sau $O(m \log |f^*|)$ vòng lặp.
+
+**Ý chứng minh.** Theo bổ đề, phần luồng cực đại còn lại trong mạng còn dư có một đường đi với giá trị ít nhất $1/m$ phần của nó. Vậy mỗi vòng, luồng cực đại còn lại nhân với tối đa $\dfrac{m-1}{m}$.
+
+Do $|f^*| \le mC$ nên số vòng lặp là $O(m \log(mC))$, và tổng thời gian là $O(m^2 \log n \log(mC))$.
+
+**▸ CAPACITY SCALING**
+
+Không cần tìm chính xác đường cổ chai lớn nhất. Chỉ cần tìm đường có cổ chai "đủ lớn".
+
+Duy trì tham số $\Delta$. Gọi $G_f(\Delta)$ là phần của mạng còn dư chỉ gồm các cạnh có dung tích còn dư $\ge \Delta$.
+
+- **Bước 1:** Khởi tạo $f(e) = 0$, $\Delta$ là lũy thừa lớn nhất của 2 mà $\Delta \le C$.
+- **Bước 2:** Chừng nào còn đường đi từ $s$ đến $t$ trong $G_f(\Delta)$ thì tăng luồng dọc theo đường đó.
+- **Bước 3:** Giảm $\Delta$ đi một nửa. Nếu $\Delta \ge 1$ thì quay lại Bước 2. Ngược lại thì dừng.
+
+**▸ PHÂN TÍCH**
+
+**Tính đúng đắn.** Các luồng luôn nguyên, nên khi $\Delta = 1$ ta có $G_f(\Delta) = G_f$. Kết thúc pha này không còn đường tăng, nên luồng đã cực đại.
+
+**Bổ đề 1.** Vòng lặp ngoài chạy $1 + \lfloor \log_2 C \rfloor$ lần.
+
+**Bổ đề 2.** Cho $f$ là luồng khi kết thúc pha $\Delta$. Khi đó luồng cực đại không quá $val(f) + m \Delta$.
+
+**Chứng minh.** Gọi $A$ là tập đỉnh đến được từ $s$ trong $G_f(\Delta)$. Cạnh từ $A$ sang $B$ phải có $f(e) > c(e) - \Delta$ và cạnh từ $B$ sang $A$ phải có $f(e) < \Delta$. Do đó
+$$
+val(f) \ge \sum_{e \in \delta^+(A)} (c(e) - \Delta) - \sum_{e \in \delta^-(A)} \Delta \ge cap(A, B) - m \Delta
+$$
+
+**Bổ đề 3.** Mỗi pha có tối đa $2m$ lần tăng luồng.
+
+**Chứng minh.** Xét luồng $f$ cuối pha trước, với tham số $2\Delta$. Theo Bổ đề 2, luồng cực đại không quá $val(f) + 2m\Delta$. Mỗi lần tăng trong pha này tăng được ít nhất $\Delta$.
+
+**Định lý.** Capacity Scaling tìm luồng cực đại sau $O(m \log C)$ lần tăng luồng, và chạy trong $O(m^2 \log C)$.
+
+**▸ VÍ DỤ**
+
+Mạng ví dụ có $C = 10$, nên bắt đầu với $\Delta = 8$.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$\Delta$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Đường tăng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Cổ chai</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Giá trị luồng</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">8</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$s \to a \to d \to t$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">8</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">8</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$s \to b \to d \to c \to t$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">6</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">14</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$s \to a \to c \to t$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">16</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$s \to b \to d \to t$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">18</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$s \to b \to d \to a \to c \to t$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">19</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

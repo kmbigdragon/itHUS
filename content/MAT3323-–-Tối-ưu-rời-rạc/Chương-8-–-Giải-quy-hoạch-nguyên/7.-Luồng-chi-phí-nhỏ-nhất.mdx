@@ -1,0 +1,112 @@
+---
+title: "7. Luồng chi phí nhỏ nhất"
+author: "Trần Đăng Quang Minh"
+---
+
+Nhiều bài toán của môn học là trường hợp riêng của bài toán này.
+
+**▸ MẠNG**
+
+$N = (V, A, l, u, b, c)$ gồm:
+- Đồ thị có hướng $D = (V, A)$.
+- Cận dưới $l_{ij}$ và dung lượng $u_{ij}$ trên mỗi cung.
+- Chi phí $c_{ij}$ trên mỗi đơn vị luồng.
+- Vector cân bằng $b$, với $b(i) < 0$ là **nút cung (source)**, $b(i) > 0$ là **nút cầu (sink)**, $b(i) = 0$ là **nút trung chuyển**. Giả sử $\sum_i b(i) = 0$.
+
+**Luồng** $x$ có vector cân bằng là
+$$
+b_x(v) = \sum_{uv \in A} x_{uv} - \sum_{vw \in A} x_{vw}
+$$
+
+Luồng **chấp nhận được** nếu $l_{ij} \le x_{ij} \le u_{ij}$ và $b_x(i) = b(i)$.
+
+**▸ BÀI TOÁN**
+
+**Luồng chi phí nhỏ nhất (Minimum Cost Network Flow):** Tìm luồng rẻ nhất để đáp ứng nhu cầu của các nút cầu từ các nút cung.
+
+$$
+\begin{align*}
+\min \quad & \sum_{ij \in A} c_{ij} x_{ij} \\
+\text{s.t.} \quad & \sum_{j : ji \in A} x_{ji} - \sum_{j : ij \in A} x_{ij} = b(i), \quad \forall i \in V \\
+& 0 \le x_{ij} \le u_{ij}
+\end{align*}
+$$
+
+Viết gọn thành $\min \{ c^\top x : Nx = b, \ 0 \le x \le u \}$, trong đó $N$ là ma trận liên thuộc đỉnh-cung. Do $N$ là TUM nên nếu dữ liệu nguyên thì LP có nghiệm nguyên.
+
+**▸ CÁC PHÉP BIẾN ĐỔI**
+
+**Bỏ cận dưới.** Đặt $x = x' + l$. Khi đó
+$$
+b'(i) = b(i) + l_{ij}, \quad b'(j) = b(j) - l_{ij}, \quad u'_{ij} = u_{ij} - l_{ij}, \quad l'_{ij} = 0
+$$
+Chi phí chênh lệch một hằng số $\sum_{ij \in A} c_{ij} l_{ij}$.
+
+**Cạnh vô hướng.** Thay bằng hai cung ngược chiều.
+
+**Tách đỉnh.** Dùng khi đỉnh cũng có cận hoặc chi phí, chẳng hạn để buộc phải đi qua một đỉnh. Thay đỉnh $v$ bằng cung từ $v_t$ đến $v_s$, mang cận và chi phí của $v$. Mỗi cung $xy$ cũ đổi thành $x_s y_t$.
+
+**Đưa về luồng (s, t).** Thêm đỉnh $s$ nối đến mọi nút cung, thêm đỉnh $t$ nhận từ mọi nút cầu. Đặt $M = \sum_{v : b(v) > 0} b(v)$. Khi đó mạng có luồng chấp nhận được khi và chỉ khi mạng mới có luồng $(s, t)$ giá trị $M$. Như vậy kiểm tra luồng chấp nhận được là một bài toán luồng cực đại.
+
+**▸ CÁC TRƯỜNG HỢP RIÊNG**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Bài toán</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Cách đặt</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Đường đi ngắn nhất từ $s$ đến $t$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$b(s) = -1$, $b(t) = 1$, các đỉnh khác $b(i) = 0$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Đường đi ngắn nhất từ $s$ đến mọi đỉnh</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$b(s) = -(n - 1)$, $b(i) = 1$, $u_{ij} = n - 1$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Luồng cực đại</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$b(i) = 0$, $c_{ij} = 0$; thêm cung $ts$ với $c_{ts} = -1$, $u_{ts} = \infty$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Phân công</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$b(i) = -1$ với $i \in V_1$, $b(i) = 1$ với $i \in V_2$, $u_{ij} = 1$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Vận tải</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$u_{ij} = \infty$, các nút cung chỉ nối đến các nút cầu</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Lưu thông chi phí nhỏ nhất</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$b(i) = 0$ với mọi $i$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Bài toán vận tải có thể viết rõ như sau:
+$$
+\begin{align*}
+\min \quad & \sum_{ij} c_{ij} x_{ij} \\
+\text{s.t.} \quad & \sum_i x_{ij} \ge b_j, \quad \forall j \\
+& \sum_j x_{ij} \le a_i, \quad \forall i \\
+& x_{ij} \ge 0
+\end{align*}
+$$
+
+**▸ ⚠️ LƯU Ý: LUỒNG NHIỀU LOẠI HÀNG**
+
+Trong **multi-commodity flow**, nhiều loại hàng $k$ dùng chung một mạng. Mỗi loại có ràng buộc cân bằng riêng, nhưng dùng chung dung lượng:
+$$
+\begin{align*}
+\min \quad & \sum_k c^k x^k \\
+\text{s.t.} \quad & N x^k = b^k, \quad \forall k \\
+& \sum_k x_{ij}^k \le u_{ij}, \quad \forall ij \in A \\
+& x^k \ge 0
+\end{align*}
+$$
+
+Ràng buộc dung lượng chung làm mỗi cột có thêm phần tử khác 0, nên nói chung ma trận không còn TUM. LP của bài toán này có thể cho nghiệm không nguyên.

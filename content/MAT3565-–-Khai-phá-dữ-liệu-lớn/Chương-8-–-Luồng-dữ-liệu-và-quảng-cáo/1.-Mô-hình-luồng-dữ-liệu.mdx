@@ -1,0 +1,61 @@
+---
+title: "1. Mô hình luồng dữ liệu"
+author: "Trần Đăng Quang Minh"
+---
+
+Các chương trước có sẵn toàn bộ dữ liệu. Với **luồng dữ liệu**, dữ liệu đến từng phần tử, thường rất nhanh:
+- Nếu không xử lý ngay thì mất luôn.
+- Không thể lưu lại tất cả.
+
+Ví dụ: truy vấn Google, bài đăng mạng xã hội, giao dịch thẻ tín dụng. Nên coi dữ liệu là vô hạn và không dừng, tức phân phối thay đổi theo thời gian.
+
+**▸ MÔ HÌNH**
+
+- Các phần tử (gọi là bộ, tuple) đi vào qua một hoặc nhiều cổng.
+- Hệ thống không lưu được toàn bộ luồng để truy cập.
+
+**Câu hỏi:** làm sao tính toán được khi bộ nhớ có hạn?
+
+![Các luồng đi vào bộ xử lý với bộ nhớ làm việc hạn chế](/content/MAT3565/C8/stream-model.svg)
+
+**▸ CÁC LOẠI TRUY VẤN**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Truy vấn</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Ý nghĩa</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thuật toán</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Lấy mẫu</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Giữ một mẫu ngẫu nhiên của luồng</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Băm theo khóa, Reservoir</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Lọc</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Chọn phần tử có tính chất $x$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bloom</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Đếm phần tử khác nhau</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Số phần tử khác nhau đã gặp</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Flajolet-Martin</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Tìm phần tử thường gặp</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Phần tử phổ biến hiện tại</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Cửa sổ giảm dần</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ ỨNG DỤNG**
+
+- **Luồng truy vấn:** Google muốn biết truy vấn nào hôm nay nhiều hơn hôm qua.
+- **Luồng nhấp chuột:** Wikipedia muốn biết trang nào có lượng truy cập bất thường trong giờ qua.
+- **Tin mạng xã hội:** tìm chủ đề đang nổi.

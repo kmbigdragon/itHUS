@@ -1,0 +1,118 @@
+---
+title: "4. Thuật toán Bellman-Ford"
+author: "Trần Đăng Quang Minh"
+---
+
+Dùng khi đồ thị có trọng số âm. Slide trình bày theo bài toán **một đích**: tìm đường đi rẻ nhất từ mọi đỉnh $v$ đến đích $t$. Bài toán một nguồn làm tương tự.
+
+**▸ CHU TRÌNH ÂM**
+
+**Chu trình âm (negative cycle)** là chu trình có hướng có tổng trọng số âm.
+
+**Bổ đề 1.** Nếu một đường đi từ $v$ đến $t$ đi qua chu trình âm thì không tồn tại đường đi rẻ nhất từ $v$ đến $t$, vì ta có thể đi vòng quanh chu trình bao nhiêu lần tùy ý để giảm chi phí.
+
+**Bổ đề 2.** Nếu $G$ không có chu trình âm thì tồn tại đường đi rẻ nhất từ $v$ đến $t$ là đường đi đơn, tức là có tối đa $n - 1$ cạnh.
+
+Lý do: nếu đường đi chứa chu trình, chu trình đó không âm, nên bỏ đi không làm tăng chi phí.
+
+**▸ QUY HOẠCH ĐỘNG**
+
+Gọi $OPT(i, v)$ là chi phí đường đi rẻ nhất từ $v$ đến $t$ dùng tối đa $i$ cạnh. Có hai trường hợp:
+- Đường đi tốt nhất dùng tối đa $i - 1$ cạnh: khi đó $OPT(i, v) = OPT(i-1, v)$.
+- Đường đi tốt nhất dùng đúng $i$ cạnh: nếu cạnh đầu là $(v, w)$ thì phần còn lại là đường đi tốt nhất từ $w$ đến $t$ dùng tối đa $i - 1$ cạnh.
+
+Công thức truy hồi:
+$$
+OPT(i, v) = \min \left\{ OPT(i-1, v), \ \min_{(v, w) \in E} \left( OPT(i-1, w) + c_{vw} \right) \right\}
+$$
+với $OPT(0, t) = 0$ và $OPT(0, v) = \infty$ khi $v \ne t$.
+
+Nếu không có chu trình âm thì $OPT(n-1, v)$ chính là đáp án (theo Bổ đề 2).
+
+**Định lý 1.** Thuật toán quy hoạch động chạy trong $\Theta(mn)$ thời gian và $\Theta(n^2)$ bộ nhớ.
+
+**▸ VÍ DỤ**
+
+Tìm chi phí rẻ nhất từ mọi đỉnh đến $t$.
+
+![Đồ thị có cạnh âm](/content/MAT3323/C4/bellman-ford.svg)
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$i$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$s$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$a$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$b$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$c$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$t$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">0</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\infty$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\infty$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\infty$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\infty$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$0$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\infty$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$5$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\infty$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$2$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$0$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$9$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$-1$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$3$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$2$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$0$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$3$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$-1$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$-3$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$2$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$0$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$2$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$-1$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$-3$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$2$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$0$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Kết quả ở hàng cuối. Đường đi từ $s$ là $s \to b \to a \to c \to t$ với chi phí $5 - 2 - 3 + 2 = 2$.
+
+**▸ CÀI ĐẶT TIẾT KIỆM BỘ NHỚ**
+
+Thay vì bảng hai chiều, chỉ cần hai mảng một chiều:
+- $d(v)$: chi phí đường đi rẻ nhất tìm được đến giờ.
+- $successor(v)$: đỉnh tiếp theo trên đường đi đó.
+
+Nếu $d(w)$ không đổi ở vòng trước thì ở vòng này không cần xét các cạnh đi vào $w$. Nếu một vòng không có $d$ nào thay đổi thì dừng sớm.
+
+- **Bước 1:** Khởi tạo $d(v) = \infty$, $successor(v) = null$, $d(t) = 0$.
+- **Bước 2:** Lặp tối đa $n - 1$ vòng: với mỗi $w$ có $d(w)$ vừa thay đổi và mỗi cạnh $(v, w)$, nếu $d(v) > d(w) + c_{vw}$ thì đặt $d(v) = d(w) + c_{vw}$ và $successor(v) = w$.
+
+**Định lý 2.** Nếu không có chu trình âm, Bellman-Ford tìm được chi phí đúng trong $O(mn)$ thời gian và $\Theta(n)$ bộ nhớ thêm.
+
+**Định lý 3.** Với điều kiện trên, đi theo các con trỏ $successor$ từ $v$ cho ta đường đi rẻ nhất từ $v$ đến $t$.
+
+**▸ ⚠️ LƯU Ý**
+
+Vì $d$ được cập nhật ngay trong vòng lặp, nên có hai điều dễ nhầm:
+- Sau vòng thứ $i$, $d(v)$ **không nhất thiết** bằng chi phí rẻ nhất dùng tối đa $i$ cạnh. Điều đúng là $d(v)$ không lớn hơn chi phí đó (Bổ đề 3).
+- Trong lúc chạy, đi theo $successor$ **chưa chắc** cho đường đi có chi phí đúng bằng $d(v)$. Đồ thị các con trỏ còn có thể có chu trình, nhưng nếu có thì đó là chu trình âm (Bổ đề 4).

@@ -1,0 +1,45 @@
+---
+title: "6. Chu trình có trọng số âm"
+author: "Trần Đăng Quang Minh"
+---
+
+**Bài toán.** Cho đồ thị có hướng có trọng số $c_{vw}$. Tìm một chu trình âm, nếu có.
+
+**▸ DẤU HIỆU NHẬN BIẾT**
+
+Dùng lại $OPT(i, v)$ của Bellman-Ford, nhưng tính thêm đến $i = n$.
+
+**Bổ đề 5.** Nếu $OPT(n, v) = OPT(n-1, v)$ với mọi $v$ thì không có chu trình âm nào đi đến được $t$.
+
+**Bổ đề 6.** Nếu $OPT(n, v) < OPT(n-1, v)$ với đỉnh $v$ nào đó thì đường đi rẻ nhất từ $v$ đến $t$ chứa một chu trình $W$, và $W$ là chu trình âm.
+
+**Chứng minh.** Do $OPT(n, v) < OPT(n-1, v)$ nên đường đi rẻ nhất $P$ có đúng $n$ cạnh. Theo nguyên lý chuồng bồ câu, $P$ chứa chu trình $W$. Xóa $W$ thì được đường đi ít hơn $n$ cạnh, mà đường đi này không rẻ hơn $P$, nên $W$ có chi phí âm.
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Thêm đỉnh mới $t$, nối mọi đỉnh đến $t$ bằng cung chi phí 0. Khi đó $G$ có chu trình âm khi và chỉ khi có chu trình âm đi đến được $t$.
+- **Bước 2:** Tính $OPT(n, v)$ và $OPT(n-1, v)$ cho mọi $v$.
+- **Bước 3:** Nếu chúng bằng nhau với mọi $v$ thì không có chu trình âm. Nếu không, lấy chu trình từ đường đi từ $v$ đến $t$. Chu trình này không chứa $t$ vì không có cung nào đi ra từ $t$.
+
+**Định lý 4.** Tìm được chu trình âm trong $\Theta(mn)$ thời gian và $\Theta(n^2)$ bộ nhớ.
+
+**Định lý 5.** Chỉ cần $O(n)$ bộ nhớ thêm nếu chạy Bellman-Ford $n$ vòng trên đồ thị đã thêm đỉnh $t$:
+- Nếu vòng thứ $n$ không có $d(v)$ nào thay đổi thì không có chu trình âm.
+- Nếu không, đi theo các con trỏ $successor$ sẽ gặp lại một đỉnh, tạo thành chu trình. Theo Bổ đề 4, đó là chu trình âm.
+
+**▸ ỨNG DỤNG: CHÊNH LỆCH TỶ GIÁ**
+
+Cho $n$ loại tiền tệ và tỷ giá giữa các cặp. Có cách nào đổi vòng một lượt mà có lãi không?
+
+**Ví dụ:** Đổi 1 USD sang EUR, sang CAD, rồi về USD:
+$$
+0.741 \times 1.366 \times 0.995 = 1.00714497
+$$
+Lãi được khoảng 0.7%.
+
+**Cách mô hình hóa:** Mỗi loại tiền là một đỉnh, cung từ tiền $i$ sang tiền $j$ có trọng số $-\ln r_{ij}$ với $r_{ij}$ là tỷ giá. Tích các tỷ giá lớn hơn 1 khi và chỉ khi tổng các trọng số nhỏ hơn 0, nên cơ hội chênh lệch tỷ giá chính là chu trình âm.
+
+Với ví dụ trên:
+$$
+-\ln 0.741 - \ln 1.366 - \ln 0.995 \approx 0.2998 - 0.3119 + 0.0050 = -0.0071 < 0
+$$

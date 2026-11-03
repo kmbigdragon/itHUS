@@ -1,0 +1,110 @@
+---
+title: "4. Thuật toán đường đi ngắn nhất liên tiếp"
+author: "Trần Đăng Quang Minh"
+---
+
+Đây là cách nhìn bài toán phân công bằng đường đi trên đồ thị. Nó chính là phương pháp Hungary viết theo ngôn ngữ đường đi ngắn nhất.
+
+**▸ ĐƯỜNG THAY PHIÊN NGẮN NHẤT**
+
+**Chi phí của đường thay phiên:** trả $c(x, y)$ để ghép $x$ với $y$, nhận lại $c(x, y)$ khi bỏ ghép.
+
+**Thuật toán đường đi ngắn nhất liên tiếp (successive shortest path):**
+- **Bước 1:** Bắt đầu với cặp ghép rỗng.
+- **Bước 2:** Lặp lại: tăng cặp ghép dọc theo đường thay phiên có chi phí nhỏ nhất, đi từ một đỉnh $x \in X$ chưa ghép đến một đỉnh $y \in Y$ chưa ghép.
+
+Đường này tương ứng với đường đi chi phí nhỏ nhất từ $s$ đến $t$ trong $G_M$. Vấn đề là $G_M$ có chi phí âm vì có cạnh "nhận lại tiền".
+
+Nếu luôn chọn đường thay phiên ngắn nhất thì $G_M$ không có chu trình âm, nên tính được bằng Bellman-Ford. Nhưng dùng đối ngẫu thì có thể khử chi phí âm để tính bằng Dijkstra, nhanh hơn.
+
+**▸ CHI PHÍ RÚT GỌN**
+
+**Ý tưởng:** Cộng $p(x)$ vào mọi cạnh kề với $x \in X$, hoặc trừ $p(y)$ khỏi mọi cạnh kề với $y \in Y$, không làm thay đổi cặp ghép hoàn hảo tối ưu. Lý do là mỗi cặp ghép hoàn hảo dùng đúng một cạnh tại mỗi đỉnh.
+
+**Chi phí rút gọn (reduced cost).** Với $x \in X$, $y \in Y$:
+$$
+c_p(x, y) = p(x) + c(x, y) - p(y)
+$$
+
+**Nhận xét 1.** Tìm cặp ghép hoàn hảo tối ưu theo chi phí rút gọn cũng tương đương với tìm theo chi phí gốc.
+
+**▸ GIÁ TƯƠNG THÍCH**
+
+Giá $p$ gọi là **tương thích (compatible)** với cặp ghép $M$ nếu:
+- $c_p(x, y) \ge 0$ với mọi $(x, y) \notin M$.
+- $c_p(x, y) = 0$ với mọi $(x, y) \in M$.
+
+**Nhận xét 2.** Nếu giá $p$ tương thích với cặp ghép hoàn hảo $M$ thì $M$ là cặp ghép hoàn hảo có chi phí nhỏ nhất. Lý do: theo chi phí rút gọn, $M$ có tổng bằng 0, còn mọi cặp ghép khác đều có tổng không âm.
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Khởi tạo $M = \varnothing$, $p(v) = 0$ với mọi $v$. Do $c \ge 0$ nên giá này tương thích.
+- **Bước 2:** Tính khoảng cách $d(v)$ từ $s$ đến mọi đỉnh $v$ trong $G_M$ theo chi phí $c_p$, bằng Dijkstra.
+- **Bước 3:** Tăng cặp ghép dọc theo đường thay phiên ngắn nhất.
+- **Bước 4:** Cập nhật $p(v) = p(v) + d(v)$ với mọi $v$. Nếu $M$ chưa hoàn hảo thì quay lại Bước 2.
+
+**▸ VÌ SAO GIÁ VẪN TƯƠNG THÍCH?**
+
+**Bổ đề 1.** Cho $p$ tương thích với $M$, $d$ là khoảng cách trong $G_M$ theo $c_p$. Mọi cạnh $(x, y)$ trên đường đi ngắn nhất đều có $c_{p+d}(x, y) = 0$.
+
+**Bổ đề 2.** $p' = p + d$ cũng tương thích với $M$.
+
+**Bổ đề 3.** Gọi $M'$ là cặp ghép sau khi tăng dọc đường đi ngắn nhất. Khi đó $p' = p + d$ tương thích với $M'$.
+
+Lý do: chỉ có các cạnh trên đường đi ngắn nhất là đổi trạng thái ghép, và theo Bổ đề 1 chúng có chi phí rút gọn bằng 0.
+
+**Định lý.** Thuật toán trả về cặp ghép hoàn hảo có chi phí nhỏ nhất, và chạy trong $O(n^3)$: có $n$ vòng lặp, mỗi vòng chạy Dijkstra dạng dày mất $O(n^2)$.
+
+**▸ VÍ DỤ**
+
+Ma trận chi phí với $X = \{0, 1, 2\}$ và $Y = \{0', 1', 2'\}$:
+$$
+c =
+\begin{bmatrix}
+15 & 7 & 3 \\
+5 & 6 & 2 \\
+9 & 4 & 1
+\end{bmatrix}
+$$
+
+**Vòng 1.** Mọi giá bằng 0. Khoảng cách: $d(0') = 5$, $d(1') = 4$, $d(2') = 1$ và $d(x) = 0$ với mọi $x \in X$. Đỉnh chưa ghép gần nhất là $2'$, nên ghép $2 - 2'$. Giá mới và chi phí rút gọn:
+$$
+p(0') = 5, \ p(1') = 4, \ p(2') = 1, \qquad
+c_p =
+\begin{bmatrix}
+10 & 3 & 2 \\
+0 & 2 & 1 \\
+4 & 0 & 0
+\end{bmatrix}
+$$
+
+**Vòng 2.** Đỉnh chưa ghép gần nhất là $0'$ với khoảng cách 0 (đi từ đỉnh 1). Ghép thêm $1 - 0'$. Khoảng cách: $d(2) = 1$, $d(0') = 0$, $d(1') = 1$, $d(2') = 1$. Giá mới và chi phí rút gọn:
+$$
+p(2) = 1, \ p(0') = 5, \ p(1') = 5, \ p(2') = 2, \qquad
+c_p =
+\begin{bmatrix}
+10 & 2 & 1 \\
+0 & 1 & 0 \\
+5 & 0 & 0
+\end{bmatrix}
+$$
+
+**Vòng 3.** Từ đỉnh 0 chưa ghép, đường thay phiên ngắn nhất đến đỉnh $1'$ chưa ghép là $0 \to 2' \to 2 \to 1'$, độ dài $1 + 0 + 0 = 1$. Sau khi tăng, cặp ghép là $\{0 - 2', \ 1 - 0', \ 2 - 1'\}$. Giá cuối cùng:
+$$
+p(0) = 0, \ p(1) = 6, \ p(2) = 2, \ p(0') = 11, \ p(1') = 6, \ p(2') = 3, \qquad
+c_p =
+\begin{bmatrix}
+4 & 1 & 0 \\
+0 & 6 & 5 \\
+0 & 0 & 0
+\end{bmatrix}
+$$
+
+Các cạnh trong cặp ghép đều có chi phí rút gọn bằng 0. **Kết quả:** tổng chi phí gốc là $3 + 5 + 4 = 12$.
+
+**▸ GHÉP CẶP HAI PHÍA CÓ TRỌNG SỐ**
+
+**Bài toán.** Cho đồ thị hai phía có trọng số, $n$ đỉnh, $m$ cạnh. Tìm cặp ghép có lực lượng cực đại với trọng số nhỏ nhất.
+
+- Dùng Fibonacci heap, thuật toán trên chạy trong $O(n(m + n \log n))$ (Fredman, Tarjan 1987).
+- Nếu chi phí là số nguyên từ $0$ đến $C$ thì có thuật toán $O(m n^{1/2} \log(nC))$ (Gabow, Tarjan 1989).

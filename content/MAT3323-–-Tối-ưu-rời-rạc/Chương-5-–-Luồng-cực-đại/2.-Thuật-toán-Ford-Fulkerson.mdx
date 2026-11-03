@@ -1,0 +1,113 @@
+---
+title: "2. Thuật toán Ford-Fulkerson"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ THUẬT TOÁN THAM LAM KHÔNG ĐÚNG**
+
+Cách nghĩ tự nhiên là:
+- Bắt đầu với $f(e) = 0$.
+- Tìm đường đi từ $s$ đến $t$ mà mỗi cạnh đều có $f(e) < c(e)$.
+- Tăng luồng dọc theo đường đi đó, lặp đến khi không tìm được nữa.
+
+Với mạng ví dụ, cách này có thể dừng ở luồng giá trị 16 trong khi đáp án là 19.
+
+**Lý do:** Tham lam chỉ tăng luồng trên cạnh mà không bao giờ giảm. Ta cần có cách "hoàn tác" một quyết định sai.
+
+**▸ MẠNG CÒN DƯ**
+
+Với cạnh gốc $e = (u, v)$ đang có luồng $f(e)$, ta tạo **cạnh ngược** $e^{reverse} = (v, u)$ để có thể trả lại luồng đã gửi.
+
+**Dung tích còn dư (residual capacity):**
+$$
+c_f(e) =
+\begin{cases}
+c(e) - f(e) & \text{if } e \in E \\
+f(e^{reverse}) & \text{if } e^{reverse} \in E
+\end{cases}
+$$
+
+![Cạnh trong mạng còn dư](/content/MAT3323/C5/residual-edge.svg)
+
+**Mạng còn dư (residual network)** $G_f = (V, E_f, s, t, c_f)$ chỉ gồm các cạnh có dung tích còn dư dương:
+$$
+E_f = \{ e : f(e) < c(e) \} \cup \{ e^{reverse} : f(e) > 0 \}
+$$
+
+**Tính chất.** $f'$ là luồng trong $G_f$ khi và chỉ khi $f + f'$ là luồng trong $G$. Luồng trên cạnh ngược được hiểu là giảm luồng trên cạnh gốc.
+
+**▸ ĐƯỜNG TĂNG**
+
+**Đường tăng (augmenting path)** là đường đi đơn từ $s$ đến $t$ trong mạng còn dư $G_f$.
+
+**Dung lượng cổ chai (bottleneck capacity)** của đường tăng là dung tích còn dư nhỏ nhất trên đường đi.
+
+**Phép AUGMENT** dọc theo đường tăng $P$ với dung lượng cổ chai $b$:
+- Với mỗi cạnh $e \in P$ là cạnh gốc: $f(e) = f(e) + b$.
+- Với mỗi cạnh $e \in P$ là cạnh ngược: $f(e^{reverse}) = f(e^{reverse}) - b$.
+
+**Tính chất.** Sau phép AUGMENT ta vẫn được một luồng và $val(f') = val(f) + b$.
+
+**▸ THUẬT TOÁN FORD-FULKERSON**
+
+- **Bước 1:** Bắt đầu với $f(e) = 0$ với mọi cạnh.
+- **Bước 2:** Tìm một đường tăng $P$ trong mạng còn dư $G_f$.
+- **Bước 3:** Tăng luồng dọc theo $P$, cập nhật $G_f$.
+- **Bước 4:** Lặp lại đến khi không còn đường tăng.
+
+**▸ VÍ DỤ**
+
+Chạy Ford-Fulkerson trên mạng ví dụ.
+
+![Mạng luồng 6 đỉnh](/content/MAT3323/C5/network.svg)
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Vòng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Đường tăng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Cổ chai</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Giá trị luồng</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$s \to a \to d \to t$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">8</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">8</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$s \to a \to b \to d \to t$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">10</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$s \to b \to d \to c \to t$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">6</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">16</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$s \to b \to a \to c \to t$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">18</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">5</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$s \to b \to d \to a \to c \to t$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">19</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Sau vòng 3, nếu không dùng cạnh ngược thì không tăng thêm được, đó là chỗ thuật toán tham lam dừng lại ở 16. Mạng còn dư lúc này như sau, đường tăng của vòng 4 được tô đậm. Cạnh $b \to a$ là cạnh ngược, tức là giảm bớt luồng đã gửi trên $a \to b$.
+
+![Mạng còn dư sau vòng 3](/content/MAT3323/C5/residual-path.svg)
+
+Luồng cuối cùng có giá trị 19, được ghi trên hình ở bài sau.

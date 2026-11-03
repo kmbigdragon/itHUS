@@ -1,0 +1,41 @@
+---
+title: "1. Ý tưởng của PageRank"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ WEB LÀ MỘT ĐỒ THỊ CÓ HƯỚNG**
+
+Đỉnh là trang web, cạnh là liên kết. Web có hai thách thức cho việc tìm kiếm:
+- **Tin ai?** Web có nhiều nguồn thông tin. Mẹo: các trang đáng tin thường trỏ đến nhau.
+- **Câu trả lời tốt nhất cho một truy vấn là gì?** Ví dụ truy vấn "newspaper" không có một đáp án đúng duy nhất. Mẹo: các trang thực sự hiểu về báo chí thường trỏ đến nhiều tờ báo.
+
+Mỗi trang có mức độ quan trọng khác nhau, nên ta xếp hạng theo cấu trúc liên kết.
+
+**▸ LIÊN KẾT LÀ PHIẾU BẦU**
+
+- Coi liên kết đến là phiếu bầu cho trang.
+- Không phải phiếu nào cũng như nhau: phiếu của trang quan trọng có giá trị hơn. Đây là một định nghĩa đệ quy.
+
+Nếu trang $i$ có độ quan trọng $r_i$ và $d_i$ liên kết ra, thì mỗi liên kết mang $r_i / d_i$ phiếu. Độ quan trọng của trang $j$ là tổng các phiếu trên liên kết vào:
+
+<Formula title="Phương trình luồng">
+
+$$
+r_j = \sum_{i \to j} \frac{r_i}{d_i}
+$$
+
+</Formula>
+
+**▸ VÍ DỤ**
+
+![Đồ thị ba trang y, a, m cùng phương trình luồng và nghiệm](/content/MAT3565/C6/flow-example.svg)
+
+Ba phương trình, ba ẩn nhưng không có hằng số, nên không có nghiệm duy nhất, các nghiệm chỉ khác nhau một hệ số nhân. Thêm điều kiện $\sum_i r_i = 1$ thì có nghiệm duy nhất.
+
+Khử Gauss chỉ dùng được với đồ thị nhỏ. Với web cần cách khác.
+
+**▸ MÔ HÌNH NGƯỜI LƯỚT WEB NGẪU NHIÊN**
+
+Trang quan trọng là trang được nhiều người ghé. Ta không theo dõi được mọi người, nhưng có thể giả sử người dùng đi theo liên kết ngẫu nhiên: bắt đầu từ một trang ngẫu nhiên, rồi liên tục đi theo một liên kết ra ngẫu nhiên.
+
+PageRank chính là xác suất giới hạn của việc đang ở một trang.

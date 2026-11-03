@@ -29,6 +29,7 @@ import { TbSql } from "react-icons/tb";
 import { SimplexTable } from "@/components/mdx/SimplexTable";
 import { SimplexSolver } from "@/components/mdx/SimplexSolver";
 import { TwoPhaseSimplexSolver } from "@/components/mdx/TwoPhaseSimplexSolver";
+import { Formula } from "@/components/mdx/Formula";
 
 export { generateStaticParams } from "@/utils/slug";
 
@@ -151,6 +152,7 @@ export default async function Page({ params }: PageProps) {
                 SimplexTable,
                 SimplexSolver,
                 TwoPhaseSimplexSolver,
+                Formula,
               }}
               options={{
                 mdxOptions: {

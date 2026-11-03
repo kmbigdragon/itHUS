@@ -1,0 +1,81 @@
+---
+title: "9. Học sâu trên dữ liệu quan hệ"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ VẤN ĐỀ**
+
+Dữ liệu doanh nghiệp nằm trong cơ sở dữ liệu quan hệ, gồm nhiều bảng. Bài toán thường gặp: user có rời đi trong 90 ngày tới không, doanh thu sản phẩm 30 ngày tới là bao nhiêu, bệnh nhân có tái nhập viện không.
+
+Cách làm truyền thống là viết tay đặc trưng rồi nén về một bảng, mất 6-12 tháng cho một nhóm, và có các vấn đề:
+- Đặc trưng chọn khá tùy tiện, ví dụ phép gộp và cửa sổ thời gian.
+- Chỉ dùng được một phần dữ liệu.
+- Dễ rò rỉ thông tin từ tương lai.
+
+LLM cũng không giải quyết được, vì LLM không được huấn luyện để hiểu cấu trúc quan hệ của cơ sở dữ liệu. Dự đoán trên cơ sở dữ liệu không phải là mô hình hóa chuỗi, và kích thước ngữ cảnh có giới hạn.
+
+**▸ HỌC SÂU QUAN HỆ (RDL)**
+
+**RDL:** học sâu đầu-cuối trên các bảng quan hệ, không cần biến đổi hay viết đặc trưng. Bài toán dự đoán được chuyển thành bài toán học biểu diễn trên đồ thị.
+
+**Đồ thị thực thể quan hệ:**
+- **Đỉnh:** mọi hàng trong mọi bảng.
+- **Cạnh:** nối hai thực thể có khóa chính và khóa ngoại khớp nhau.
+
+Các thực thể có đặc trưng, khác với đồ thị tri thức.
+
+**▸ ĐỊNH NGHĨA BÀI TOÁN**
+
+Đa số bài toán có yếu tố thời gian: nhãn của một khách hàng đổi theo thời gian, dữ liệu cũng đổi theo thời gian.
+
+**Bảng huấn luyện** gồm (ID thực thể, thời điểm, nhãn). Ví dụ dự đoán rời bỏ: (User, Time, Churn_label), với nhãn là không mua gì trong 30 ngày tới.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Từ các bảng quan hệ đến đồ thị thực thể, bảng huấn luyện và GNN](/content/MAT3565/C7/rdl-steps.svg)
+
+**▸ VÌ SAO GNN PHÙ HỢP**
+
+- **Gộp là phiên bản học được của đặc trưng viết tay:** liên hệ với phép nối (JOIN), vì $A_{ij} = 1$ khi hai khóa khớp nhau chính là các cạnh của đồ thị thực thể. GNN học được phép gộp và bỏ qua thông tin không liên quan.
+- **Trao đổi thông tin giữa các mẫu:** các thực thể không còn tách biệt, ví dụ biểu diễn user có thêm thông tin về user đã mua sản phẩm tương tự.
+- **Suy luận qua nhiều bảng:** nhiều bước qua ranh giới các bảng bắt được thông tin khó tính trước.
+- **Hỗ trợ thời gian:** lấy mẫu theo thời gian ngay khi nạp dữ liệu, chỉ các đỉnh trước thời điểm dự đoán mới được dùng. Do đó tránh được rò rỉ dữ liệu.
+
+**▸ RELBENCH**
+
+**RelBench** là bộ dữ liệu và bài toán chuẩn cho RDL, có đánh giá thống nhất, và ngăn rò rỉ thời gian từ tập kiểm tra. Có thể nạp thành đồ thị PyG rồi huấn luyện GNN.
+
+**▸ SO SÁNH VỚI CHUYÊN GIA**
+
+Bài toán: user Stack Exchange có hoạt động trong 6 tháng tới không?
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold"></th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Chuyên gia viết đặc trưng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">RDL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Công sức thủ công</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Khoảng 12 giờ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Dưới 1 giờ</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Số dòng mã</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Khoảng 682</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">54</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Huấn luyện</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1 giờ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1 giờ</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Chuyên gia phải qua các bước phân tích dữ liệu (4 giờ), nghĩ đặc trưng (0.5 giờ), viết SQL (5 giờ), chỉnh tham số XGBoost (2 giờ) và phân tích độ quan trọng đặc trưng (1 giờ).

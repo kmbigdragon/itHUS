@@ -1,0 +1,130 @@
+---
+title: "4. Cây tăng cường gradient"
+author: "Trần Đăng Quang Minh"
+---
+
+**Ý tưởng:** tối ưu mô hình cộng dồn, trong đó các cây $f_k$ có thể nhiều tầng.
+
+<Formula title="Mô hình cộng dồn và hàm mục tiêu">
+
+$$
+\hat{y}_i = \sum_{k=1}^{K} f_k(x_i), \qquad \text{obj} = \sum_{i=1}^{n} l(y_i, \hat{y}_i) + \sum_{k=1}^{K} \Omega(f_k)
+$$
+
+</Formula>
+
+$\Omega$ là phần điều chuẩn, mô tả độ phức tạp của cây.
+
+**▸ HỌC TUẦN TỰ**
+
+Bắt đầu từ hằng số, mỗi vòng thêm một cây:
+
+<Formula title="Dự đoán ở vòng t">
+
+$$
+\hat{y}_i^{(t)} = \hat{y}_i^{(t-1)} + f_t(x_i)
+$$
+
+</Formula>
+
+Tìm cây $f_t$ làm nhỏ nhất mục tiêu. Khai triển Taylor bậc 2:
+
+<Formula title="Mục tiêu xấp xỉ">
+
+$$
+\text{obj}^{(t)} = \sum_{i=1}^{n} \left[ g_i f_t(x_i) + \frac{1}{2} h_i f_t^2(x_i) \right] + \Omega(f_t)
+$$
+
+</Formula>
+
+<Formula title="Đạo hàm bậc 1 và bậc 2 của mất mát">
+
+$$
+g_i = \partial_{\hat{y}^{(t-1)}} l(y_i, \hat{y}^{(t-1)}), \qquad h_i = \partial^2_{\hat{y}^{(t-1)}} l(y_i, \hat{y}^{(t-1)})
+$$
+
+</Formula>
+
+Số hạng $l(y_i, \hat{y}_i^{(t-1)})$ không phụ thuộc $f_t$ nên bỏ đi. Lợi ích của cách viết này:
+- **Lý thuyết:** biết rõ đang tối ưu cái gì.
+- **Thực tế:** thuật toán học chỉ phụ thuộc mất mát qua $g_i, h_i$, nên đổi được hàm mất mát.
+
+**▸ ĐỊNH NGHĨA CÂY**
+
+Mỗi lá $j$ có trọng số $w_j$, và $q(x)$ cho biết $x$ thuộc lá nào: $f_t(x) = w_{q(x)}$.
+
+<Formula title="Độ phức tạp của cây">
+
+$$
+\Omega(f) = \gamma T + \frac{1}{2} \lambda \sum_{j=1}^{T} w_j^2
+$$
+
+</Formula>
+
+$T$ là số lá, $\gamma$ là chi phí thêm một lá.
+
+Đặt $I_j = \{i \mid q(x_i) = j\}$, $G_j = \sum_{i \in I_j} g_i$, $H_j = \sum_{i \in I_j} h_i$. Khi đó:
+
+<Formula title="Mục tiêu theo các lá">
+
+$$
+\text{obj}^{(t)} = \sum_{j=1}^{T} \left[ G_j w_j + \frac{1}{2} (H_j + \lambda) w_j^2 \right] + \gamma T
+$$
+
+</Formula>
+
+<Formula title="Trọng số tối ưu và giá trị mục tiêu">
+
+$$
+w_j^* = -\frac{G_j}{H_j + \lambda}, \qquad \text{Obj} = -\frac{1}{2} \sum_{j=1}^{T} \frac{G_j^2}{H_j + \lambda} + \gamma T
+$$
+
+</Formula>
+
+**▸ TÌM PHÉP TÁCH**
+
+Không thể duyệt hết các cấu trúc cây, nên ta xây cây tham lam: bắt đầu từ độ sâu 0, với mỗi lá thử thêm một phép tách.
+
+<Formula title="Độ lợi của một phép tách">
+
+$$
+\text{Gain} = \frac{1}{2} \left[ \frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R + \lambda} - \frac{(G_L + G_R)^2}{H_L + H_R + \lambda} \right] - \gamma
+$$
+
+</Formula>
+
+Lần lượt là điểm con trái, điểm con phải và điểm nếu không tách.
+
+Tìm phép tách tốt nhất: với mỗi nút, duyệt mọi thuộc tính. Với mỗi thuộc tính, sắp xếp mẫu theo giá trị rồi quét tuyến tính.
+
+**Khi nào dừng:**
+- **Dừng sớm:** nếu gain tốt nhất âm. Nhưng một phép tách xấu có thể giúp phép tách sau.
+- **Cắt tỉa sau:** xây đến độ sâu tối đa rồi cắt đệ quy các lá có gain âm.
+
+**▸ THUẬT TOÁN ĐẦY ĐỦ**
+
+- **Bước 1:** mỗi vòng, tính $g_i, h_i$.
+- **Bước 2:** xây cây $f_t$ tham lam theo gain.
+- **Bước 3:** thêm cây với hệ số co $\varepsilon$, thường khoảng 0.1, để tránh quá khớp.
+- **Bước 4:** lặp đến khi có $M$ cây.
+
+<Formula title="Cập nhật có hệ số co">
+
+$$
+\hat{y}_i^{(t)} = \hat{y}_i^{(t-1)} + \varepsilon f_t(x_i)
+$$
+
+</Formula>
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Tính phép tách đầu tiên của gradient boosting bằng số](/content/MAT3565/C9/gbdt-gain.svg)
+
+![Đường dự đoán tốt dần qua các vòng](/content/MAT3565/C9/gbdt-fit.svg)
+
+**▸ XGBOOST**
+
+**XGBoost** là cài đặt mở rộng được của cây tăng cường gradient có điều chuẩn:
+- Xây cây song song bằng cấu trúc khối theo cột.
+- Tính phân tán trên cụm máy.
+- Tính ngoài bộ nhớ khi dữ liệu không vừa RAM.

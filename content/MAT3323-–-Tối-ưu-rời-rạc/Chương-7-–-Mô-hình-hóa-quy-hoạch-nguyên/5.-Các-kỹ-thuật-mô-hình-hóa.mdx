@@ -1,0 +1,99 @@
+---
+title: "5. Các kỹ thuật mô hình hóa"
+author: "Trần Đăng Quang Minh"
+---
+
+Nhiều bài toán thoạt nhìn không tuyến tính, nhưng biến đổi được về dạng tuyến tính.
+
+**▸ GIÁ TRỊ TUYỆT ĐỐI**
+
+$$
+\min \sum_{i=1}^{n} |f_i(x)|
+$$
+
+**Cách 1:** Thêm $n$ biến và $2n$ ràng buộc.
+$$
+\begin{align*}
+\min \quad & \sum_{i=1}^{n} z_i \\
+\text{s.t.} \quad & z_i \ge f_i(x), \quad i = 1, \dots, n \\
+& z_i \ge -f_i(x), \quad i = 1, \dots, n
+\end{align*}
+$$
+
+**Cách 2:** Thêm $2n$ biến và $n$ ràng buộc.
+$$
+\begin{align*}
+\min \quad & \sum_{i=1}^{n} (z_i^+ + z_i^-) \\
+\text{s.t.} \quad & f_i(x) = z_i^+ - z_i^-, \quad i = 1, \dots, n \\
+& z_i^+, z_i^- \ge 0, \quad i = 1, \dots, n
+\end{align*}
+$$
+
+**▸ CỰC TIỂU HÓA GIÁ TRỊ LỚN NHẤT (MINIMAX)**
+
+$$
+\min \max \{ f_1(x), \dots, f_n(x) \}
+$$
+
+Thêm biến phụ $z$:
+$$
+\begin{align*}
+\min \quad & z \\
+\text{s.t.} \quad & f_i(x) \le z, \quad i = 1, \dots, n
+\end{align*}
+$$
+
+Bài toán cực đại hóa giá trị nhỏ nhất làm tương tự.
+
+**▸ RÀNG BUỘC CÓ PHÉP CHIA**
+
+$$
+\frac{a_1 x + a_2 y + a_3 z}{d_1 x + d_2 y + d_3 z} \le b
+$$
+
+Khi mẫu số dương, nhân lên rồi chuyển vế:
+$$
+(a_1 - b d_1) x + (a_2 - b d_2) y + (a_3 - b d_3) z \le 0
+$$
+
+**▸ RÀNG BUỘC "HOẶC"**
+
+Bình thường, nghiệm phải thỏa mãn tất cả các ràng buộc. Giả sử ta chỉ cần thỏa mãn một trong hai:
+$$
+a_1 x_1 + a_2 x_2 \le b_1 \quad \text{or} \quad d_1 x_1 + d_2 x_2 \le b_2
+$$
+
+Thêm biến nhị phân $y \in \{0, 1\}$ và số $M$ đủ lớn:
+$$
+\begin{align*}
+a_1 x_1 + a_2 x_2 &\le b_1 + M y \\
+d_1 x_1 + d_2 x_2 &\le b_2 + M (1 - y)
+\end{align*}
+$$
+
+- $y = 0$: ràng buộc đầu có tác dụng, ràng buộc sau luôn đúng.
+- $y = 1$: ràng buộc sau có tác dụng, ràng buộc đầu luôn đúng.
+
+**▸ THỎA MÃN K TRONG N RÀNG BUỘC**
+
+Có $N$ ràng buộc $g_i(x) \le d_i$, cần thỏa mãn đúng $K$ ràng buộc. Thêm các biến nhị phân $y_1, \dots, y_N$:
+$$
+\begin{align*}
+g_i(x) &\le d_i + M y_i, \quad i = 1, \dots, N \\
+\sum_{i=1}^{N} y_i &= N - K
+\end{align*}
+$$
+
+Khi đó có đúng $K$ biến $y_i$ bằng 0, nên có $K$ ràng buộc phải thỏa mãn.
+
+Nếu chỉ cần thỏa mãn **ít nhất** $h$ trong $k$ ràng buộc thì thay điều kiện cuối bằng $\sum_{i=1}^{k} y_i \le k - h$.
+
+**▸ NHẬN MỘT TRONG CÁC GIÁ TRỊ CHO TRƯỚC**
+
+Vế trái phải bằng một trong $N$ giá trị $d_1, \dots, d_N$. Thêm các biến nhị phân $y_1, \dots, y_N$:
+$$
+\begin{align*}
+a_1 x_1 + \dots + a_m x_m &= d_1 y_1 + \dots + d_N y_N \\
+y_1 + \dots + y_N &= 1
+\end{align*}
+$$

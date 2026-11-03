@@ -1,0 +1,111 @@
+---
+title: "7. DeepWalk và node2vec"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ BIỂU DIỄN ĐỈNH**
+
+**Mục tiêu:** ánh xạ mỗi đỉnh vào không gian ít chiều sao cho các đỉnh giống nhau trong đồ thị nằm gần nhau trong không gian đó, mà không cần đặc trưng làm tay.
+
+<Formula title="Mục tiêu của biểu diễn đỉnh">
+
+$$
+\text{similarity}(u, v) \approx z_v^T z_u
+$$
+
+</Formula>
+
+Khung chung có 3 việc:
+- **Bộ mã hóa:** ánh xạ đỉnh thành vector, $\text{ENC}(v) = z_v$.
+- **Hàm tương đồng:** đo độ giống trong đồ thị gốc.
+- **Tối ưu** tham số của bộ mã hóa.
+
+Cách đơn giản nhất là tra bảng: $\text{ENC}(v) = Z v$, trong đó mỗi cột của $Z$ là vector của một đỉnh. DeepWalk, node2vec, LINE đều dùng cách này.
+
+**▸ DÙNG BƯỚC NGẪU NHIÊN ĐỂ ĐO ĐỘ GIỐNG**
+
+$z_u^T z_v$ xấp xỉ xác suất $u$ và $v$ cùng xuất hiện trên một bước đi ngẫu nhiên. Lý do:
+- **Biểu đạt tốt:** kết hợp được cả thông tin cục bộ và thông tin xa.
+- **Hiệu quả:** chỉ xét các cặp cùng xuất hiện, không phải mọi cặp đỉnh.
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** chạy các bước đi ngắn, độ dài cố định, từ mỗi đỉnh theo một chiến lược $R$.
+- **Bước 2:** với mỗi đỉnh $u$, thu thập $N_R(u)$: đa tập các đỉnh đã ghé trên các bước đi xuất phát từ $u$.
+- **Bước 3:** tối ưu biểu diễn bằng SGD, cho $u$ dự đoán được $N_R(u)$:
+
+<Formula title="Hàm mất mát">
+
+$$
+\mathcal{L} = \sum_{u \in V} \sum_{v \in N_R(u)} -\log \frac{\exp(z_u^T z_v)}{\sum_{n \in V} \exp(z_u^T z_n)}
+$$
+
+</Formula>
+
+**▸ LẤY MẪU ÂM**
+
+Tổng lồng nhau tốn $O(|V|^2)$. Phần gây tốn là mẫu số của softmax. Giải pháp là chỉ chuẩn hóa theo $k$ mẫu âm ngẫu nhiên:
+
+<Formula title="Lấy mẫu âm">
+
+$$
+\log \frac{\exp(z_u^T z_v)}{\sum_{n \in V} \exp(z_u^T z_n)} \approx \log \sigma(z_u^T z_v) - \sum_{i=1}^{k} \log \sigma(z_u^T z_{n_i}), \qquad n_i \sim P_V
+$$
+
+</Formula>
+
+- $\sigma$: hàm sigmoid.
+- $P_V$: phân phối trên các đỉnh, lấy tỉ lệ với bậc.
+- $k$ lớn thì ước lượng ổn định hơn, nhưng cũng đặt nặng hơn lên các sự kiện âm. Thực tế chọn $k = 5$ đến $20$.
+
+**▸ ⚠️ LƯU Ý**
+
+Đây là công thức trong slide. Tài liệu gốc về lấy mẫu âm thường viết số hạng sau là $+\sum \log \sigma(-z_u^T z_{n_i})$, và hình dưới dùng cách viết này khi huấn luyện. Ý nghĩa giống nhau: tăng điểm cho cặp thật, giảm điểm cho cặp ngẫu nhiên.
+
+**▸ MINH HỌA TỪNG BƯỚC: DEEPWALK**
+
+**DeepWalk** (Perozzi và cộng sự, 2014) dùng bước đi đều, không thiên lệch.
+
+![DeepWalk chạy thật trên mạng câu lạc bộ karate](/content/MAT3565/C7/deepwalk-steps.svg)
+
+**▸ NODE2VEC**
+
+Bước đi đều thì khái niệm "giống nhau" quá hạn hẹp. **Node2vec** (Grover, Leskovec, 2016) dùng bước đi thiên lệch bậc 2 để điều chỉnh giữa nhìn cục bộ và nhìn toàn cục.
+
+![Tìm lân cận theo chiều rộng và theo chiều sâu](/content/MAT3565/C7/bfs-dfs.svg)
+
+Hai tham số:
+- **$p$ (quay lại):** điều khiển việc quay lại đỉnh trước đó.
+- **$q$ (đi ra xa):** điều khiển việc đi xa (DFS) hay lan rộng (BFS). $q$ giống tỉ lệ giữa BFS và DFS.
+
+Bước đi nhớ đỉnh vừa đi qua $s_1$. Đang ở $w$, các láng giềng $x$ của $w$ có trọng số chưa chuẩn hóa:
+
+<Formula title="Trọng số đi tiếp của node2vec">
+
+$$
+\alpha_{pq}(s_1, x) = \begin{cases} 1/p & \text{nếu } d(s_1, x) = 0 \\ 1 & \text{nếu } d(s_1, x) = 1 \\ 1/q & \text{nếu } d(s_1, x) = 2 \end{cases}
+$$
+
+</Formula>
+
+![Trọng số đi tiếp từ đỉnh w tùy theo khoảng cách đến đỉnh trước đó](/content/MAT3565/C7/node2vec-walk.svg)
+
+![Xác suất đi tiếp với các giá trị p và q khác nhau](/content/MAT3565/C7/node2vec-probs.svg)
+
+- $p$ nhỏ: bước đi hay quay lại, giống BFS.
+- $q$ nhỏ: bước đi hay đi xa, giống DFS.
+
+**Thuật toán node2vec:**
+- **Bước 1:** tính xác suất đi của bước ngẫu nhiên.
+- **Bước 2:** mô phỏng $r$ bước đi độ dài $l$ từ mỗi đỉnh.
+- **Bước 3:** tối ưu hàm mục tiêu bằng SGD.
+
+Độ phức tạp tuyến tính, cả 3 bước đều chạy song song được.
+
+**▸ DÙNG BIỂU DIỄN THẾ NÀO**
+
+- **Phân cụm:** phân cụm các điểm $z_i$.
+- **Phân loại đỉnh:** dự đoán nhãn $f(z_i)$.
+- **Dự đoán cạnh:** dự đoán cạnh $(i, j)$ từ $f(z_i, z_j)$, bằng cách ghép, tích từng tọa độ, tổng, trung bình hoặc khoảng cách của hai vector.
+
+Không có phương pháp nào thắng trong mọi trường hợp. Phải chọn khái niệm độ giống phù hợp với ứng dụng.

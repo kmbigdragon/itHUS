@@ -1,0 +1,136 @@
+---
+title: "6. Giảm chiều bằng SVD"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ CÁCH LÀM**
+
+Đặt các giá trị suy biến nhỏ nhất bằng 0, rồi nhân lại. Được ma trận $B$ có hạng thấp hơn, xấp xỉ $A$.
+
+![Bỏ giá trị suy biến nhỏ nhất và so ma trận xấp xỉ với ma trận gốc](/content/MAT3565/C4/svd-reduce.svg)
+
+Sai số đo bằng chuẩn Frobenius:
+
+<Formula title="Chuẩn Frobenius">
+
+$$
+\|M\|_F = \sqrt{\sum_{ij} M_{ij}^2}, \qquad \|A - B\|_F = \sqrt{\sum_{ij} (A_{ij} - B_{ij})^2}
+$$
+
+</Formula>
+
+**▸ ⚠️ LƯU Ý**
+
+Ma trận $B$ trong slide (hàng 5, 6, 7) không khớp với chính $U, \Sigma, V^T$ của slide. Hình trên dùng kết quả tính lại. Có thể kiểm tra: sai số $\|A - B\|_F$ phải đúng bằng $\sigma_3$.
+
+**▸ ĐỊNH LÝ: SVD LÀ XẤP XỈ TỐT NHẤT**
+
+Cho $A = U \Sigma V^T$ và $B = U S V^T$, với $S$ là ma trận đường chéo có $s_i = \sigma_i$ khi $i \le k$ và $s_i = 0$ khi $i > k$. Khi đó $B$ là xấp xỉ hạng $k$ tốt nhất của $A$:
+
+<Formula title="Xấp xỉ hạng k tốt nhất">
+
+$$
+B = \arg\min_{\text{rank}(B) = k} \|A - B\|_F, \qquad \|A - B\|_F = \sqrt{\sum_{i > k} \sigma_i^2}
+$$
+
+</Formula>
+
+**▸ CHỌN SỐ KHÁI NIỆM**
+
+**Năng lượng** của một tập giá trị suy biến là tổng bình phương của chúng. Chọn $k$ sao cho phần giữ lại có ít nhất $90\%$ tổng năng lượng.
+
+<Formula title="Tỉ lệ năng lượng giữ lại">
+
+$$
+\frac{\sum_{i \le k} \sigma_i^2}{\sum_{i} \sigma_i^2} \ge 0.9
+$$
+
+</Formula>
+
+**Ví dụ:** với $\sigma = 12.4, 9.5, 1.3$, tổng năng lượng bằng $245.7$. Bỏ $1.3$ (bình phương là $1.7$) thì còn $244$, trên $99\%$.
+
+**▸ CÁCH TÍNH SVD**
+
+**Phương pháp lũy thừa** tìm trị riêng lớn nhất của ma trận đối xứng $M$:
+- **Bước 1:** bắt đầu từ vector đoán bất kỳ $x_0$.
+- **Bước 2:** lặp đến khi $x_k$ gần như không đổi:
+
+<Formula title="Bước lặp lũy thừa">
+
+$$
+x_{k+1} = \frac{M x_k}{\|M x_k\|}
+$$
+
+</Formula>
+
+- **Bước 3:** tính trị riêng. Vì $Mx = \lambda x$ và $x^T x = 1$ nên:
+
+<Formula title="Trị riêng">
+
+$$
+\lambda = x^T M x
+$$
+
+</Formula>
+
+- **Bước 4:** bỏ phần do cặp vừa tìm sinh ra, rồi lặp lại để tìm cặp tiếp theo:
+
+<Formula title="Khử cặp trị riêng đã tìm">
+
+$$
+M^* = M - \lambda x x^T
+$$
+
+</Formula>
+
+![Phương pháp lũy thừa trên một ma trận 2 nhân 2](/content/MAT3565/C4/power-iter.svg)
+
+Slide dùng số đã làm tròn ($\lambda = 4.25$, $x = (0.53, 0.85)$) nên ra các số $-0.19, 0.09$. Ô cuối của $M^*$ trong slide ghi $0.07$ là thiếu dấu trừ, đúng phải là số âm.
+
+**Liên hệ với SVD:** từ $A = U \Sigma V^T$ ta có
+
+<Formula title="Quan hệ giữa SVD và trị riêng">
+
+$$
+A^T A = V \Sigma^2 V^T, \qquad A A^T = U \Sigma^2 U^T
+$$
+
+</Formula>
+
+Do đó:
+- Cột của $V$ là vector riêng của $A^T A$.
+- Cột của $U$ là vector riêng của $A A^T$.
+- $\sigma_i$ là căn bậc hai của trị riêng.
+
+Tính đầy đủ tốn $O(nm^2)$ hoặc $O(n^2 m)$, lấy số nhỏ hơn. Sẽ nhanh hơn nếu chỉ cần giá trị suy biến, hoặc chỉ cần $k$ vector đầu, hoặc ma trận thưa.
+
+**▸ SVD VÀ PCA**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold"></th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">SVD</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">PCA</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bản chất</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Phân tích ma trận tổng quát</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Phương pháp thống kê, tìm vector riêng của ma trận hiệp phương sai đã trừ trung bình</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Câu hỏi trả lời</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Phân tích ma trận này tối ưu thế nào?</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Hướng nào giải thích nhiều phương sai nhất?</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Nên dùng khi</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Dữ liệu không trừ trung bình, hệ gợi ý, văn bản (LSA), cần xấp xỉ hạng $k$ theo chuẩn Frobenius</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Quan tâm phương sai, dữ liệu dạng đặc trưng nên trừ trung bình</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

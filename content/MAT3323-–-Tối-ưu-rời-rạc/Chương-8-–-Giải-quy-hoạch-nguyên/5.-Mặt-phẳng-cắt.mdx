@@ -1,0 +1,193 @@
+---
+title: "5. Mặt phẳng cắt"
+author: "Trần Đăng Quang Minh"
+---
+
+Xét bài toán $z = \max \{ c^\top x : x \in X \}$ với $X = \{ x : Ax \le b, \ x \in \mathbb{Z}_+^n \}$.
+
+Ta đã biết $\text{conv}(X)$ là một đa diện, và giải LP trên đó là cho ra đáp án. Ý tưởng chính là tìm cách xấp xỉ đa diện này, nhưng chỉ ở gần nghiệm tối ưu.
+
+**▸ BẤT ĐẲNG THỨC HỢP LỆ**
+
+Bất đẳng thức $a^\top x \le b$ là **hợp lệ (valid)** với $X$ nếu nó đúng với mọi $x \in X$.
+
+**Ví dụ:**
+- Với $X = \{ (x, y) : x \le 999y, \ 0 \le x \le 5, \ y \in \{0, 1\} \}$, bất đẳng thức $x \le 5y$ là hợp lệ, và chặt hơn nhiều so với $x \le 999y$.
+- Với $X = \{ x \in \mathbb{Z}_+^4 : 13x_1 + 20x_2 + 11x_3 + 6x_4 \ge 72 \}$, chia cho 11 rồi làm tròn lên các hệ số:
+$$
+2x_1 + 2x_2 + x_3 + x_4 \ge \frac{13}{11}x_1 + \frac{20}{11}x_2 + x_3 + \frac{6}{11}x_4 \ge \frac{72}{11} = 6 + \frac{6}{11}
+$$
+Vế trái là số nguyên nên $2x_1 + 2x_2 + x_3 + x_4 \ge 7$.
+
+**▸ THỦ TỤC CHVÁTAL-GOMORY**
+
+Cho $X = P \cap \mathbb{Z}_+^n$ với $P = \{ x : Ax \le b, \ x \ge 0 \}$, $a_j$ là cột $j$ của $A$, và $u \in \mathbb{R}_+^m$.
+
+- **Bước 1:** Do $u \ge 0$ nên
+$$
+\sum_{j=1}^{n} u a_j x_j \le u b
+$$
+- **Bước 2:** Do $x \ge 0$ nên làm tròn xuống hệ số vẫn đúng:
+$$
+\sum_{j=1}^{n} \lfloor u a_j \rfloor x_j \le u b
+$$
+- **Bước 3:** Do $x$ nguyên nên vế trái nguyên, làm tròn được vế phải:
+$$
+\sum_{j=1}^{n} \lfloor u a_j \rfloor x_j \le \lfloor u b \rfloor
+$$
+
+**Định lý.** Mọi bất đẳng thức hợp lệ của $X$ đều nhận được bằng cách áp dụng thủ tục này một số hữu hạn lần.
+
+**▸ THUẬT TOÁN MẶT PHẲNG CẮT**
+
+Với họ bất đẳng thức hợp lệ $\mathcal{F}$:
+- **Bước 1:** Đặt $t = 0$, $P_0 = P$.
+- **Bước 2:** Giải LP $\max \{ c^\top x : x \in P_t \}$, được nghiệm $x^t$.
+- **Bước 3:** Nếu $x^t$ nguyên thì dừng, đây là nghiệm tối ưu.
+- **Bước 4:** Giải **bài toán tách (separation problem)**: tìm bất đẳng thức trong $\mathcal{F}$ mà $x^t$ vi phạm. Nếu tìm được thì thêm nó vào $P_t$, được $P_{t+1}$, rồi quay lại Bước 2. Nếu không tìm được thì dừng; khi đó $P_t$ vẫn là công thức tốt hơn.
+
+**▸ LÁT CẮT GOMORY**
+
+Xét dạng chính tắc $\max \{ c^\top x : Ax = b, \ x \ge 0, \ x \in \mathbb{Z}^n \}$. Sau khi giải LP, mỗi hàng của bảng đơn hình có dạng
+$$
+x_{B_u} + \sum_{j \in N} \bar{a}_{uj} x_j = \bar{b}_u
+$$
+
+Nếu nghiệm chưa nguyên thì có hàng $u$ với $\bar{b}_u \notin \mathbb{Z}$. Áp dụng Chvátal-Gomory cho hàng này:
+$$
+x_{B_u} + \sum_{j \in N} \lfloor \bar{a}_{uj} \rfloor x_j \le \lfloor \bar{b}_u \rfloor
+$$
+
+Khử $x_{B_u}$ ta được **lát cắt Gomory**:
+$$
+\sum_{j \in N} f_{uj} x_j \ge f_u
+$$
+trong đó $f_{uj} = \bar{a}_{uj} - \lfloor \bar{a}_{uj} \rfloor$ và $f_u = \bar{b}_u - \lfloor \bar{b}_u \rfloor$ là các phần lẻ.
+
+- Nghiệm LP hiện tại có $x_N = 0$, nên vi phạm lát cắt này (vì $f_u > 0$). Tức là nó bị cắt đi.
+- Biến bù của lát cắt cũng là số nguyên khi $x$ nguyên.
+- Về lý thuyết thuật toán dừng sau hữu hạn bước, nhưng thực tế nếu chỉ dùng lát cắt này thì không hiệu quả.
+
+**Cách thêm lát cắt vào bảng:** viết nó thành hàng mới với biến bù $x_{new}$:
+$$
+-\sum_{j \in N} f_{uj} x_j + x_{new} = -f_u
+$$
+Vế phải âm, nhưng hàng mục tiêu vẫn thỏa mãn điều kiện tối ưu, nên dùng **đơn hình đối ngẫu** để giải tiếp.
+
+**▸ VÍ DỤ**
+
+$$
+\begin{align*}
+\max \quad & x_1 + 4x_2 \\
+\text{s.t.} \quad & x_1 + 6x_2 \le 18 \\
+& x_1 \le 3 \\
+& x_1, x_2 \in \mathbb{Z}_+
+\end{align*}
+$$
+
+Thêm biến bù $x_3, x_4$ rồi giải LP, được bảng:
+
+$$
+\left[
+\begin{array}{c|cccc|c}
+ & x_1 & x_2 & x_3 & x_4 & b \\
+\hline
+x_2 & 0 & 1 & 1/6 & -1/6 & 5/2 \\
+x_1 & 1 & 0 & 0 & 1 & 3 \\
+\hline
+-z & 0 & 0 & -2/3 & -1/3 & -13
+\end{array}
+\right]
+$$
+
+Nghiệm $(x_1, x_2) = (3, 5/2)$ chưa nguyên.
+
+**Lát cắt 1.** Từ hàng $x_2$:
+$$
+\frac{1}{6} x_3 + \frac{5}{6} x_4 \ge \frac{1}{2}
+$$
+
+Thay $x_3 = 18 - x_1 - 6x_2$ và $x_4 = 3 - x_1$ thì được lát cắt theo biến gốc:
+$$
+x_1 + x_2 \le 5
+$$
+
+Thêm biến bù $x_5$ và dùng đơn hình đối ngẫu:
+
+$$
+\left[
+\begin{array}{c|ccccc|c}
+ & x_1 & x_2 & x_3 & x_4 & x_5 & b \\
+\hline
+x_2 & 0 & 1 & 1/5 & 0 & -1/5 & 13/5 \\
+x_1 & 1 & 0 & -1/5 & 0 & 6/5 & 12/5 \\
+x_4 & 0 & 0 & 1/5 & 1 & -6/5 & 3/5 \\
+\hline
+-z & 0 & 0 & -3/5 & 0 & -2/5 & -64/5
+\end{array}
+\right]
+$$
+
+**Lát cắt 2.** Từ hàng $x_1$, lưu ý phần lẻ của $-1/5$ là $4/5$:
+$$
+\frac{4}{5} x_3 + \frac{1}{5} x_5 \ge \frac{2}{5}
+$$
+Theo biến gốc, lát cắt này là $x_1 + 5x_2 \le 15$.
+
+Tiếp tục làm như trên:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Vòng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Lát cắt theo biến gốc</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Nghiệm LP</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Giá trị</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$(3, \ 5/2)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$13$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$x_1 + x_2 \le 5$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$(12/5, \ 13/5)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$64/5$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$x_1 + 5x_2 \le 15$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$(5/2, \ 5/2)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$25/2$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$x_1 + 2x_2 \le 7$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$(5/3, \ 8/3)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$37/3$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">5</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$x_1 + 3x_2 \le 9$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$(0, \ 3)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$12$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Đến vòng 5 nghiệm đã nguyên. **Nghiệm tối ưu** là $(x_1, x_2) = (0, 3)$ với $z = 12$.
+
+![Các lát cắt thu hẹp miền chấp nhận được](/content/MAT3323/C8/cutting-plane.svg)
+
+**▸ LÁT CẮT GOMORY HỖN HỢP**
+
+Khi có cả biến liên tục, ta dùng lát cắt Gomory hỗn hợp. Với hàng có phần lẻ vế phải là $f$ và phần lẻ hệ số là $f_j$:
+$$
+\sum_{j : f_j \le f} \frac{f_j}{f} x_j + \sum_{j : f_j > f} \frac{1 - f_j}{1 - f} x_j \ge 1
+$$

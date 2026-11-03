@@ -1,0 +1,106 @@
+---
+title: "8. Thuật toán BALANCE"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ BÀI TOÁN ĐƠN GIẢN HÓA**
+
+- Hiện 1 quảng cáo mỗi truy vấn.
+- Mọi nhà quảng cáo có cùng ngân sách $B$.
+- Mọi quảng cáo có cùng khả năng được nhấp.
+- Giá đấu mỗi quảng cáo đều là \$1.
+
+Thuật toán tham lam chọn bất kỳ nhà quảng cáo nào đã đấu giá, tỉ số cạnh tranh là $1/2$.
+
+**▸ THUẬT TOÁN BALANCE**
+
+Thuật toán của Mehta, Saberi, Vazirani và Vazirani.
+
+<Formula title="Quy tắc của BALANCE">
+
+$$
+\text{Với mỗi truy vấn, chọn nhà quảng cáo có ngân sách còn lại lớn nhất}
+$$
+
+</Formula>
+
+Khi hòa thì phá thế hòa theo một cách cố định.
+
+![So sánh tham lam, BALANCE và tối ưu trên cùng luồng truy vấn](/content/MAT3565/C8/greedy-balance.svg)
+
+**▸ CHỨNG MINH TỈ SỐ 3/4 VỚI HAI NHÀ QUẢNG CÁO**
+
+Giả sử 2 nhà quảng cáo $A_1, A_2$, mỗi người ngân sách $B$, và lời giải tối ưu dùng hết cả hai ngân sách (doanh thu $2B$). BALANCE phải dùng hết ít nhất một ngân sách, giả sử là $A_2$.
+
+Gọi doanh thu của BALANCE là $2B - x = B + y$. Khi đó các truy vấn chưa được dùng phải là truy vấn tối ưu giao cho $A_2$, vì nếu giao được cho $A_1$ thì BALANCE đã giao rồi.
+
+![Phân bổ của tối ưu và của BALANCE trên hai nhà quảng cáo](/content/MAT3565/C8/balance-proof.svg)
+
+**Cần chứng minh $y \ge B/2$.**
+
+- **Trường hợp 1:** BALANCE giao ít nhất $B/2$ truy vấn xanh cho $A_1$. Khi đó $y \ge B/2$.
+- **Trường hợp 2:** BALANCE giao hơn $B/2$ truy vấn xanh cho $A_2$. Xét truy vấn xanh cuối cùng giao cho $A_2$. Lúc đó ngân sách còn lại của $A_2$ ít nhất bằng của $A_1$, nghĩa là $A_1$ đã nhận ít nhất bằng $A_2$. Mà $A_2$ đã có ít nhất $B/2$ truy vấn. Vậy $x + y = B$ và $y \ge B/2$.
+
+<Formula title="Kết luận">
+
+$$
+\text{Doanh thu nhỏ nhất} = \frac{3B}{2}, \qquad \frac{\text{BAL}}{\text{OPT}} = \frac{3B/2}{2B} = \frac{3}{4}
+$$
+
+</Formula>
+
+**▸ TRƯỜNG HỢP TỔNG QUÁT: N NHÀ QUẢNG CÁO**
+
+Tỉ số xấu nhất của BALANCE là:
+
+<Formula title="Tỉ số cạnh tranh của BALANCE">
+
+$$
+1 - \frac{1}{e} \approx 0.63
+$$
+
+</Formula>
+
+Không thuật toán trực tuyến nào có tỉ số tốt hơn.
+
+**Trường hợp xấu nhất:** $N$ nhà quảng cáo, mỗi người ngân sách $B \gt N$. Có $NB$ truy vấn chia thành $N$ vòng, mỗi vòng $B$ truy vấn. Vòng $i$ có các người đấu giá $A_i, \dots, A_N$.
+- **Tối ưu:** giao mọi truy vấn vòng $i$ cho $A_i$, doanh thu $NB$.
+- **BALANCE:** chia đều mỗi vòng cho những người còn đấu giá.
+
+Sau $k$ vòng, mỗi người trong $A_k, \dots, A_N$ đã nhận:
+
+$$
+S_k = \sum_{i=1}^{k} \frac{B}{N - i + 1} = \sum_{i = N - k + 1}^{N} \frac{B}{i}
+$$
+
+Ta tìm $k$ nhỏ nhất sao cho $S_k \ge B$. Dùng $\sum_{i=1}^{n} \frac{1}{i} \approx \ln n$:
+
+$$
+\ln N - \ln(N - k) = 1 \quad \Rightarrow \quad \ln \frac{N}{N - k} = 1 \quad \Rightarrow \quad k = N \left( 1 - \frac{1}{e} \right)
+$$
+
+Sau $N(1 - 1/e)$ vòng không giao được thêm truy vấn nào. Doanh thu là $BN(1 - 1/e)$.
+
+![Ngân sách bị dùng trong trường hợp xấu nhất và tỉ số theo N](/content/MAT3565/C8/balance-worst.svg)
+
+**▸ GIÁ ĐẤU VÀ NGÂN SÁCH TÙY Ý**
+
+BALANCE có thể rất tệ khi giá đấu khác nhau. Ví dụ $A_1$: giá 1, ngân sách 110; $A_2$: giá 10, ngân sách 100. Có 10 truy vấn: BALANCE luôn chọn $A_1$, được 10, còn tối ưu được 100.
+
+**BALANCE tổng quát:** với truy vấn $q$ và người đấu giá $i$:
+- $x_i$: giá đấu.
+- $b_i$: ngân sách.
+- $m_i$: đã tiêu.
+- $f_i = 1 - m_i / b_i$: tỉ lệ ngân sách còn lại.
+
+<Formula title="BALANCE tổng quát: chọn i có giá trị lớn nhất">
+
+$$
+\psi_i(q) = x_i \left( 1 - e^{-f_i} \right)
+$$
+
+</Formula>
+
+Tỉ số cạnh tranh vẫn là $1 - 1/e \approx 0.63$.
+
+![So sánh BALANCE thường và BALANCE tổng quát](/content/MAT3565/C8/generalized-balance.svg)

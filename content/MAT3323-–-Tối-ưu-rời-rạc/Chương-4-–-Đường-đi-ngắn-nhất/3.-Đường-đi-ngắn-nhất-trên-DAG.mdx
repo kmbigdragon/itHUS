@@ -1,0 +1,162 @@
+---
+title: "3. Đường đi ngắn nhất trên DAG"
+author: "Trần Đăng Quang Minh"
+---
+
+Nếu đồ thị không có chu trình có hướng thì bài toán dễ hơn hẳn, và **cho phép cả trọng số âm**.
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Tìm thứ tự topo của đồ thị.
+- **Bước 2:** Xét các đỉnh theo thứ tự đó. Với đỉnh $v$, nới lỏng mọi cung $e = (v, w)$ đi ra từ $v$:
+$$
+\text{dist}[w] = \min \{ \text{dist}[w], \ \text{dist}[v] + c_e \}
+$$
+
+**Mệnh đề.** Thuật toán tìm được cây đường đi ngắn nhất trong thời gian $O(E + V)$.
+
+Lý do: mỗi cung được nới lỏng đúng một lần, ngay sau đó ta có $\text{dist}[w] \le \text{dist}[v] + c_e$. Bất đẳng thức này giữ nguyên đến cuối, vì $\text{dist}[w]$ chỉ có thể giảm, còn $\text{dist}[v]$ không đổi nữa (theo thứ tự topo, sau khi xử lý $v$ không còn cung nào đi vào $v$ được nới lỏng).
+
+**▸ VÍ DỤ**
+
+Thứ tự topo là $s, a, b, c, t$.
+
+![DAG có trọng số âm](/content/MAT3323/C4/dag-sp.svg)
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Xét đỉnh</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$\text{dist}[a]$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$\text{dist}[b]$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$\text{dist}[c]$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$\text{dist}[t]$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$s$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$5$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$3$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\infty$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\infty$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$a$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$5$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$1$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$11$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\infty$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$b$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$5$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$1$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$8$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$3$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$c$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$5$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$1$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$8$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$3$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Đường đi ngắn nhất đến $t$ là $s \to a \to b \to t$ với độ dài $5 - 4 + 2 = 3$.
+
+**▸ ĐƯỜNG ĐI DÀI NHẤT TRÊN DAG**
+
+Do thuật toán chạy được với trọng số âm nên tìm đường đi dài nhất rất đơn giản:
+- **Bước 1:** Đổi dấu mọi trọng số.
+- **Bước 2:** Tìm đường đi ngắn nhất.
+- **Bước 3:** Đổi dấu kết quả.
+
+**▸ ỨNG DỤNG: LẬP LỊCH CÔNG VIỆC (CPM)**
+
+**Bài toán.** Cho các công việc có thời gian thực hiện và ràng buộc trước sau. Các công việc được chạy song song. Tìm thời điểm bắt đầu của từng việc sao cho toàn bộ hoàn thành sớm nhất.
+
+**Phương pháp đường găng (Critical Path Method).** Tạo DAG như sau:
+- Thêm đỉnh nguồn và đỉnh đích.
+- Mỗi công việc có hai đỉnh (bắt đầu, kết thúc) và ba cung: bắt đầu đến kết thúc (trọng số là thời gian thực hiện), nguồn đến bắt đầu (trọng số 0), kết thúc đến đích (trọng số 0).
+- Mỗi ràng buộc trước sau là một cung trọng số 0, từ kết thúc của việc trước đến bắt đầu của việc sau.
+
+Thời điểm bắt đầu của mỗi việc là độ dài **đường đi dài nhất** từ nguồn đến đỉnh bắt đầu của việc đó.
+
+**Ví dụ:**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Việc</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">0</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">1</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">2</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">3</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">4</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">5</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">6</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">7</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">8</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">9</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Thời gian</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">41</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">51</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">50</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">36</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">38</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">45</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">21</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">32</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">32</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">29</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Phải xong trước việc</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1, 7, 9</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center">3, 8</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">3, 8</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">4, 6</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Thời điểm bắt đầu</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">41</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">123</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">91</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">70</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">70</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">41</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">91</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">41</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Đường găng là $0 \to 9 \to 6 \to 8 \to 2$, tổng thời gian $41 + 29 + 21 + 32 + 50 = 173$.
+
+**▸ ỨNG DỤNG: SEAM CARVING**
+
+Seam carving dùng để đổi kích thước ảnh mà không làm méo nội dung, có trong Photoshop, GIMP. Để tìm đường cắt dọc:
+- Đỉnh là điểm ảnh, mỗi điểm ảnh có cung đến 3 điểm ảnh ngay bên dưới. Đồ thị này là một DAG dạng lưới.
+- Trọng số của điểm ảnh là một hàm năng lượng, tính từ 8 điểm ảnh xung quanh.
+- Đường cắt là đường đi ngắn nhất (theo tổng trọng số đỉnh) từ hàng trên xuống hàng dưới.
+
+Xóa các điểm ảnh trên đường cắt, ảnh sẽ hẹp đi 1 cột.

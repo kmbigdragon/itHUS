@@ -1,0 +1,59 @@
+---
+title: "1. Mô hình giỏ hàng"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ MÔ HÌNH**
+
+Có một tập lớn các **item** và một tập lớn các **giỏ (basket)**. Mỗi giỏ là một tập con nhỏ các item.
+
+**Mục tiêu:** tìm các item thường được mua cùng nhau. Ví dụ "ai mua {tã, sữa} thì hay mua {bia}".
+
+Item và giỏ chỉ là khái niệm trừu tượng:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Item</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Giỏ</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Ứng dụng</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Sản phẩm</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Các món mua trong một lần</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Xếp hàng trên kệ, "người mua X cũng mua Y"</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Tài liệu</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Câu</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Hai tài liệu chung nhiều câu có thể là đạo văn</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Thuốc và tác dụng phụ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bệnh nhân</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Phát hiện tổ hợp thuốc gây tác dụng phụ</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ TẬP PHỔ BIẾN**
+
+<Formula title="Độ hỗ trợ của tập I">
+
+$$
+\text{support}(I) = \text{số giỏ chứa mọi item của } I
+$$
+
+</Formula>
+
+Cho ngưỡng hỗ trợ $s$. Tập $I$ là **tập phổ biến** nếu $\text{support}(I) \ge s$.
+
+**Ví dụ:** với $s = 3$ và 8 giỏ:
+
+$B_1 = \{m, c, b\}$, $B_2 = \{m, p, j\}$, $B_3 = \{m, b\}$, $B_4 = \{c, j\}$, $B_5 = \{m, p, b\}$, $B_6 = \{m, c, b, j\}$, $B_7 = \{c, b, j\}$, $B_8 = \{b, c\}$.
+
+Các tập phổ biến: $\{m\}, \{c\}, \{b\}, \{j\}, \{m, b\}, \{b, c\}, \{c, j\}$.

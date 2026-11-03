@@ -1,0 +1,36 @@
+---
+title: "1. Bài toán tìm phần tử tương tự"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ BÀI TOÁN**
+
+Cho các điểm dữ liệu nhiều chiều $x_1, x_2, \dots, x_N$ và một hàm khoảng cách $d(x_i, x_j)$.
+
+- **Tìm láng giềng của một truy vấn:** cho $q$, tìm các điểm có $d(q, x_j) \le s$. Cách ngây thơ mất $O(N)$, LSH làm được trong $O(1)$.
+- **Tìm mọi cặp gần nhau:** tìm mọi cặp có $d(x_i, x_j) \le s$. Cách ngây thơ mất $O(N^2)$, LSH làm được trong $O(N)$.
+
+Nhiều bài toán đưa được về dạng này:
+- Tìm trang web trùng lặp, phân loại theo chủ đề.
+- Khách hàng mua các sản phẩm giống nhau, sản phẩm có nhóm khách giống nhau.
+- Tìm ảnh giống nhau, hoàn thiện ảnh.
+- Tìm kiếm trong kho vector cho RAG: mô hình ngôn ngữ lớn lấy thêm kiến thức ngoài từ cơ sở dữ liệu vector.
+
+**▸ Ý TƯỞNG CỦA LSH**
+
+Ném các phần tử vào các bucket bằng nhiều hàm băm khác nhau, rồi chỉ xét những cặp cùng bucket ở ít nhất một hàm băm.
+
+- **Lợi:** nếu thiết kế đúng, chỉ phải xét một phần rất nhỏ các cặp.
+- **Hại:** có **âm tính giả**, tức có cặp thật sự giống nhau mà bị bỏ sót.
+
+**▸ VÍ DỤ: TÌM TÀI LIỆU GẦN TRÙNG**
+
+Có $N = 1$ triệu tài liệu. So sánh mọi cặp cần $N(N - 1)/2 \approx 5 \cdot 10^{11}$ phép so sánh. Với $10^6$ phép so sánh mỗi giây và $10^5$ giây mỗi ngày, mất 5 ngày. Với $N = 10$ triệu thì mất hơn một năm.
+
+Giải quyết bằng 3 bước:
+
+![Ba bước Shingling, Min-Hashing và LSH để tìm tài liệu tương tự](/content/MAT3565/C3/pipeline.svg)
+
+- **Bước 1: Shingling.** Đổi tài liệu thành một tập hợp.
+- **Bước 2: Min-Hashing.** Đổi tập lớn thành chữ ký ngắn, vẫn giữ độ tương đồng.
+- **Bước 3: LSH.** Chỉ xét các cặp chữ ký có khả năng đến từ tài liệu tương tự. Đó là các **cặp ứng viên**.

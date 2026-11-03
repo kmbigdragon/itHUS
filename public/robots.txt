@@ -3,5 +3,7 @@ Allow: /
 Allow: /subjects/
 Allow: /subjects/mat2404-giai-tich-so
 Allow: /subjects/mat2407-toi-uu-hoa
+Allow: /subjects/mat3323-toi-uu-roi-rac
+Allow: /subjects/mat3565-khai-pha-du-lieu-lon
 
 Sitemap: https://ithus.bigdragon.info.vn/sitemap.xml

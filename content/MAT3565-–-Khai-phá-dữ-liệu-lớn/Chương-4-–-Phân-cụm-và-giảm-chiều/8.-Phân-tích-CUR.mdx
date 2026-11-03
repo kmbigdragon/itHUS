@@ -1,0 +1,123 @@
+---
+title: "8. Phân tích CUR"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ Ý TƯỞNG**
+
+Ma trận cần phân tích thường rất thưa, nhưng $U$, $V$ của SVD thì không thưa. **CUR** khắc phục bằng cách chỉ dùng các hàng và cột thật, được bốc ngẫu nhiên từ $A$.
+
+<Formula title="Mục tiêu của CUR">
+
+$$
+A \approx C \cdot U \cdot R, \qquad \text{sao cho } \|A - C U R\|_F \text{ nhỏ}
+$$
+
+</Formula>
+
+- $C$: các cột được chọn của $A$.
+- $R$: các hàng được chọn của $A$.
+- $U$: giả nghịch đảo của phần giao giữa $C$ và $R$.
+
+**▸ THUẬT TOÁN**
+
+**Chọn cột** (hàng làm tương tự). Đầu vào là $A \in \mathbb{R}^{m \times n}$ và số cột cần lấy $c$.
+
+- **Bước 1:** tính phân phối của cột. Độ quan trọng của một cột là tổng bình phương phần tử của nó.
+
+<Formula title="Xác suất chọn cột x">
+
+$$
+P(x) = \frac{\sum_i A(i, x)^2}{\sum_{i, j} A(i, j)^2}
+$$
+
+</Formula>
+
+- **Bước 2:** lặp $c$ lần, mỗi lần bốc một cột $j$ theo $P$ và chuẩn hóa nó:
+
+<Formula title="Cột thứ i của C">
+
+$$
+C_d(:, i) = \frac{A(:, j)}{\sqrt{c P(j)}}
+$$
+
+</Formula>
+
+Một cột có thể được chọn nhiều lần.
+
+**Ví dụ về độ quan trọng:** cột $[3, 4, 5]$ có độ quan trọng $50$, cột $[3, 0, 1]$ có độ quan trọng $10$, nên cột đầu được chọn thường gấp 5 lần.
+
+**Tính U:** gọi $W$ là phần giao của các hàng và cột đã chọn.
+
+<Formula title="Giả nghịch đảo của W">
+
+$$
+W = X Z Y^T, \qquad U = W^+ = Y Z^+ X^T
+$$
+
+</Formula>
+
+$Z^+$ là ma trận nghịch đảo các giá trị suy biến khác 0: $Z^+_{ii} = 1 / Z_{ii}$. Nếu $W$ khả nghịch thì $W^+$ chính là nghịch đảo thật.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+Dùng lại ma trận đánh giá phim, lấy $c = r = 2$. Để số dễ đọc, hình không chia cho $\sqrt{cP}$. Vì $W$ khả nghịch nên tích $CUR$ không đổi (đã kiểm tra bằng số).
+
+![CUR qua bốn bước: tính xác suất, bốc hàng và cột, tính U, nhân lại](/content/MAT3565/C4/cur-steps.svg)
+
+**▸ ĐẢM BẢO LÝ THUYẾT**
+
+Chọn $c = r = O\left(\dfrac{k \log k}{\varepsilon^2}\right)$ cột và hàng, thì với xác suất 98%:
+
+<Formula title="Sai số của CUR so với xấp xỉ hạng k tốt nhất">
+
+$$
+\|A - C U R\|_F \le (2 + \varepsilon) \|A - A_k\|_F
+$$
+
+</Formula>
+
+Trong thực tế, lấy khoảng $4k$ cột và hàng để được xấp xỉ hạng $k$.
+
+**▸ SO SÁNH SVD VÀ CUR**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold"></th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">SVD</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">CUR</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Công thức</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$A = U \Sigma V^T$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$A = C U R$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Ma trận thành phần</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$U, V$ lớn và đặc, $\Sigma$ nhỏ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$C, R$ lớn nhưng thưa, $U$ nhỏ và đặc</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Diễn giải</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Khó</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Dễ, vì cơ sở là hàng và cột thật</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Sai số</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Nhỏ nhất có thể</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Lớn hơn</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Nhược điểm</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không thưa</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Trùng hàng, cột, vì hàng, cột chuẩn lớn được chọn nhiều lần</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**Thử nghiệm trên DBLP** (ma trận tác giả-hội nghị với 428 nghìn tác giả và 3659 hội nghị, theo Sun và Faloutsos, 2007): cùng độ chính xác, CUR tốn ít không gian và thời gian hơn SVD nhiều lần.

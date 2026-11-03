@@ -1,0 +1,101 @@
+---
+title: "6. Spark"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ HẠN CHẾ CỦA MAPREDUCE**
+
+- **Chi phí phụ lớn:** sao chép dữ liệu, I/O đĩa và tuần tự hóa. Kết quả của Map được lưu xuống đĩa, sắp xếp, rồi Reduce lại đọc lên.
+- **Khó lập trình trực tiếp:** nhiều bài toán không dễ viết thành Map và Reduce, và phải nối nhiều bước MapReduce với nhau.
+- **Chậm:** ghi đĩa chậm hơn nhiều so với làm việc trong bộ nhớ.
+
+**Hệ thống luồng dữ liệu (data-flow)** tổng quát hóa MapReduce: cho phép nhiều tầng tác vụ hơn và các hàm khác ngoài Map, Reduce. Nếu luồng chỉ đi một chiều (đồ thị có hướng không chu trình, DAG), khi hỏng chỉ cần chạy lại tác vụ, không phải cả công việc.
+
+**▸ SPARK KHÁC GÌ**
+
+- Chia sẻ dữ liệu nhanh: không ghi kết quả trung gian xuống đĩa, lưu đệm dữ liệu trong RAM cho các truy vấn lặp lại.
+- Chạy theo đồ thị DAG tổng quát.
+- Nhiều hàm hơn Map và Reduce.
+- Tương thích với Hadoop.
+
+![MapReduce ghi kết quả trung gian xuống đĩa còn Spark giữ RDD trong bộ nhớ](/content/MAT3565/C1/mr-vs-spark.svg)
+
+**▸ RDD**
+
+**RDD (Resilient Distributed Dataset)** là tập bản ghi được chia phần, trải trên cụm máy và **chỉ đọc**.
+- Được lưu đệm trong bộ nhớ, có thể dùng đĩa khi thiếu.
+- Tạo từ dữ liệu Hadoop hoặc biến đổi từ RDD khác.
+- Hợp với ứng dụng áp dụng cùng một phép toán lên mọi phần tử.
+
+Có hai loại thao tác trên RDD:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Loại</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Ý nghĩa</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Ví dụ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Transformation</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tạo RDD mới từ RDD khác. Đánh giá lười: chưa tính gì cho đến khi có action.</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">map, filter, join, union, intersection, distinct</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Action</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Trả về giá trị hoặc xuất dữ liệu. Buộc phải tính toán.</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">count, collect, reduce, save</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+![Chuỗi transformation chỉ được tính khi gặp action](/content/MAT3565/C1/spark-lazy.svg)
+
+**▸ DATAFRAME VÀ DATASET**
+
+- **DataFrame:** khác RDD, dữ liệu được tổ chức thành các cột có tên, như một bảng trong cơ sở dữ liệu quan hệ.
+- **Dataset:** mở rộng DataFrame, có kiểm tra kiểu và phát hiện lỗi lúc biên dịch.
+
+Cả hai đều chạy trên Spark SQL và đều đổi lại được thành RDD.
+
+**▸ CÁC THÀNH PHẦN CỦA SPARK**
+
+- **Spark SQL:** xử lý dữ liệu quan hệ.
+- **Spark Streaming:** xử lý luồng dữ liệu trực tiếp.
+- **MLlib:** học máy.
+- **GraphX:** xử lý đồ thị.
+
+**▸ SO SÁNH SPARK VÀ MAPREDUCE**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Tiêu chí</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Spark</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Hadoop MapReduce</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Hiệu năng</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Xử lý trong bộ nhớ nên thường nhanh hơn, nhưng cần nhiều RAM, thiếu RAM thì chậm đi nhiều</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Ghi đĩa sau mỗi bước, chạy tốt các công việc một lượt và chạy chung được với dịch vụ khác</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Dễ dùng</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Dễ hơn, có API mức cao</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Khó hơn</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Xử lý dữ liệu</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tổng quát hơn</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Chỉ theo mô hình Map, Reduce</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

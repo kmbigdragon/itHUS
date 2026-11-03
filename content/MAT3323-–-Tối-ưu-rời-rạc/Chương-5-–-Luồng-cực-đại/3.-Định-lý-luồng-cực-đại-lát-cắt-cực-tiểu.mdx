@@ -1,0 +1,68 @@
+---
+title: "3. Định lý luồng cực đại - lát cắt cực tiểu"
+author: "Trần Đăng Quang Minh"
+---
+
+Bài này trả lời câu hỏi: khi Ford-Fulkerson dừng thì luồng đã cực đại chưa?
+
+**▸ LIÊN HỆ GIỮA LUỒNG VÀ LÁT CẮT**
+
+**Bổ đề giá trị luồng.** Với luồng $f$ và lát cắt $(A, B)$ bất kỳ, giá trị luồng bằng luồng ròng qua lát cắt:
+$$
+val(f) = \sum_{e \in \delta^+(A)} f(e) - \sum_{e \in \delta^-(A)} f(e)
+$$
+
+**Chứng minh.** Theo định nghĩa thì $val(f) = \sum_{e \in \delta^+(s)} f(e) - \sum_{e \in \delta^-(s)} f(e)$. Do cân bằng luồng, các đỉnh $v \in A$ khác $s$ đều cho hiệu bằng 0 nên
+$$
+val(f) = \sum_{v \in A} \left( \sum_{e \in \delta^+(v)} f(e) - \sum_{e \in \delta^-(v)} f(e) \right)
+$$
+Khi gộp lại, cạnh nằm trong $A$ được cộng một lần và trừ một lần nên triệt tiêu. Chỉ còn các cạnh đi qua lát cắt.
+
+**Đối ngẫu yếu.** Với luồng $f$ và lát cắt $(A, B)$ bất kỳ thì $val(f) \le cap(A, B)$.
+
+**Chứng minh.**
+$$
+val(f) = \sum_{e \in \delta^+(A)} f(e) - \sum_{e \in \delta^-(A)} f(e) \le \sum_{e \in \delta^+(A)} f(e) \le \sum_{e \in \delta^+(A)} c(e) = cap(A, B)
+$$
+
+**Hệ quả (chứng nhận tối ưu).** Nếu $val(f) = cap(A, B)$ thì $f$ là luồng cực đại và $(A, B)$ là lát cắt cực tiểu.
+
+**▸ ĐỊNH LÝ**
+
+**Định lý đường tăng.** Luồng $f$ là cực đại khi và chỉ khi không có đường tăng.
+
+**Định lý luồng cực đại - lát cắt cực tiểu (đối ngẫu mạnh).** Giá trị luồng cực đại bằng dung tích lát cắt cực tiểu.
+
+**Chứng minh.** Ta chứng minh ba điều sau là tương đương:
+- **(i)** Tồn tại lát cắt $(A, B)$ với $cap(A, B) = val(f)$.
+- **(ii)** $f$ là luồng cực đại.
+- **(iii)** Không có đường tăng đối với $f$.
+
+**(i) suy ra (ii):** Suy ra trực tiếp từ đối ngẫu yếu.
+
+**(ii) suy ra (iii):** Nếu có đường tăng thì tăng được luồng, nên $f$ chưa cực đại.
+
+**(iii) suy ra (i):** Gọi $A$ là tập đỉnh đi đến được từ $s$ trong $G_f$. Khi đó $s \in A$, và $t \notin A$ vì không có đường tăng. Xét các cạnh qua lát cắt trong mạng gốc:
+- Cạnh từ $A$ sang $B$ phải có $f(e) = c(e)$. Nếu không thì cạnh này còn dư và đầu kia đã thuộc $A$.
+- Cạnh từ $B$ sang $A$ phải có $f(e) = 0$. Nếu không thì cạnh ngược còn dư và đầu kia đã thuộc $A$.
+
+Vì vậy
+$$
+val(f) = \sum_{e \in \delta^+(A)} f(e) - \sum_{e \in \delta^-(A)} f(e) = \sum_{e \in \delta^+(A)} c(e) = cap(A, B)
+$$
+
+**▸ TÌM LÁT CẮT CỰC TIỂU TỪ LUỒNG CỰC ĐẠI**
+
+Với luồng cực đại $f^*$, chạy BFS hoặc DFS từ $s$ trong $G_{f^*}$. Tập đỉnh đến được là $A$. Vì vậy khi có luồng cực đại, ta tìm được lát cắt cực tiểu trong thời gian tuyến tính.
+
+**▸ VÍ DỤ**
+
+Với luồng giá trị 19 ở bài trước, tập đỉnh đến được từ $s$ trong mạng còn dư là $A = \{s, b\}$.
+
+![Luồng cực đại và lát cắt cực tiểu](/content/MAT3323/C5/maxflow-mincut.svg)
+
+Các cạnh từ $A$ sang $B$ là $s \to a$ và $b \to d$, cả hai đều đầy. Cạnh từ $B$ sang $A$ là $a \to b$ có luồng 0. Ta có
+$$
+cap(A, B) = 10 + 9 = 19 = val(f)
+$$
+nên luồng này là cực đại.

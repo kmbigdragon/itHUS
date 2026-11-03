@@ -1,0 +1,191 @@
+---
+title: "2. Thuật toán Dijkstra"
+author: "Trần Đăng Quang Minh"
+---
+
+Thuật toán giải bài toán một nguồn khi $\ell_e \ge 0$.
+
+**Ý tưởng tham lam:** Duy trì tập $S$ các đỉnh đã biết chắc độ dài đường đi ngắn nhất $d[u]$.
+
+- **Bước 1:** Khởi tạo $S = \{s\}$, $d[s] = 0$.
+- **Bước 2:** Lặp lại: chọn đỉnh $v \notin S$ có giá trị sau nhỏ nhất
+$$
+\pi(v) = \min_{e = (u, v) : u \in S} \left( d[u] + \ell_e \right)
+$$
+rồi thêm $v$ vào $S$ và đặt $d[v] = \pi(v)$.
+
+$\pi(v)$ là độ dài đường đi ngắn nhất từ $s$ đến $v$ mà chỉ đi qua các đỉnh trong $S$ rồi dùng đúng một cạnh để sang $v$. Muốn lấy lại đường đi thì lưu đỉnh trước của mỗi đỉnh.
+
+**▸ TÍNH ĐÚNG ĐẮN**
+
+**Bất biến.** Với mọi $u \in S$, $d[u]$ là độ dài đường đi ngắn nhất từ $s$ đến $u$.
+
+**Chứng minh.** Quy nạp theo $|S|$. Gọi $v$ là đỉnh tiếp theo được thêm vào $S$. Xét đường đi $P$ bất kỳ từ $s$ đến $v$, gọi $e = (x, y)$ là cạnh đầu tiên của $P$ đi ra khỏi $S$ và $P'$ là đoạn từ $s$ đến $x$. Ngay khi đến $y$, độ dài của $P$ đã không nhỏ hơn $\pi(v)$:
+$$
+\ell(P) \ge \ell(P') + \ell_e \ge d[x] + \ell_e \ge \pi(y) \ge \pi(v)
+$$
+
+Các bất đẳng thức lần lượt đến từ: độ dài không âm, giả thiết quy nạp, định nghĩa $\pi(y)$, và việc Dijkstra chọn $v$ chứ không chọn $y$.
+
+**▸ CÀI ĐẶT**
+
+Có hai cải tiến chính:
+- Lưu sẵn $\pi[v]$ cho mỗi đỉnh chưa thăm thay vì tính lại từ định nghĩa. Khi thêm $u$ vào $S$, chỉ cần cập nhật theo các cạnh đi ra từ $u$:
+$$
+\pi[v] = \min \{ \pi[v], \ \pi[u] + \ell_e \}
+$$
+- Dùng hàng đợi ưu tiên để lấy đỉnh có $\pi[v]$ nhỏ nhất.
+
+Thuật toán gọi $n$ lần `INSERT`, $n$ lần `DELETE-MIN` và $m$ lần `DECREASE-KEY`. Thời gian chạy phụ thuộc vào hàng đợi ưu tiên:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Hàng đợi ưu tiên</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">INSERT</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">DELETE-MIN</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">DECREASE-KEY</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Tổng</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Mảng không sắp xếp</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(1)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(n)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(1)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(n^2)$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Heap nhị phân</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(\log n)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(\log n)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(\log n)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(m \log n)$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Heap $d$ nhánh</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(d \log_d n)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(d \log_d n)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(\log_d n)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(m \log_{m/n} n)$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Fibonacci heap</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(1)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(\log n)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(1)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(m + n \log n)$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Hàng đợi số nguyên (Thorup 2004)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(1)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(\log\log n)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(1)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(m + n \log\log n)$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Mảng thường tốt với đồ thị dày ($m = \Theta(n^2)$), heap nhị phân tốt với đồ thị thưa ($m = \Theta(n)$).
+
+**▸ VÍ DỤ**
+
+Tìm đường đi ngắn nhất từ $s$.
+
+![Đồ thị có hướng 6 đỉnh](/content/MAT3323/C4/dijkstra-graph.svg)
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Bước</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Chọn</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$\pi[a]$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$\pi[b]$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$\pi[c]$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$\pi[d]$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$\pi[t]$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$s$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$4$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$2$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\infty$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\infty$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\infty$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$b$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$3$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$10$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$12$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\infty$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$a$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$8$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$12$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\infty$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$c$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$10$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$14$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">5</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$d$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$13$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">6</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$t$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Kết quả: $d[s] = 0$, $d[b] = 2$, $d[a] = 3$, $d[c] = 8$, $d[d] = 10$, $d[t] = 13$. Đường đi ngắn nhất đến $t$ là $s \to b \to a \to c \to d \to t$.
+
+![Cây đường đi ngắn nhất gốc s](/content/MAT3323/C4/dijkstra-tree.svg)
+
+**▸ ⚠️ LƯU Ý**
+
+- **Đồ thị vô hướng:** thay mỗi cạnh bằng hai cung ngược chiều nhau, cùng độ dài. Với trọng số nguyên không âm trên đồ thị vô hướng, Thorup (1999) giải được trong $O(m)$.
+- **Không dùng được khi có cạnh âm.** Ví dụ có các cung $s \to a$ độ dài $2$, $s \to b$ độ dài $3$, $b \to a$ độ dài $-2$. Dijkstra chốt $d[a] = 2$, trong khi đáp án đúng là $1$.
+- Cộng thêm một hằng số vào mọi cạnh để hết âm cũng không được, vì như đã nói, cách này làm đổi đường đi ngắn nhất.
+
+**▸ MỞ RỘNG**
+
+Chỉ cần đổi công thức cập nhật là Dijkstra giải được bài toán khác. Ví dụ **đường đi có dung lượng lớn nhất**: tìm đường đi mà cạnh nhỏ nhất trên đường là lớn nhất. Ta chọn đỉnh có $\pi$ lớn nhất và cập nhật
+$$
+\pi[v] = \max \{ \pi[v], \ \min \{ \pi[u], c(u, v) \} \}
+$$
+
+Cách này sẽ được dùng ở thuật toán luồng cực đại.
+
+**Mẹo nhân đôi đồ thị.** Bài toán: tìm đường ngắn nhất trong mê cung từ ô $(0, 0)$ đến ô cuối, được phép phá một bức tường. Ta tạo hai bản sao $G_1$, $G_2$ của mê cung. Cung từ $G_1$ sang $G_2$ tương ứng với việc phá tường và có độ dài 2, không có cung đi từ $G_2$ về $G_1$. Khi đó mọi đường đi phá tối đa một tường, và ta chỉ cần tìm đường ngắn nhất trên đồ thị mới.

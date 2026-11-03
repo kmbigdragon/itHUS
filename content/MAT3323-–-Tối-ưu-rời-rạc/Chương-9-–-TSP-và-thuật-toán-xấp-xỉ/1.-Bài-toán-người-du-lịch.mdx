@@ -1,0 +1,109 @@
+---
+title: "1. Bài toán người du lịch"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ TỐI ƯU TỔ HỢP**
+
+**Bài toán tối ưu tổ hợp** gồm tập hữu hạn $E$, tập $\mathcal{I} \subseteq 2^E$ các nghiệm chấp nhận được, và chi phí $c(e)$ cho mỗi $e \in E$. Cần tìm
+$$
+\min_{I \in \mathcal{I}} c(I), \quad c(I) = \sum_{e \in I} c(e)
+$$
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Giải được trong thời gian đa thức</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">NP-khó</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Cây bao trùm nhỏ nhất</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Người du lịch (TSP)</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Đường đi ngắn nhất</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Định vị và định tuyến</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Cặp ghép cực đại</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Phủ, đóng gói, phân hoạch tập hợp</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Lát cắt cực tiểu</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Max-cut</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Luồng chi phí nhỏ nhất</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Lập lịch (đa số các trường hợp), tô màu đồ thị</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Số nghiệm chấp nhận được không quyết định bài toán dễ hay khó, vì các bài toán bên trái cũng có số nghiệm rất lớn. Câu hỏi $P = NP$ hay không vẫn chưa có lời giải, và là một trong các bài toán thiên niên kỷ của Viện Clay.
+
+**▸ PHÁT BIỂU BÀI TOÁN**
+
+**Bài toán người du lịch (Traveling Salesman Problem, TSP).** Cho $n$ thành phố và khoảng cách giữa chúng. Tìm chu trình đi qua mỗi thành phố đúng một lần, rồi quay về điểm xuất phát, với tổng quãng đường nhỏ nhất.
+
+- **Đối xứng (STSP):** khoảng cách từ $i$ đến $j$ bằng khoảng cách từ $j$ đến $i$.
+- **Bất đối xứng (ATSP):** khoảng cách hai chiều có thể khác nhau.
+
+**Theo đồ thị.** Cho đồ thị đầy đủ $K_n$ với chi phí không âm $c(u, v)$. Tìm **chu trình Hamilton** có chi phí nhỏ nhất.
+
+**Theo hoán vị.** Tìm hoán vị vòng $\pi$ của $\{1, \dots, n\}$ sao cho $\sum_{i=1}^{n} c_{i \pi(i)}$ nhỏ nhất.
+
+**▸ SỐ CHU TRÌNH**
+
+Với TSP đối xứng, số chu trình khác nhau là $\dfrac{(n-1)!}{2}$, tăng rất nhanh theo $n$:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$n$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">4</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">5</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">6</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">8</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">10</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Số chu trình</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">12</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">60</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2520</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">181440</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ CÁC TRƯỜNG HỢP ĐẶC BIỆT**
+
+- **TSP metric:** chi phí thỏa mãn bất đẳng thức tam giác, $c(u, w) \le c(u, v) + c(v, w)$. Vẫn là NP-khó.
+- **TSP Euclid:** các thành phố là điểm trên mặt phẳng, chi phí là khoảng cách Euclid.
+
+**▸ TSP LÀ NP-KHÓ**
+
+**Bài toán chu trình Hamilton (HAM-CYCLE):** Cho đồ thị $G = (V, E)$, có chu trình đơn đi qua mọi đỉnh không? Bài toán này là NP-đầy đủ.
+
+**Đưa về TSP.** Tạo đồ thị đầy đủ $G'$ với $c(e) = 1$ nếu $e \in E$, $c(e) = 2$ nếu $e \notin E$, và hỏi có chu trình chi phí không quá $|V|$ không. Chi phí 1 và 2 thỏa mãn bất đẳng thức tam giác, nên TSP metric cũng là NP-khó.
+- Nếu $G$ có chu trình Hamilton thì $G'$ có chu trình chi phí đúng bằng $|V|$.
+- Nếu không thì mọi chu trình trong $G'$ có chi phí ít nhất $|V| + 1$.
+
+**▸ CÁC BIẾN THỂ**
+
+TSP có ràng buộc thứ tự hoặc khung thời gian, TSP trực tuyến, TSP nhiều người ($m$-TSP), TSP thu phí, bài toán người đưa thư Trung Hoa, định tuyến xe.
+
+**▸ ỨNG DỤNG**
+
+- **Khoan bảng mạch in (PCB):** các lỗ cần khoan là thành phố, chi phí là thời gian di chuyển mũi khoan. Chọn chuẩn đo khoảng cách (Euclid, max, Manhattan) phải đúng với máy thực tế. Các tính toán của Padberg và Rinaldi trên bảng 2103 lỗ cho thấy TSP cải thiện đáng kể so với lời giải của ngành.
+- **Kho hàng:** điều khiển cần cẩu xếp hàng.
+- **Khác:** giải mã gen, thiết kế chip (scan chain), quan sát thiên văn.

@@ -1,0 +1,57 @@
+---
+title: "8. Bài toán cân bằng tải"
+author: "Trần Đăng Quang Minh"
+---
+
+**Bài toán.** Có $m$ máy giống nhau và $n$ công việc, việc $j$ cần thời gian $p_j$. Phân mỗi việc cho một máy sao cho **thời gian hoàn thành (makespan)** nhỏ nhất.
+
+Nếu máy $i$ được giao tập việc $S_i$ thì nó chạy trong thời gian $T_i = \sum_{j \in S_i} p_j$. Ta cần cực tiểu hóa $\max_i T_i$.
+
+**▸ NP-KHÓ**
+
+**Bài toán PARTITION:** Cho tập số nguyên không âm $X$, có chia được thành hai phần có tổng bằng nhau không? Bài toán này đưa được về cân bằng tải 2 máy: mỗi số $x$ là một việc có $p_j = x$, và hỏi có hoàn thành được trước $T = \frac{1}{2} \sum_{a \in X} a$ không.
+
+**▸ THUẬT TOÁN THAM LAM (LIST SCHEDULING)**
+
+Xét các việc theo thứ tự cho trước. Giao việc $j$ cho máy đang có tải nhỏ nhất.
+
+- **Bước 1:** Đặt $T_i = 0$, $S_i = \varnothing$ với mọi máy.
+- **Bước 2:** Với $j = 1, \dots, n$: tìm $i$ có $T_i$ nhỏ nhất, gán $S_i = S_i \cup \{j\}$, $T_i = T_i + p_j$.
+
+Đây là thuật toán **trực tuyến**: không cần biết trước các việc phía sau.
+
+**▸ PHÂN TÍCH**
+
+**Định lý (Graham, 1966).** Thuật toán tham lam là 2-xấp xỉ. Đây là phân tích trường hợp xấu nhất đầu tiên của một thuật toán xấp xỉ.
+
+Gọi $T^*$ là thời gian hoàn thành tối ưu. Ta chưa biết $T^*$, nhưng có hai cận dưới:
+
+**Bổ đề 1.** $T^* \ge \dfrac{1}{m} \sum_j p_j$, vì có máy phải làm ít nhất $\frac{1}{m}$ tổng công việc.
+
+**Bổ đề 2.** $T^* \ge \max_j p_j$, vì có máy phải làm việc dài nhất.
+
+**Chứng minh định lý.** Xét máy $i$ bận lâu nhất, $T = T_i$. Gọi $j$ là việc cuối cùng được giao cho máy $i$.
+
+Khi giao $j$, máy $i$ có tải nhỏ nhất, nên $T_i - p_j \le T_k$ với mọi $k$. Cộng lại theo $k$ rồi chia cho $m$, kết hợp Bổ đề 1:
+$$
+T_i - p_j \le \frac{1}{m} \sum_k T_k = \frac{1}{m} \sum_k p_k \le T^*
+$$
+
+Kết hợp Bổ đề 2:
+$$
+T_i = (T_i - p_j) + p_j \le T^* + T^* = 2T^*
+$$
+
+**▸ CẬN NÀY CÓ CHẶT KHÔNG?**
+
+Gần như chặt. Xét $m$ máy, $m(m-1)$ việc độ dài 1, và 1 việc độ dài $m$ ở cuối danh sách.
+
+**Ví dụ với $m = 10$:** có 90 việc độ dài 1 và 1 việc độ dài 10.
+- **Tham lam:** 90 việc ngắn chia đều, mỗi máy có tải 9. Việc dài vào cuối nên tổng thời gian là $9 + 10 = 19$.
+- **Tối ưu:** dành riêng một máy cho việc dài, 9 máy còn lại mỗi máy làm 10 việc ngắn. Thời gian là $10$.
+
+Tỷ lệ là $\dfrac{2m - 1}{m}$, tiến đến 2 khi $m$ lớn.
+
+**▸ KẾT QUẢ KHÁC**
+
+Bài toán này còn có thuật toán $\frac{3}{2}$-xấp xỉ, $\frac{4}{3}$-xấp xỉ, và có cả PTAS.

@@ -1,0 +1,103 @@
+---
+title: "2. Thuật toán xấp xỉ"
+author: "Trần Đăng Quang Minh"
+---
+
+Lý thuyết nói rằng khó có thuật toán đa thức cho bài toán NP-khó. Nếu vẫn phải giải thì có ba hướng:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Hướng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thời gian đa thức</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Đảm bảo chất lượng nghiệm</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Vét cạn thông minh</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không đảm bảo</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tìm được nghiệm tối ưu</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Heuristic</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Có</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không đảm bảo</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Thuật toán xấp xỉ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Có</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Có</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**Khó khăn của thuật toán xấp xỉ:** phải chứng minh nghiệm tìm được gần tối ưu, trong khi không biết giá trị tối ưu là bao nhiêu. Vì vậy ta thường so sánh với một **cận** của giá trị tối ưu.
+
+**▸ ĐỊNH NGHĨA**
+
+**Thuật toán $\rho$-xấp xỉ:** chạy trong thời gian đa thức, và với mọi dữ liệu đều trả về nghiệm chấp nhận được không tệ hơn $\rho$ lần giá trị tối ưu.
+
+**Lược đồ xấp xỉ thời gian đa thức (PTAS):** họ các thuật toán $\{A_\varepsilon : \varepsilon > 0\}$, trong đó $A_\varepsilon$ là $(1 + \varepsilon)$-xấp xỉ, và chạy trong thời gian đa thức khi $\varepsilon$ cố định.
+
+**Lược đồ xấp xỉ thời gian đa thức đầy đủ (FPTAS):** PTAS mà $A_\varepsilon$ chạy trong thời gian đa thức theo cả kích thước đầu vào và $1 / \varepsilon$.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Bài toán</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Kết quả</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Bài</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Cái túi</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">FPTAS</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bài 7</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">TSP tổng quát</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không có $\rho$-xấp xỉ, trừ khi $P = NP$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bài 3</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">TSP metric</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2-xấp xỉ, $\frac{3}{2}$-xấp xỉ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bài 4, 5</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">TSP Euclid</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">PTAS</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bài 5</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Cân bằng tải</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2-xấp xỉ, và có PTAS</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bài 8</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Phủ đỉnh</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2-xấp xỉ bằng LP</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Chương 7</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ HEURISTIC GỐC VÀ ĐỐI NGẪU**
+
+- **Heuristic gốc (primal):** tìm một nghiệm chấp nhận được tốt.
+- **Heuristic đối ngẫu (dual):** tìm cận cho giá trị tối ưu, ví dụ từ LP nới lỏng.
+
+Với bài toán cực tiểu:
+$$
+\text{dual} \le \text{OPT} \le \text{primal}
+$$
+
+Nếu $\text{primal} \le (1 + \varepsilon) \cdot \text{dual}$ thì nghiệm tìm được không tệ hơn nghiệm tối ưu quá $\varepsilon$. Cách này cho biết chất lượng nghiệm trên từng dữ liệu cụ thể.
+
+**Một số heuristic thường gặp:** tham lam, tìm kiếm địa phương, luyện thép mô phỏng (simulated annealing), tìm kiếm tabu, thuật toán di truyền, đàn kiến. Grötschel nhắc rằng không nên tin vào các tuyên bố quá mức về chất lượng heuristic. Điều cần có là hướng dẫn xem heuristic nào hợp với bài toán nào.

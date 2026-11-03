@@ -1,0 +1,43 @@
+---
+title: "3. Đếm các cặp trong bộ nhớ"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ MÔ HÌNH CHI PHÍ**
+
+Dữ liệu thường nằm trong tệp phẳng trên đĩa, lưu từng giỏ một.
+
+- Chi phí chính là số lần đọc đĩa. Thuật toán đọc dữ liệu theo từng **lượt (pass)**, nên ta đo chi phí bằng **số lượt**.
+- Tài nguyên giới hạn là **bộ nhớ chính**. Số thứ đếm được bị giới hạn bởi bộ nhớ. Đổi số đếm ra vào đĩa thì rất chậm vì mỗi giỏ phải cập nhật nhiều số đếm ở các chỗ khác nhau.
+
+Khó nhất là tìm các **cặp phổ biến**. Cặp phổ biến thì nhiều, bộ ba phổ biến đã hiếm vì xác suất phổ biến giảm theo cấp số nhân khi kích thước tăng.
+
+**▸ CÁCH NGÂY THƠ**
+
+Đọc tệp một lần, với mỗi giỏ có $n_b$ item thì sinh ra $n_b(n_b - 1)/2$ cặp và đếm tất cả.
+
+Cách này thất bại khi $(\text{số item})^2$ vượt bộ nhớ. Ví dụ $10^6$ item, mỗi số đếm 4 byte: có khoảng $5 \cdot 10^{11}$ cặp, cần $2 \cdot 10^{12}$ byte, tức 2 TB.
+
+**▸ HAI CÁCH LƯU SỐ ĐẾM**
+
+![Lưu số đếm bằng ma trận tam giác hoặc bằng bảng bộ ba](/content/MAT3565/C2/triangular.svg)
+
+**Cách 1: ma trận tam giác.** Với $n$ item, chỉ đếm cặp $\{i, j\}$ có $i \lt j$, và xếp theo thứ tự từ điển $\{1,2\}, \{1,3\}, \dots, \{1,n\}, \{2,3\}, \dots$
+
+<Formula title="Vị trí của cặp (i, j) với i nhỏ hơn j">
+
+$$
+\text{pos}(i, j) = \frac{n(n - 1) - (n - i)(n - i + 1)}{2} + (j - i)
+$$
+
+</Formula>
+
+Cần 4 byte cho mỗi cặp, tổng cộng $O(n^2)$ byte.
+
+**Cách 2: bảng bộ ba.** Lưu $[i, j, c]$, nghĩa là cặp $\{i, j\}$ có số đếm $c$. Cần 12 byte cho mỗi cặp có số đếm dương, chưa kể phần phụ của bảng băm.
+
+**So sánh:** cách 2 tốt hơn cách 1 khi có ít hơn $1/3$ số cặp thực sự xuất hiện.
+
+**▸ ⚠️ LƯU Ý**
+
+Cả hai cách đều cần đếm mọi cặp có xuất hiện. Nếu số cặp đó quá lớn so với bộ nhớ thì vẫn không làm được, nên ta cần A-Priori.

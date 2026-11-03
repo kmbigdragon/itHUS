@@ -1,0 +1,72 @@
+---
+title: "2. Ghép cặp hai phía lực lượng cực đại"
+author: "Trần Đăng Quang Minh"
+---
+
+**Bài toán.** Cho đồ thị hai phía $G = (X \cup Y, E)$. Tìm cặp ghép có nhiều cạnh nhất.
+
+**▸ ĐƯA VỀ LUỒNG CỰC ĐẠI**
+
+- Thêm đỉnh $s$ và các cung từ $s$ đến mọi đỉnh thuộc $X$.
+- Thêm đỉnh $t$ và các cung từ mọi đỉnh thuộc $Y$ đến $t$.
+- Định hướng các cạnh của $G$ từ $X$ sang $Y$.
+- Mọi cung đều có dung tích 1.
+
+![Đưa cặp ghép hai phía về luồng cực đại](/content/MAT3323/C6/matching-flow.svg)
+
+Theo định lý tính nguyên, luồng cực đại nhận giá trị 0 hoặc 1 trên mỗi cung. Các cung từ $X$ sang $Y$ có luồng bằng 1 tạo thành cặp ghép có nhiều cạnh nhất.
+
+**▸ MẠNG CÒN DƯ TRÊN BÀI TOÁN NÀY**
+
+Trong Ford-Fulkerson, mọi dung tích còn dư và luồng đều là 0 hoặc 1, nên mạng còn dư $G_M$ rất đơn giản:
+- Nếu $(x, y) \notin M$ thì $G_M$ có cung $(x, y)$.
+- Nếu $(x, y) \in M$ thì $G_M$ có cung $(y, x)$.
+
+Một đường tăng khi đó gồm: cung từ $s$ đến một đỉnh $x \in X$ chưa ghép, rồi xen kẽ các cạnh chưa ghép và đã ghép, rồi cung từ một đỉnh $y \in Y$ chưa ghép đến $t$.
+
+**▸ ĐƯỜNG THAY PHIÊN**
+
+**Đường thay phiên (alternating path)** đối với cặp ghép $M$ là đường đi xen kẽ các cạnh không thuộc $M$ và thuộc $M$, bắt đầu từ đỉnh $x \in X$ chưa ghép và kết thúc ở đỉnh $y \in Y$ chưa ghép.
+
+**Tính chất.** Dùng đường thay phiên $P$ thì số cạnh của cặp ghép tăng thêm 1. Cặp ghép mới là
+$$
+M' = M \triangle P
+$$
+trong đó $\triangle$ là phép lấy hiệu đối xứng: cạnh thuộc $P$ mà chưa ghép thì thêm vào, đã ghép thì bỏ ra.
+
+![Tăng cặp ghép bằng đường thay phiên](/content/MAT3323/C6/alternating-path.svg)
+
+**▸ THỜI GIAN CHẠY**
+
+Có $C = 1$ và $val(f^*) \le n$, nên có thể dùng các kết quả của chương trước:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thuật toán</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thời gian</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Ford-Fulkerson tổng quát</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(mn)$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Capacity Scaling</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(m^2)$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Dinic (đánh giá chung)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(mn^2)$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Đường tăng ngắn nhất trên mạng đơn vị đơn giản</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(m n^{1/2})$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Mạng trên là mạng đơn vị đơn giản, nên kết quả tốt nhất là $O(m n^{1/2})$.

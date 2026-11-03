@@ -1,0 +1,76 @@
+---
+title: "3. Thuật toán Prim"
+author: "Trần Đăng Quang Minh"
+---
+
+**Ý tưởng:** Nuôi một cây từ một đỉnh. Mỗi lần thêm cạnh rẻ nhất nối cây với phần còn lại.
+
+- **Bước 1:** Khởi tạo $S$ gồm một đỉnh bất kỳ, $T = \varnothing$.
+- **Bước 2:** Lặp $n - 1$ lần: thêm vào $T$ cạnh có trọng số nhỏ nhất với đúng một đầu thuộc $S$, rồi thêm đầu còn lại vào $S$.
+
+**Định lý.** Thuật toán Prim tìm được cây bao trùm nhỏ nhất.
+
+Lý do: đây là trường hợp riêng của thuật toán tham lam, trong đó ta liên tục áp dụng quy tắc xanh cho lát cắt $S$.
+
+**▸ CÀI ĐẶT**
+
+Với mỗi đỉnh $v$ chưa thuộc $S$, lưu $\pi[v]$ là trọng số cạnh rẻ nhất nối $v$ với $S$. Các đỉnh này được lưu trong hàng đợi ưu tiên.
+- Lấy ra đỉnh $u$ có $\pi[u]$ nhỏ nhất, thêm vào $S$.
+- Với mỗi cạnh $e = (u, v)$ mà $v \notin S$: nếu $c_e < \pi[v]$ thì giảm $\pi[v]$ xuống $c_e$ và ghi nhớ cạnh $e$.
+
+**Định lý.** Dùng heap nhị phân, thuật toán Prim chạy trong $O(m \log n)$.
+
+**▸ VÍ DỤ**
+
+Tìm cây bao trùm nhỏ nhất của đồ thị sau, xuất phát từ đỉnh $A$.
+
+![Đồ thị 6 đỉnh có trọng số](/content/MAT3323/C3/mst-graph.svg)
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Bước</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Các cạnh qua lát cắt $S$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Cạnh chọn</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$S$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$AC(2), AB(6)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$AC$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$A, C$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$CD(4), BC(5), AB(6), CF(8)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$CD$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$A, C, D$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$DE(1), BD(3), BC(5), AB(6), DF(7), CF(8)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$DE$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$A, C, D, E$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$BD(3), BC(5), AB(6), DF(7), CF(8), BE(9), EF(10)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$BD$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$A, B, C, D, E$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">5</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$DF(7), CF(8), EF(10)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$DF$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tất cả</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Cây bao trùm nhỏ nhất có trọng số $2 + 4 + 1 + 3 + 7 = 17$.
+
+![Cây bao trùm nhỏ nhất của đồ thị](/content/MAT3323/C3/mst-result.svg)

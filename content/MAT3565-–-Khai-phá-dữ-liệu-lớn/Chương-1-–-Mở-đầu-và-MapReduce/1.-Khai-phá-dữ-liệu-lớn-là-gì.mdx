@@ -1,0 +1,75 @@
+---
+title: "1. Khai phá dữ liệu lớn là gì"
+author: "Trần Đăng Quang Minh"
+---
+
+Dữ liệu chứa giá trị và tri thức. Để lấy được tri thức, dữ liệu phải được lưu trữ (hệ thống), quản lý (cơ sở dữ liệu) và **phân tích**. Môn này học phần phân tích.
+
+**Khai phá dữ liệu** là rút ra thông tin có thể dùng được từ các tập dữ liệu, thường là rất lớn. Môn học tập trung vào các thuật toán **chạy được trên quy mô lớn**, và thường phải song song hóa.
+
+**▸ HAI NHÓM PHƯƠNG PHÁP**
+
+- **Mô tả:** tìm các mẫu mà con người hiểu được để mô tả dữ liệu. Ví dụ phân cụm.
+- **Dự đoán:** dùng một số biến để dự đoán giá trị chưa biết hoặc giá trị tương lai của biến khác. Ví dụ hệ gợi ý.
+
+**▸ MÔN HỌC NÀY HỌC GÌ**
+
+Môn học kết hợp học máy, thống kê, trí tuệ nhân tạo và cơ sở dữ liệu, nhưng nhấn mạnh vào:
+- Khả năng mở rộng (dữ liệu lớn).
+- Thuật toán.
+- Kiến trúc tính toán.
+- Tự động hóa để xử lý dữ liệu lớn.
+
+Các loại dữ liệu và bài toán trong môn:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Loại dữ liệu</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Chủ đề</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Chương</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Dữ liệu nhiều chiều</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">LSH, phân cụm, giảm chiều</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">3, 4</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Dữ liệu đồ thị</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">PageRank, SimRank, phát hiện spam, mạng nơ-ron đồ thị</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">6, 7</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Dữ liệu vô hạn (luồng)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Lọc luồng, truy vấn trên luồng, quảng cáo trực tuyến</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">8</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Dữ liệu có nhãn (học máy)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Học biểu diễn, cây quyết định, thử nghiệm (bandit)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">7, 9</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Ứng dụng</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Hệ gợi ý, luật kết hợp, phát hiện tài liệu trùng lặp</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2, 3, 5</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ MÔ HÌNH TÍNH TOÁN VÀ CÔNG CỤ**
+
+Mô hình tính toán:
+- MapReduce.
+- Luồng và thuật toán trực tuyến.
+- Một máy, xử lý trong bộ nhớ.
+
+Công cụ toán dùng trong môn:
+- Đại số tuyến tính: SVD, hệ gợi ý, cộng đồng.
+- Tối ưu: gradient descent ngẫu nhiên.
+- Quy hoạch động: tập phổ biến.
+- Băm: LSH, bộ lọc Bloom.

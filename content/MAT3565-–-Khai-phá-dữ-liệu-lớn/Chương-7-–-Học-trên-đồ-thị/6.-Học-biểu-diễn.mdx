@@ -1,0 +1,93 @@
+---
+title: "6. Học biểu diễn"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ NHẮC LẠI VỀ HỌC MÁY**
+
+Học máy là tối ưu: cho dữ liệu huấn luyện $\{(x_i, y_i)\}$, mô hình $f_\theta$ và hàm mất mát $\ell$, tìm $\theta$ làm nhỏ nhất mất mát kỳ vọng trên dữ liệu huấn luyện.
+
+<Formula title="Bài toán học">
+
+$$
+\min_\theta \frac{1}{n} \sum_{i=1}^{n} \ell(f_\theta(x_i), y_i)
+$$
+
+</Formula>
+
+- **Có giám sát:** biết nhãn, ví dụ phân loại, hồi quy.
+- **Không giám sát:** không có nhãn, ví dụ giảm chiều, phân cụm.
+
+**▸ MÃ HÓA BIẾN PHÂN LOẠI**
+
+Đa số phương pháp cần đầu vào là số.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Cách</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Ví dụ với nhà cung cấp</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Ưu điểm</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Nhược điểm</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Số nguyên</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Netflix = 1, Prime = 2, HBO = 3, Hulu = 4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Gọn</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Ngầm định có thứ tự và cách đều, nên chỉ hợp biến có thứ bậc</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">One-hot</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Netflix = 1000, Prime = 0100, ...</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Đơn giản, không có thứ tự</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Thưa, số chiều lớn</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Multi-hot</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Phim có nhiều thể loại: nhiều số 1 trong vector dài 28</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Biểu diễn được nhiều giá trị</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Thưa, số chiều lớn</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**Vấn đề của one-hot và multi-hot:**
+- **Nhiều chiều:** 1 triệu từ khác nhau thì vector có 1 triệu chiều.
+- **Thưa:** tài liệu trung bình có 500 từ, tức vector thưa hơn 99.95%.
+- **Không có ngữ nghĩa:** mã hóa của "good" và "great" khác nhau y như của "good" và "bad".
+
+**▸ BIỂU DIỄN (EMBEDDING)**
+
+**Biểu diễn** là ánh xạ một vector nhiều chiều vào không gian ít chiều. Đặc điểm:
+- Đặc (số thực).
+- Ít chiều.
+- Giữ được độ tương đồng về ngữ nghĩa.
+
+**▸ BIỂU DIỄN BẰNG SVD**
+
+Từ $A = U \Sigma V^T$:
+
+<Formula title="Biểu diễn hàng và cột từ SVD">
+
+$$
+AV = U \Sigma \;\; \text{là biểu diễn của hàng}, \qquad U^T A = \Sigma V^T \;\; \text{là biểu diễn của cột}
+$$
+
+</Formula>
+
+**Ví dụ tài liệu và từ:**
+- **Bước 1:** đổi kho tài liệu thành ma trận từ-tài liệu.
+- **Bước 2:** SVD ma trận này, chọn $k$.
+- **Bước 3:** biểu diễn của tài liệu là tích vô hướng với từng $v_i$: $\text{emb}_{doc} = [\langle doc, v_1 \rangle, \dots, \langle doc, v_k \rangle]$.
+
+**Hạn chế của SVD:**
+- Không khả thi với dữ liệu thực tế. Ví dụ 0.5 tỉ trang Wikipedia và 4 tỉ từ, vì phải nạp toàn bộ dữ liệu vào bộ nhớ.
+- Chỉ là biểu diễn tuyến tính.
+- Không tận dụng được tính thưa.
+- Ràng buộc trực chuẩn là không cần thiết.
+
+Do đó các phương pháp hiện đại dùng mạng nơ-ron.

@@ -1,0 +1,96 @@
+---
+title: "8. Mạng đơn vị đơn giản"
+author: "Trần Đăng Quang Minh"
+---
+
+**Mạng đơn vị đơn giản (simple unit-capacity network)** là mạng luồng thỏa mãn:
+- Mọi cạnh đều có dung tích 1.
+- Mọi đỉnh khác $s, t$ có đúng một cạnh đi vào, hoặc đúng một cạnh đi ra (hoặc cả hai).
+
+**Tính chất.** Nếu $G$ là mạng đơn vị đơn giản và $f$ là luồng 0-1 thì $G_f$ cũng là mạng đơn vị đơn giản.
+
+**Ví dụ:** Bài toán cặp ghép hai phía, sẽ học ở chương sau.
+
+**Định lý (Even, Tarjan 1975).** Trên mạng đơn vị đơn giản, thuật toán đường tăng ngắn nhất tìm được luồng cực đại trong $O(m n^{1/2})$.
+
+Nếu chỉ áp dụng công thức chung thì sẽ là $O(mn)$ với đường tăng tổng quát, nên kết quả này cần cách phân tích riêng.
+
+**▸ PHÂN TÍCH**
+
+Mỗi pha ta làm như thuật toán Dinic, nhưng khi augment thì xóa toàn bộ các cạnh trên đường tăng khỏi đồ thị lớp, vì dung tích đều bằng 1.
+
+**Bổ đề 1.** Mỗi pha mất $O(m)$. Dựng đồ thị lớp mất $O(m)$, và mỗi cạnh, mỗi đỉnh chỉ bị đi qua rồi xóa tối đa một lần.
+
+**Bổ đề 2.** Sau tối đa $n^{1/2}$ pha thì $val(f) \ge val(f^*) - n^{1/2}$.
+
+**Ý chứng minh.** Sau $n^{1/2}$ pha, đồ thị lớp có hơn $n^{1/2}$ lớp. Tổng số đỉnh là $n$ nên có lớp $V_h$ với $|V_h| \le n^{1/2}$. Lấy $A$ gồm các đỉnh ở lớp nhỏ hơn $h$ và các đỉnh ở lớp $h$ có tối đa 1 cạnh dư đi ra. Lát cắt này trong mạng còn dư có dung tích không quá $|V_h| \le n^{1/2}$, nên phần luồng còn thiếu không quá $n^{1/2}$.
+
+**Bổ đề 3.** Sau tối đa $n^{1/2}$ lần tăng luồng nữa thì luồng là cực đại, vì mỗi lần tăng ít nhất 1 đơn vị.
+
+**▸ TỔNG KẾT CÁC THUẬT TOÁN ĐƯỜNG TĂNG**
+
+Mạng có $m$ cạnh, $n$ đỉnh, dung tích nguyên từ $1$ đến $C$.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Năm</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Phương pháp</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Số lần tăng luồng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thời gian</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">1955</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Ford-Fulkerson</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$nC$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(mnC)$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">1970</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Cổ chai lớn nhất</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$m \log(mC)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(m^2 \log n \log(mC))$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">1972</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Capacity Scaling</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$m \log C$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(m^2 \log C)$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">1985</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Capacity Scaling cải tiến</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$m \log C$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(mn \log C)$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">1970</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Đường tăng ngắn nhất</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$mn$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(m^2 n)$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">1970</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Dinic (Blocking Flow)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$mn$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(mn^2)$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">1983</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Dynamic trees</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$mn$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(mn \log n)$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ TRONG THỰC TẾ**
+
+- Thời gian xấu nhất thường **không** dự đoán được thuật toán nào nhanh hơn trong thực tế.
+- Thuật toán **Push-Relabel** (Goldberg, Tarjan 1988) thường tốt nhất: nó tăng luồng theo từng cạnh chứ không theo từng đường, và với kỹ thuật gap relabeling thì thực tế chỉ khoảng $O(m^{3/2})$.
+- Với các bài toán dày trong thị giác máy tính, các thuật toán khác có thể tốt hơn.
+- Hiện vẫn chưa biết có thuật toán nào đạt $O(m)$ hay không.

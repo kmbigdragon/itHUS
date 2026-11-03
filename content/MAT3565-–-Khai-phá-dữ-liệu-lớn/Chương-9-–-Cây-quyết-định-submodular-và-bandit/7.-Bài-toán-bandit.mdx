@@ -1,0 +1,125 @@
+---
+title: "7. Bài toán bandit"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ MÔ HÌNH**
+
+**Bài toán $k$ cánh tay:** $k$ máy đánh bạc. Mỗi cánh tay $a$ thắng (thưởng 1) với xác suất $\mu_a$ không biết trước. Các lần kéo là độc lập.
+
+Trong quảng cáo: mỗi truy vấn là một bandit, mỗi quảng cáo là một cánh tay, $\mu_a$ là CTR. Doanh thu kỳ vọng là $P(\text{click}_a \mid q) \times \text{giá}_{a, q}$. Phần xác suất chưa biết, nên phải thu thập.
+
+Ứng dụng khác: thử nghiệm lâm sàng, định tuyến thích nghi, định giá.
+
+Chơi $T$ vòng, mỗi vòng chọn một cánh tay và nhận phần thưởng. Khác với thuật toán trực tuyến thường, ta **chỉ biết thông tin về cánh tay đã chọn**.
+
+**▸ HỐI TIẾC**
+
+Gọi $\mu^* = \max_a \mu_a$, và $a_t$ là cánh tay kéo ở vòng $t$.
+
+<Formula title="Hối tiếc tại vòng t và hối tiếc tích lũy">
+
+$$
+r_t = \mu^* - \mu_{a_t}, \qquad R_T = \sum_{t=1}^{T} r_t
+$$
+
+</Formula>
+
+**Mục tiêu:** chính sách sao cho $R_T / T \to 0$ khi $T \to \infty$. Điều này nghĩa là về lâu dài ta tìm ra cánh tay tốt nhất.
+
+**▸ THAM LAM**
+
+Luôn chọn cánh tay có trung bình quan sát cao nhất.
+
+**Vấn đề:** hai cánh tay với $\mu_1 = 0.3$, $\mu_2 = 0.7$. Kéo $A_1$ được 1, kéo $A_2$ được 0. Trung bình của $A_1$ không bao giờ về 0, nên không bao giờ kéo lại $A_2$. Tham lam có thể kẹt ở nghiệm kém.
+
+**Khai thác và khám phá:**
+- **Khám phá:** kéo cánh tay chưa rõ để thu thông tin.
+- **Khai thác:** kéo cánh tay đang có ước lượng cao nhất.
+
+**▸ EPSILON-GREEDY**
+
+Với $t = 1, \dots, T$:
+- Đặt $\varepsilon_t = O(1/t)$.
+- Với xác suất $\varepsilon_t$: **khám phá**, chọn ngẫu nhiên đều một cánh tay.
+- Với xác suất $1 - \varepsilon_t$: **khai thác**, chọn cánh tay có trung bình cao nhất.
+
+<Formula title="Hối tiếc của epsilon-greedy (Auer và cộng sự, 2002)">
+
+$$
+R_T = O(k \log T) \quad \Rightarrow \quad \frac{R_T}{T} = O \left( \frac{k \log T}{T} \right) \to 0
+$$
+
+</Formula>
+
+**Hạn chế:** tách rời khám phá và khai thác, và khi khám phá thì chọn đều nên có thể phí vào các cánh tay kém.
+
+**▸ TIN TƯỞNG VÀO CẬN TRÊN**
+
+**Ý tưởng:** không chỉ nhìn trung bình, mà nhìn cả **độ tin cậy**. Cánh tay ít được thử thì khoảng tin cậy rộng.
+
+Chọn cánh tay có **cận trên** khoảng tin cậy lớn nhất. Đây là chính sách lạc quan: coi một cánh tay tốt nhất có thể theo bằng chứng hiện có.
+
+**▸ BẤT ĐẲNG THỨC HOEFFDING**
+
+Cho $X_1, \dots, X_m$ độc lập cùng phân phối trong $[0, 1]$, $\mu = E[X]$, $\hat{\mu}_m = \frac{1}{m} \sum_{\ell = 1}^m X_\ell$.
+
+<Formula title="Bất đẳng thức Hoeffding">
+
+$$
+P(|\mu - \hat{\mu}_m| \ge b) \le 2 \exp(-2 b^2 m) = \delta
+$$
+
+</Formula>
+
+Giải ra được $b \ge \sqrt{\ln(2/\delta) / (2m)}$. Đặt $b = \sqrt{2 \log(T) / m_a}$ thì $P(|\mu - \hat{\mu}_m| \ge b) \le 2T^{-4}$, giảm rất nhanh.
+
+Nếu không kéo cánh tay $a$ thì $b$ tăng theo thời gian, nên không bao giờ bỏ hẳn một cánh tay nào.
+
+**▸ THUẬT TOÁN UCB1**
+
+Đặt $\hat{\mu}_a = 0$ và $m_a = 0$ với mọi $a$. Với $t = 1, \dots, T$:
+
+- **Bước 1:** với mỗi cánh tay, tính:
+
+<Formula title="Cận trên của cánh tay a">
+
+$$
+UCB(a) = \hat{\mu}_a + \alpha \sqrt{\frac{2 \ln t}{m_a}}
+$$
+
+</Formula>
+
+- **Bước 2:** chọn $j = \arg\max_a UCB(a)$, kéo và nhận $y_t$.
+- **Bước 3:** cập nhật:
+
+<Formula title="Cập nhật trung bình">
+
+$$
+m_j \leftarrow m_j + 1, \qquad \hat{\mu}_j \leftarrow \frac{1}{m_j} (y_t + (m_j - 1) \hat{\mu}_j)
+$$
+
+</Formula>
+
+$\alpha$ là tham số cân bằng giữa khám phá và khai thác.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+Ví dụ trong slide: Arm 1 có 5/10 lần thắng, Arm 2 có 2/3, Arm 3 có 8/10.
+
+![Khoảng tin cậy của ba cánh tay và cánh tay được chọn](/content/MAT3565/C9/ucb-intervals.svg)
+
+![Mười vòng đầu của UCB1](/content/MAT3565/C9/ucb-steps.svg)
+
+**▸ SO SÁNH**
+
+![Hối tiếc tích lũy của tham lam, epsilon-greedy và UCB1](/content/MAT3565/C9/regret.svg)
+
+Tham lam có hối tiếc tăng tuyến tính khi bị kẹt. Epsilon-greedy và UCB1 đều có đường cong chậm dần, tức $R_T / T \to 0$. Trong mô phỏng, epsilon-greedy dùng $\varepsilon_t = \min(1, 15/t)$, UCB1 dùng $\alpha = 1$, và epsilon-greedy có hối tiếc thấp hơn. Kết quả này phụ thuộc vào các tham số đã chọn.
+
+**▸ ỨNG DỤNG: KHỞI ĐỘNG LẠNH**
+
+Pin hay quảng cáo mới chưa có đủ tín hiệu. Coi mỗi pin là một cánh tay, tương tác của user là phần thưởng. Mỗi vòng:
+- **Bước 1:** thấy user đang xem một tập pin $A$.
+- **Bước 2:** chọn cánh tay $a \in A$ dựa trên kết quả trước, nhận thưởng $r_{t, a}$.
+- **Bước 3:** cập nhật chiến lược. Pin có điểm thấp thì lọc đi.

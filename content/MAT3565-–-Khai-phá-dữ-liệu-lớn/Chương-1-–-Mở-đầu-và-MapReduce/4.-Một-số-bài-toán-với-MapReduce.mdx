@@ -1,0 +1,42 @@
+---
+title: "4. Một số bài toán với MapReduce"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ TỔNG KÍCH THƯỚC THEO HOST**
+
+Có tệp metadata gồm các dòng (URL, kích thước, ngày, ...). Với mỗi host, tính tổng số byte của các trang thuộc host đó.
+
+- **Map:** với mỗi dòng, sinh cặp (host, kích thước).
+- **Reduce:** cộng các kích thước của mỗi host.
+
+**▸ ĐẾM CỤM 5 TỪ**
+
+Trong dịch máy thống kê, cần đếm số lần xuất hiện của mỗi cụm 5 từ trong một kho tài liệu lớn.
+
+- **Map:** từ mỗi tài liệu, sinh cặp (cụm 5 từ, số đếm).
+- **Reduce:** cộng các số đếm.
+
+**▸ NỐI HAI BẢNG (NATURAL JOIN)**
+
+Tính $R(A, B) \bowtie S(B, C)$, với $R$ và $S$ lưu trong các tệp.
+
+Dùng hàm băm $h$ từ giá trị của $B$ về $\{1, \dots, k\}$:
+
+- **Bước 1: Map.** Biến mỗi bộ $R(a, b)$ thành cặp $(b, (a, R))$ và mỗi bộ $S(b, c)$ thành cặp $(b, (c, S))$.
+- **Bước 2: Nhóm theo khóa.** Mọi cặp có khóa $b$ được gửi về tiến trình Reduce số $h(b)$. Hadoop tự làm việc này, ta chỉ cần cho biết $k$.
+- **Bước 3: Reduce.** Ghép mọi $(b, (a, R))$ với mọi $(b, (c, S))$ để sinh ra $(a, b, c)$.
+
+![Nối hai bảng R và S theo ba bước của MapReduce](/content/MAT3565/C1/join.svg)
+
+**▸ KHI NÀO DÙNG MAPREDUCE**
+
+MapReduce phù hợp với:
+- Bài toán truy cập dữ liệu tuần tự.
+- Tác vụ theo lô lớn, không tương tác và không thời gian thực.
+
+MapReduce kém hiệu quả khi cần truy cập ngẫu nhiên hoặc không đều:
+- Đồ thị.
+- Dữ liệu phụ thuộc lẫn nhau.
+- Học máy.
+- So sánh nhiều cặp phần tử.

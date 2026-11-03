@@ -1,0 +1,43 @@
+---
+title: "3. Đồ thị hai phía"
+author: "Trần Đăng Quang Minh"
+---
+
+**Đồ thị hai phía (bipartite graph)** là đồ thị vô hướng mà ta có thể chia tập đỉnh thành hai tập con sao cho không có cạnh nào nối hai đỉnh trong cùng một tập.
+
+Nói cách khác, ta tô được các đỉnh bằng 2 màu sao cho mỗi cạnh nối hai đỉnh khác màu.
+
+**Ứng dụng:** ghép sinh viên với bệnh viện, phân máy cho việc.
+
+Nhiều bài toán trở nên dễ hơn trên đồ thị hai phía, ví dụ bài toán cặp ghép. Có bài toán từ khó trở thành giải được, ví dụ bài toán tập độc lập.
+
+![Đồ thị hai phía và chu trình lẻ](/content/MAT3323/C2/bipartite.svg)
+
+**▸ KIỂM TRA TÍNH HAI PHÍA**
+
+**Bổ đề 1.** Nếu $G$ là đồ thị hai phía thì $G$ không chứa chu trình có số cạnh lẻ.
+
+Lý do: không thể dùng 2 màu để tô một chu trình lẻ.
+
+**Bổ đề 2.** Cho $G$ liên thông và $L_0, \dots, L_k$ là các lớp BFS từ đỉnh $s$. Khi đó đúng một trong hai trường hợp sau xảy ra:
+- **(i)** Không có cạnh nào nối hai đỉnh cùng lớp. Khi đó $G$ là đồ thị hai phía.
+- **(ii)** Có cạnh nối hai đỉnh cùng lớp. Khi đó $G$ chứa chu trình lẻ, nên không phải đồ thị hai phía.
+
+**Chứng minh.**
+
+(i) Mỗi cạnh chỉ nối hai đỉnh thuộc hai lớp kề nhau. Tô lớp lẻ một màu, lớp chẵn một màu thì mỗi cạnh nối hai đỉnh khác màu.
+
+(ii) Giả sử cạnh $(x, y)$ nối hai đỉnh cùng lớp $L_j$. Gọi $z$ là tổ tiên chung thấp nhất của $x, y$ trên cây BFS và $L_i$ là lớp chứa $z$. Xét chu trình đi từ $x$ đến $y$, rồi từ $y$ lên $z$, rồi từ $z$ xuống $x$. Độ dài của nó là
+$$
+1 + (j - i) + (j - i)
+$$
+là một số lẻ.
+
+**Hệ quả.** Đồ thị vô hướng $G$ là hai phía khi và chỉ khi nó không chứa chu trình có số cạnh lẻ.
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Chạy BFS trên từng thành phần liên thông.
+- **Bước 2:** Kiểm tra xem có cạnh nào nối hai đỉnh cùng lớp không. Nếu không có thì đồ thị là hai phía.
+
+Tổng thời gian là $O(m + n)$.

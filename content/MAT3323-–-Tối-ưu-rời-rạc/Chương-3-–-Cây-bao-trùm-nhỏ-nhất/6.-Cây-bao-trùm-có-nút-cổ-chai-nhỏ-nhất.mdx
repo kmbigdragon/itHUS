@@ -1,0 +1,30 @@
+---
+title: "6. Cây bao trùm có nút cổ chai nhỏ nhất"
+author: "Trần Đăng Quang Minh"
+---
+
+**Bài toán (MBST).** Cho đồ thị liên thông có trọng số. Tìm cây bao trùm sao cho **trọng số lớn nhất** của các cạnh trong cây là nhỏ nhất. Trọng số lớn nhất này gọi là **nút cổ chai (bottleneck)** của cây.
+
+**Mục tiêu:** Thời gian $O(m \log m)$ hoặc tốt hơn.
+
+**▸ ⚠️ LƯU Ý**
+
+Một MBST chưa chắc là MST. Nhưng chiều ngược lại thì đúng, như cách 1 dưới đây.
+
+**▸ CÁCH 1: DÙNG MST**
+
+Tính cây bao trùm nhỏ nhất $T^*$, nó cũng là một MBST.
+
+**Chứng minh.** Giả sử $T^*$ không phải MBST. Gọi $e \in T^*$ là cạnh có trọng số lớn hơn nút cổ chai tối ưu. Xét lát cắt tạo ra khi xóa $e$ khỏi $T^*$. MBST phải chứa ít nhất một cạnh $f$ trong tập cạnh cắt này, và $c_f < c_e$. Khi đó $T^* \cup \{f\} - \{e\}$ là cây bao trùm nhỏ hơn $T^*$. Mâu thuẫn.
+
+**▸ CÁCH 2: TÌM KIẾM NHỊ PHÂN**
+
+- **Bước 1:** Sắp xếp các cạnh theo trọng số tăng dần.
+- **Bước 2:** Với mỗi giá trị $x$, đặt $E_x = \{e \in E : c_e \le x\}$ và $G_x = (V, E_x)$.
+- **Bước 3:** Tìm kiếm nhị phân giá trị $x$ nhỏ nhất sao cho $G_x$ liên thông.
+
+Mỗi lần kiểm tra liên thông mất $O(m + n)$, nên tổng thời gian là $O(m \log m)$. Cách này có thể cải tiến thành $O(m)$ nhờ tìm trung vị trong thời gian tuyến tính và co cạnh.
+
+**▸ VÍ DỤ**
+
+Với đồ thị ở các bài trước, các cạnh theo thứ tự tăng dần là $1, 2, 3, 4, 5, 6, 7, 8, 9, 10$. Đỉnh $F$ chỉ có các cạnh trọng số $7, 8, 10$, nên $G_x$ chỉ liên thông từ $x = 7$ trở lên. Vậy nút cổ chai nhỏ nhất bằng $7$, đúng bằng cạnh lớn nhất của MST.

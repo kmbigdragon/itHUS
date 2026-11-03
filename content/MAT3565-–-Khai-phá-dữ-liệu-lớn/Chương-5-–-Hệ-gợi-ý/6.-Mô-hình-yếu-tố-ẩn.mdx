@@ -1,0 +1,67 @@
+---
+title: "6. Mô hình yếu tố ẩn"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ Ý TƯỞNG**
+
+Xấp xỉ ma trận đánh giá $R$ bằng tích của hai ma trận "mỏng":
+
+<Formula title="Phân rã ma trận">
+
+$$
+R \approx Q \cdot P^T, \qquad \hat{r}_{xi} = q_i \cdot p_x
+$$
+
+</Formula>
+
+- $q_i$: hàng $i$ của $Q$, là vector của item $i$ trong không gian yếu tố.
+- $p_x$: cột $x$ của $P^T$, là vector của user $x$.
+
+![Tính đánh giá còn thiếu bằng tích vô hướng của hàng Q và cột P](/content/MAT3565/C5/uv-factor.svg)
+
+Mỗi chiều của không gian ẩn có thể hiểu thành một đặc điểm, ví dụ phim nghiêm túc hay hài, hướng đến nam hay nữ.
+
+![Các phim nằm trong không gian hai yếu tố ẩn](/content/MAT3565/C5/latent-space.svg)
+
+**▸ LIÊN HỆ VỚI SVD**
+
+Trong SVD $A = U \Sigma V^T$, đặt $A = R$, $Q = U$, $P^T = \Sigma V^T$. SVD cho sai số tái tạo nhỏ nhất, và SSE với RMSE có quan hệ đơn điệu nên SVD cũng tối thiểu hóa RMSE:
+
+<Formula title="SVD tối thiểu hóa sai số tái tạo">
+
+$$
+\min_{U, V, \Sigma} \sum_{ij} (A_{ij} - [U \Sigma V^T]_{ij})^2
+$$
+
+</Formula>
+
+**Vấn đề:** tổng trong SVD chạy trên **mọi** ô, tức coi ô trống là 0. Mà $R$ có ô bị thiếu, nên SVD không định nghĩa được. Ta phải tìm $P, Q$ bằng phương pháp riêng, và chỉ tính trên đánh giá đã biết:
+
+<Formula title="Bài toán tìm P, Q">
+
+$$
+\min_{P, Q} \sum_{(i, x) \in R} (r_{xi} - q_i \cdot p_x)^2
+$$
+
+</Formula>
+
+Không cần các cột của $P, Q$ trực giao hay có độ dài đơn vị.
+
+**▸ QUÁ KHỚP VÀ ĐIỀU CHUẨN**
+
+Muốn $k$ lớn để bắt được mọi tín hiệu, nhưng khi có quá nhiều tham số tự do thì mô hình bắt đầu khớp cả nhiễu, và sai số kiểm tra tăng.
+
+![Sai số huấn luyện và kiểm tra theo số yếu tố, có và không có điều chuẩn](/content/MAT3565/C5/overfit.svg)
+
+Hình trên chạy thật trên ma trận sinh ngẫu nhiên có hạng 2 kèm nhiễu. **Điều chuẩn** cho phép mô hình phức tạp ở nơi có đủ dữ liệu, và co mạnh ở nơi có ít dữ liệu:
+
+<Formula title="Hàm mục tiêu có điều chuẩn">
+
+$$
+\min_{P, Q} \sum_{\text{train}} (r_{xi} - q_i \cdot p_x)^2 + \left[ \lambda_1 \sum_x \|p_x\|^2 + \lambda_2 \sum_i \|q_i\|^2 \right]
+$$
+
+</Formula>
+
+Phần đầu là "sai số", phần sau là "độ dài". $\lambda_1, \lambda_2$ là siêu tham số.

@@ -1,0 +1,60 @@
+---
+title: "8. TrustRank và khối lượng spam"
+author: "Trần Đăng Quang Minh"
+---
+
+Có hai cách chống spam liên kết:
+- Phát hiện cấu trúc giống trang trại rồi đưa vào danh sách đen. Cuộc chiến này không có điểm dừng.
+- **TrustRank:** PageRank theo chủ đề, với tập dịch chuyển là các trang đáng tin.
+
+Cơ sở: trang tốt hiếm khi trỏ đến trang xấu.
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** lấy một tập trang hạt giống từ web.
+- **Bước 2:** nhờ con người xác định các trang tốt trong đó, gọi là **trang tin cậy**. Việc này tốn kém, nên tập hạt giống phải nhỏ.
+- **Bước 3:** chạy PageRank theo chủ đề với tập dịch chuyển là các trang tin cậy.
+- **Bước 4:** đánh dấu spam các trang có độ tin dưới ngưỡng.
+
+**Truyền độ tin:** trang tin cậy có độ tin 1. Trang $p$ có độ tin $t_p$ và tập liên kết ra $o_p$ thì trao cho mỗi $q \in o_p$:
+
+<Formula title="Độ tin trao qua một liên kết">
+
+$$
+\frac{\beta \, t_p}{|o_p|}, \qquad 0 \lt \beta \lt 1
+$$
+
+</Formula>
+
+Độ tin được cộng dồn. Chỉ khác một hệ số tỉ lệ, TrustRank chính là PageRank với tập dịch chuyển là các trang tin cậy.
+
+- **Suy giảm:** $\beta$ làm độ tin giảm theo khoảng cách.
+- **Chia nhỏ:** trang có nhiều liên kết ra thì tác giả ít xem xét kỹ từng liên kết, nên độ tin bị chia đều.
+
+**▸ CHỌN TẬP HẠT GIỐNG**
+
+Hai yêu cầu trái nhau: tập phải nhỏ để người kiểm tra được, nhưng mọi trang tốt phải đến được từ tập đó qua đường đi ngắn.
+
+Với $k$ trang hạt giống:
+- Lấy $k$ trang có PageRank cao nhất, vì trang xấu khó đạt hạng thật cao.
+- Hoặc dùng các tên miền có kiểm soát như .edu, .mil, .gov.
+
+**▸ KHỐI LƯỢNG SPAM**
+
+Cách nhìn bổ sung: bao nhiêu phần PageRank của một trang đến từ các trang spam?
+
+Không biết hết các trang spam, nên ta ước lượng: gọi $r_p$ là PageRank của $p$, và $r_p^+$ là PageRank của $p$ khi dịch chuyển chỉ vào trang tin cậy.
+
+<Formula title="Khối lượng spam của trang p">
+
+$$
+r_p^- = r_p - r_p^+, \qquad \text{Khối lượng spam} = \frac{r_p^-}{r_p}
+$$
+
+</Formula>
+
+Trang có khối lượng spam cao là spam.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Tính PageRank thường, PageRank theo tập tin cậy và khối lượng spam trên đồ thị nhỏ](/content/MAT3565/C6/trustrank.svg)

@@ -1,0 +1,131 @@
+---
+title: "4. Tính PageRank trên dữ liệu lớn"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ VẤN ĐỀ**
+
+Bước chính là phép nhân $r^{\text{new}} = A \cdot r^{\text{old}}$. Với $N = 1$ tỉ trang:
+- Hai vector có 2 tỉ phần tử, khoảng 8 GB.
+- Ma trận $A$ có $N^2 = 10^{18}$ phần tử, không thể lưu, vì $A$ không thưa.
+
+**▸ VIẾT LẠI PHƯƠNG TRÌNH**
+
+Biến đổi $r_j = \sum_i A_{ji} r_i$ với $\sum_i r_i = 1$ ta được:
+
+<Formula title="PageRank viết theo ma trận thưa M">
+
+$$
+r = \beta M \cdot r + \left[ \frac{1 - \beta}{N} \right]_N
+$$
+
+</Formula>
+
+$M$ là ma trận thưa, trung bình khoảng 10 phần tử khác 0 trên mỗi cột. Mỗi vòng lặp chỉ cần:
+- Tính $r^{\text{new}} = \beta M \cdot r^{\text{old}}$.
+- Cộng hằng số $(1 - \beta) / N$ vào mỗi phần tử.
+
+**▸ THUẬT TOÁN ĐẦY ĐỦ**
+
+Đồ thị có thể có cả bẫy nhện và ngõ cụt. Nếu có ngõ cụt thì lượng điểm rò rỉ lớn hơn $1 - \beta$, nên ta phải tính $S$ để bù đúng phần đã mất.
+
+- **Khởi tạo:** $r_j^{\text{old}} = 1/N$.
+- **Lặp đến khi** $\sum_j |r_j^{\text{new}} - r_j^{\text{old}}| \lt \varepsilon$:
+
+<Formula title="Một vòng lặp đầy đủ">
+
+$$
+\begin{aligned}
+r_j'^{\,\text{new}} &= \sum_{i \to j} \beta \frac{r_i^{\text{old}}}{d_i} \qquad (r_j'^{\,\text{new}} = 0 \text{ nếu bậc vào của } j \text{ bằng } 0) \\
+S &= \sum_j r_j'^{\,\text{new}} \\
+r_j^{\text{new}} &= r_j'^{\,\text{new}} + \frac{1 - S}{N}
+\end{aligned}
+$$
+
+</Formula>
+
+![Một vòng lặp của thuật toán đầy đủ trên đồ thị có ngõ cụt](/content/MAT3565/C6/full-algo.svg)
+
+**▸ LƯU MA TRẬN THƯA TRÊN ĐĨA**
+
+Chỉ lưu phần tử khác 0. Không gian tỉ lệ với số liên kết: khoảng $10N$, tức $4 \cdot 10 \cdot 1$ tỉ = 40 GB. Không vừa bộ nhớ nhưng vừa đĩa.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Nguồn</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Bậc</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Đích</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">0</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1, 5, 7</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">5</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">17, 64, 113, 117, 245</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">13, 23</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ CẬP NHẬT CƠ BẢN**
+
+Giả sử $r^{\text{new}}$ vừa bộ nhớ, còn $r^{\text{old}}$ và $M$ nằm trên đĩa.
+
+```python
+# Một bước lặp, giả sử không có ngõ cụt
+initialize all entries of r_new = (1 - beta) / N
+for each page i (of out-degree d_i):
+    read into memory: i, d_i, dest_1, ..., dest_di, r_old(i)
+    for j = 1 ... d_i:
+        r_new(dest_j) += beta * r_old(i) / d_i
+```
+
+**▸ KHI r_new KHÔNG VỪA BỘ NHỚ**
+
+- **Cập nhật theo khối:** chia $r^{\text{new}}$ thành $k$ khối vừa bộ nhớ. Quét $M$ và $r^{\text{old}}$ một lần cho mỗi khối. Tương tự phép nối lồng nhau trong cơ sở dữ liệu.
+- **Cập nhật theo dải:** vì $M$ lớn hơn $r$ khoảng 10-20 lần nên phải tránh đọc $M$ $k$ lần. Chia $M$ thành các **dải**, mỗi dải chỉ chứa các đích thuộc khối tương ứng của $r^{\text{new}}$. Mỗi dải tốn thêm một chút phụ trội, nhưng thường đáng giá.
+
+![Chia M thành các dải tương ứng với các khối của r mới](/content/MAT3565/C6/block-stripe.svg)
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Cách</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Chi phí I/O mỗi vòng lặp</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Cơ bản</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$2\vert r\vert + \vert M\vert$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Theo khối</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$k(\vert M\vert + \vert r\vert) + \vert r\vert = k\vert M\vert + (k + 1)\vert r\vert$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Theo dải</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\vert M\vert(1 + \varepsilon) + (k + 1)\vert r\vert$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ HẠN CHẾ CỦA PAGERANK**
+
+- Đo độ phổ biến chung, không tính đến chủ đề. Giải pháp: PageRank theo chủ đề.
+- Chỉ dùng một thước đo quan trọng. Giải pháp: hub và authority (thuật toán HITS của Kleinberg).
+- Dễ bị spam liên kết. Giải pháp: TrustRank.

@@ -1,0 +1,145 @@
+---
+title: "3. Các lựa chọn khi cài đặt nhánh cận"
+author: "Trần Đăng Quang Minh"
+---
+
+Thuật toán nhánh cận có nhiều điểm cần chọn. Không có cách nào tốt nhất cho mọi bài toán.
+
+**▸ CÁCH TÍNH CẬN**
+
+Có thể dùng nới lỏng LP, nới lỏng Lagrange, nới lỏng tổ hợp, hoặc đối ngẫu. Cần cân nhắc giữa cận yếu nhưng tính nhanh và cận mạnh nhưng tính lâu.
+
+**▸ CHỌN BIẾN ĐỂ CHIA**
+
+- **Biến lẻ nhất (most fractional).** Với $f_j = \bar{x}_j - \lfloor \bar{x}_j \rfloor$, chọn
+$$
+\arg\max_{j \in C} \min \{ f_j, 1 - f_j \}
+$$
+Biến có $f_j = 1/2$ là tốt nhất. Có tài liệu dùng cách đơn giản hơn là chọn biến có phần lẻ lớn nhất.
+- **Độ ưu tiên (priorities).** Người dùng cho biết biến nào quan trọng hơn thì chia trước.
+- **Strong branching.** Với mỗi biến trong tập ứng viên $C$, thử chia lên và xuống, giải lại LP (có thể giới hạn số bước xoay), được cận trên $\bar{z}_j^D$ và $\bar{z}_j^U$. Chọn biến làm cận giảm nhiều nhất:
+$$
+j^* = \arg\min_{j \in C} \max \{ \bar{z}_j^D, \bar{z}_j^U \}
+$$
+Cách này tốn kém, nên chỉ dùng khi các cách khác không hiệu quả.
+
+**▸ CHỌN NÚT ĐỂ XÉT TIẾP**
+
+- **Tìm kiếm theo chiều sâu.** Nhanh có nghiệm chấp nhận được để cắt nhánh. Đi xuống nút con chỉ thêm một ràng buộc nên giải lại LP dễ.
+- **Nút tốt nhất trước.** Chọn nút có cận trên lớn nhất. Số nút phải xét là ít nhất, vì không bao giờ chia nút có cận trên nhỏ hơn $z$.
+- **Kết hợp.** Trong thực tế thường đi theo chiều sâu đến khi có nghiệm chấp nhận được, sau đó kết hợp cả hai.
+
+**▸ CHIA NHÁNH THEO GUB (SOS)**
+
+Nhiều mô hình có ràng buộc dạng
+$$
+\sum_{j=1}^{k} x_j = 1, \quad x_j \in \{0, 1\}
+$$
+
+Nếu chia theo $x_j = 0$ và $x_j = 1$ thì cây rất lệch: nhánh $x_j = 0$ còn $k - 1$ khả năng, nhánh $x_j = 1$ chỉ còn 1 khả năng.
+
+Cách tốt hơn là xếp thứ tự các biến $j_1, \dots, j_k$ rồi chia đôi:
+$$
+S_1 = S \cap \{ x : x_{j_i} = 0, \ i = 1, \dots, r \}, \qquad
+S_2 = S \cap \{ x : x_{j_i} = 0, \ i = r + 1, \dots, k \}
+$$
+với $r = \min \{ t : \sum_{i=1}^{t} x_{j_i}^* \ge \frac{1}{2} \}$.
+
+**▸ CÁC TÙY CHỌN KHÁC**
+
+- **Cutoff:** Nếu đã biết sẵn một nghiệm tốt, hãy đưa giá trị của nó cho bộ giải để cắt nhánh ngay từ đầu.
+- **Lưu nút:** Không lưu cả cây, chỉ lưu danh sách nút đang mở cùng với cận của biến và cơ sở tối ưu.
+- **Chiến lược đơn hình:** Đơn hình thích hợp để giải lại nhanh, nhưng với mô hình rất lớn thì phương pháp điểm trong có thể tốt hơn cho LP đầu tiên.
+
+**▸ KHI BÀI TOÁN CHẠY QUÁ LÂU**
+
+Bài toán nguyên có thể tốn nhiều thời gian vì bốn lý do:
+- Giải LP ở mỗi nút quá chậm.
+- Nghiệm nguyên tốt nhất không được cải thiện.
+- Cận còn lại không được cải thiện.
+- Số liệu kém ổn định, hoặc tốn quá nhiều bộ nhớ.
+
+Người ta đo tiến độ bằng **gap** giữa cận gốc (pb) và cận đối ngẫu (db):
+- CPLEX: $\dfrac{|\text{db} - \text{pb}|}{|\text{pb} + 10^{-11}|}$.
+- SCIP và MIPLIB (bài toán min): $\dfrac{\text{pb} - \text{db}}{\inf \{ |z| : z \in [\text{db}, \text{pb}] \}} \times 100$. Nếu db và pb đều bằng 0 thì gap bằng 0. Nếu chưa có nghiệm hoặc $\text{db} \le 0 \le \text{pb}$ thì không tính gap.
+
+Cách của SCIP tránh được hiện tượng gap không giảm khi giá trị đi qua số 0.
+
+Cách xử lý khi gap lớn:
+- **Thiếu nghiệm tốt:** dùng thuật toán heuristic để tìm nghiệm chấp nhận được.
+- **Cận yếu:** làm chặt công thức, thêm lát cắt. Khi đó thuật toán gọi là **nhánh và cắt (branch and cut)**: sinh thêm lát cắt tại các nút của cây, các lát cắt được lưu tập trung trong một vùng gọi là cut pool.
+
+**▸ BÀI TOÁN NGUYÊN HỖN HỢP**
+
+Làm như bài toán nguyên, nhưng chỉ làm tròn và chia nhánh trên các biến có yêu cầu nguyên. Nghiệm tối ưu đạt được khi các biến này đều nguyên.
+
+**▸ BÀI TOÁN 0-1 VÀ LIỆT KÊ ẨN**
+
+Với biến 0-1, thêm ràng buộc $x_j \le 1$, và hai nhánh của biến lẻ là $x_j = 0$ và $x_j = 1$.
+
+**Liệt kê ẩn (implicit enumeration):** loại những nghiệm chắc chắn không chấp nhận được rồi so sánh những nghiệm còn lại.
+
+**Ví dụ.** Có 4 công trình: hồ bơi ($x_1$), sân tennis ($x_2$), sân vận động ($x_3$), nhà thi đấu ($x_4$). Hồ bơi và sân tennis chỉ được xây một trong hai.
+
+$$
+\begin{align*}
+\max \quad & 300x_1 + 90x_2 + 400x_3 + 150x_4 \\
+\text{s.t.} \quad & 35000x_1 + 10000x_2 + 25000x_3 + 90000x_4 \le 120000 \\
+& 4x_1 + 2x_2 + 7x_3 + 3x_4 \le 12 \\
+& x_1 + x_2 \le 1 \\
+& x_j \in \{0, 1\}
+\end{align*}
+$$
+
+Có $2^4 = 16$ nghiệm. Loại các nghiệm vi phạm ràng buộc thì còn 9 nghiệm chấp nhận được:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$(x_1, x_2, x_3, x_4)$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$Z$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$(0, 0, 0, 0)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$0$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$(1, 0, 0, 0)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$300$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$(0, 1, 0, 0)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$90$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$(0, 0, 1, 0)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$400$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$(0, 0, 0, 1)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$150$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$(1, 0, 1, 0)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\mathbf{700}$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$(0, 1, 1, 0)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$490$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$(0, 1, 0, 1)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$240$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$(0, 0, 1, 1)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$550$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Nghiệm tối ưu là xây hồ bơi và sân vận động, $Z = 700$.

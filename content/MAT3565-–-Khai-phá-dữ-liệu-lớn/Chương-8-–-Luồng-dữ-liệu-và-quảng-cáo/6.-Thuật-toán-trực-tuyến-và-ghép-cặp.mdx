@@ -1,0 +1,59 @@
+---
+title: "6. Thuật toán trực tuyến và ghép cặp"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ THUẬT TOÁN TRỰC TUYẾN**
+
+- **Ngoại tuyến:** thấy toàn bộ đầu vào rồi mới tính.
+- **Trực tuyến:** thấy đầu vào từng phần, phải ra quyết định không đảo ngược được ngay khi thấy.
+
+**▸ GHÉP CẶP TRÊN ĐỒ THỊ HAI PHÍA**
+
+Đồ thị hai phía: mỗi phía một loại đỉnh, cạnh biểu diễn sở thích. **Cặp ghép** là tập cạnh không dùng đỉnh nào hai lần.
+
+- **Lực lượng:** $|M|$ là số cặp.
+- **Cặp ghép lớn nhất:** có nhiều cặp nhất.
+- **Cặp ghép hoàn hảo:** mọi đỉnh đều được ghép.
+
+![Một cặp ghép ba cạnh và một cặp ghép hoàn hảo](/content/MAT3565/C8/matching.svg)
+
+Thuật toán ngoại tuyến tìm được cặp ghép lớn nhất trong thời gian đa thức nhờ đường tăng (Hopcroft, Karp, 1973). Nhưng nếu không biết trước đồ thị thì sao?
+
+**▸ GHÉP CẶP TRỰC TUYẾN**
+
+Biết trước một phía. Mỗi vòng, một đỉnh của phía kia đến kèm các cạnh của nó, và ta phải quyết định ngay: ghép với ai, hay không ghép. Ví dụ: giao việc cho máy chủ.
+
+**Thuật toán tham lam:** ghép đỉnh mới với một đỉnh bất kỳ còn trống, nếu không có thì bỏ qua.
+
+![Thuật toán tham lam ghép cặp trực tuyến từng vòng](/content/MAT3565/C8/online-greedy.svg)
+
+**▸ TỈ SỐ CẠNH TRANH**
+
+<Formula title="Tỉ số cạnh tranh">
+
+$$
+\text{Tỉ số} = \min_{\text{mọi đầu vào } I} \frac{|M_{greedy}|}{|M_{opt}|}
+$$
+
+</Formula>
+
+Tức là kết quả tệ nhất của thuật toán so với tối ưu, trên mọi đầu vào.
+
+**▸ CHỨNG MINH TỈ SỐ CỦA THAM LAM LÀ 1/2**
+
+Gọi $G$ là tập các đỉnh được ghép trong $M_{opt}$ nhưng không được ghép trong $M_{greedy}$, và $B$ là tập các đỉnh nối với $G$.
+
+- **(1)** Theo định nghĩa của $G$: $|M_{opt}| \le |M_{greedy}| + |G|$.
+- **(2)** Mọi đỉnh trong $B$ đều đã được ghép trong $M_{greedy}$. Nếu không, thuật toán đã ghép nó với đỉnh trong $G$. Vậy $|M_{greedy}| \ge |B|$.
+- **(3)** $M_{opt}$ ghép mọi đỉnh của $G$ với các đỉnh trong $B$, nên $|G| \le |B|$.
+
+Từ (2) và (3) có $|G| \le |B| \le |M_{greedy}|$. Thay vào (1):
+
+<Formula title="Kết luận">
+
+$$
+|M_{opt}| \le 2 |M_{greedy}| \quad \Rightarrow \quad \frac{|M_{greedy}|}{|M_{opt}|} \ge \frac{1}{2}
+$$
+
+</Formula>

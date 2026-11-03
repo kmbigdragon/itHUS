@@ -1,0 +1,86 @@
+---
+title: "6. Ma trận unimodular hoàn toàn"
+author: "Trần Đăng Quang Minh"
+---
+
+Có những bài toán nguyên chỉ cần giải LP là ra nghiệm nguyên. Bài này chỉ ra khi nào điều đó xảy ra.
+
+**▸ KHI NÀO NGHIỆM LP LÀ NGUYÊN?**
+
+Xét bài toán có dữ liệu nguyên
+$$
+\max \{ c^\top x : Ax \le b, \ x \in \mathbb{Z}_+^n \}
+$$
+
+Nghiệm cơ sở có dạng $x_B = A_B^{-1} b$. Theo quy tắc Cramer,
+$$
+A_B^{-1} = \frac{A_B^{adj}}{\det(A_B)}
+$$
+
+Ma trận phụ hợp $A_B^{adj}$ có các phần tử nguyên. Vì vậy nếu $\det(A_B) = \pm 1$ thì $x_B$ nguyên.
+
+**▸ ĐỊNH NGHĨA**
+
+- Ma trận vuông nguyên $B$ là **unimodular (UM)** nếu $\det(B) = \pm 1$.
+- Ma trận nguyên $A$ là **unimodular hoàn toàn (totally unimodular, TUM)** nếu mọi ma trận con vuông không suy biến của $A$ đều là UM.
+
+**▸ TÍNH CHẤT**
+
+**Mệnh đề.** Nếu $A$ là TUM và $b$ nguyên thì:
+- Mọi đỉnh của $\{ x : Ax = b, \ x \ge 0 \}$ đều nguyên.
+- Mọi đỉnh của $\{ x : Ax \le b, \ x \ge 0 \}$ đều nguyên.
+
+**Mệnh đề.** Nếu $A$ là TUM thì $A^\top$ cũng là TUM.
+
+**▸ ĐIỀU KIỆN ĐỦ**
+
+**Định lý.** Ma trận nguyên $A$ là TUM nếu:
+- **(1)** $a_{ij} \in \{0, -1, +1\}$ với mọi $i, j$.
+- **(2)** Mỗi cột có tối đa hai phần tử khác 0.
+- **(3)** Các hàng chia được thành hai tập $I_1, I_2$ sao cho:
+  - Nếu một cột có hai phần tử **cùng dấu** thì hai hàng đó ở **khác tập**.
+  - Nếu một cột có hai phần tử **khác dấu** thì hai hàng đó ở **cùng tập**.
+
+**Chứng minh.** Quy nạp theo kích thước ma trận con vuông $C$. Ma trận một phần tử là hiển nhiên.
+- Nếu $C$ có cột toàn số 0 thì nó suy biến.
+- Nếu $C$ có cột chỉ có một phần tử khác 0 thì khai triển theo cột đó, rồi dùng giả thiết quy nạp.
+- Nếu mọi cột có đúng hai phần tử khác 0 thì với mọi cột $j$, theo điều kiện (3):
+$$
+\sum_{i \in I_1} a_{ij} = \sum_{i \in I_2} a_{ij}
+$$
+Các hàng phụ thuộc tuyến tính nên $\det(C) = 0$.
+
+**▸ CÁC TRƯỜNG HỢP QUAN TRỌNG**
+
+**Mệnh đề.** $A$ luôn là TUM nếu nó là:
+- Ma trận liên thuộc đỉnh-cạnh của **đồ thị vô hướng hai phía**. Chọn $I_1$, $I_2$ là hai phía của đồ thị.
+- Ma trận liên thuộc đỉnh-cung của **đồ thị có hướng**. Chọn $I_1$ là toàn bộ các hàng, $I_2 = \varnothing$.
+
+Do đó các bài toán sau chỉ cần giải LP: **đường đi ngắn nhất, luồng cực đại, luồng chi phí nhỏ nhất, cặp ghép hai phía có trọng số**.
+
+**▸ VÍ DỤ**
+
+Đồ thị có hướng có các cung $(s, a), (s, b), (a, b), (a, t), (b, t)$ có ma trận liên thuộc như sau, với $-1$ ở đỉnh cung đi ra và $+1$ ở đỉnh cung đi vào:
+$$
+\begin{bmatrix}
+-1 & -1 & 0 & 0 & 0 \\
+1 & 0 & -1 & -1 & 0 \\
+0 & 1 & 1 & 0 & -1 \\
+0 & 0 & 0 & 1 & 1
+\end{bmatrix}
+$$
+
+Mỗi cột có một số $+1$ và một số $-1$, nên chọn $I_1$ là toàn bộ các hàng thì thỏa mãn điều kiện đủ. Ma trận này là TUM.
+
+**Phản ví dụ.** Tam giác là đồ thị vô hướng có chu trình lẻ, nên không phải đồ thị hai phía. Ma trận liên thuộc của nó có định thức bằng 2, nên không phải TUM:
+$$
+\det
+\begin{bmatrix}
+1 & 1 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1
+\end{bmatrix}
+= 2
+$$
+
+Do đó với cặp ghép trên đồ thị tổng quát, nghiệm LP có thể không nguyên, chẳng hạn $x_e = 1/2$ trên cả ba cạnh của tam giác.

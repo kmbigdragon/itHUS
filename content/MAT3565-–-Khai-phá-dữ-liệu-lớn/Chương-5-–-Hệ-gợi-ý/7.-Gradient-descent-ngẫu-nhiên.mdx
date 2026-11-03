@@ -1,0 +1,71 @@
+---
+title: "7. Gradient descent ngẫu nhiên"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ GRADIENT DESCENT**
+
+Khởi tạo $P, Q$ bằng SVD (tạm coi ô thiếu bằng 0). Sau đó cập nhật:
+
+<Formula title="Cập nhật của GD">
+
+$$
+P \leftarrow P - \eta \nabla P, \qquad Q \leftarrow Q - \eta \nabla Q
+$$
+
+</Formula>
+
+Vì $P, Q$ là ma trận nên cập nhật từng phần tử. Với phần tử hàng $i$, cột $f$ của $Q$:
+
+<Formula title="Đạo hàm theo phần tử hàng i, cột f của Q">
+
+$$
+\nabla q_{if} = \sum_{x, i} -2 (r_{xi} - q_i p_x) p_{xf} + 2 \lambda_2 q_{if}
+$$
+
+</Formula>
+
+**Nhận xét:** mỗi lần tính gradient phải quét toàn bộ đánh giá, rất chậm.
+
+**▸ GD NGẪU NHIÊN (SGD)**
+
+Gradient là tổng theo từng đánh giá. Thay vì tính cả tổng, ta tính trên **một** đánh giá rồi đi luôn một bước:
+
+<Formula title="So sánh GD và SGD">
+
+$$
+\text{GD: } \; Q \leftarrow Q - \eta \sum_{r_{xi}} \nabla Q(r_{xi}), \qquad \text{SGD: } \; Q \leftarrow Q - \eta \nabla Q(r_{xi})
+$$
+
+</Formula>
+
+**▸ THUẬT TOÁN SGD**
+
+- **Khởi tạo:** $P, Q$ bằng SVD, coi ô thiếu bằng 0.
+- **Lặp đến khi hội tụ, với mỗi đánh giá $r_{xi}$:**
+
+<Formula title="Cập nhật theo một đánh giá">
+
+$$
+\begin{aligned}
+\varepsilon_{xi} &= 2 (r_{xi} - q_i \cdot p_x) \\
+q_i &\leftarrow q_i + \eta (\varepsilon_{xi} p_x - 2 \lambda_2 q_i) \\
+p_x &\leftarrow p_x + \eta (\varepsilon_{xi} q_i - 2 \lambda_1 p_x)
+\end{aligned}
+$$
+
+</Formula>
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Một bước SGD trên một đánh giá](/content/MAT3565/C5/sgd-step.svg)
+
+**▸ SO SÁNH**
+
+- GD cải thiện hàm mục tiêu ở mỗi bước, cần ít bước hơn nhưng mỗi bước rất lâu.
+- SGD cải thiện một cách "nhiễu", cần nhiều bước hơn nhưng mỗi bước rất nhanh.
+- Trên thực tế SGD nhanh hơn nhiều.
+
+![Hàm mục tiêu của GD và SGD theo số đánh giá đã xử lý](/content/MAT3565/C5/gd-vs-sgd.svg)
+
+Hình trên chạy thật trên ma trận 6 phim, 12 user của bài lọc cộng tác, với $k = 3$. GD dùng tốc độ học tốt nhất còn ổn định ($\eta = 0.04$). Ma trận này chỉ có 35 đánh giá nên chênh lệch không lớn: 3 lượt đầu GD còn nhỉnh hơn, từ lượt 4 SGD vượt lên. Khi dữ liệu có hàng trăm triệu đánh giá thì mỗi bước của GD rất lâu, nên lợi thế của SGD lớn hơn nhiều.

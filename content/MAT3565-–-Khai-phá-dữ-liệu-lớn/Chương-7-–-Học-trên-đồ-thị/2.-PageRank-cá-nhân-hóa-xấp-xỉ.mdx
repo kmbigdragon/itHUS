@@ -1,0 +1,96 @@
+---
+title: "2. PageRank cá nhân hóa xấp xỉ"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ VẤN ĐỀ**
+
+Phương pháp lũy thừa không dùng được, vì mỗi vòng lặp phải chạm mọi đỉnh của đồ thị. **PageRank xấp xỉ** (PageRank-Nibble, của Andersen, Chung, Lang năm 2007) tính PPR mà chỉ đi quanh đỉnh hạt giống.
+
+**▸ Ý TƯỞNG**
+
+Dùng **bước ngẫu nhiên lười**: ở mỗi bước, đứng yên với xác suất 1/2, đi đến một láng giềng ngẫu nhiên với xác suất 1/2.
+
+<Formula title="Bước ngẫu nhiên lười">
+
+$$
+r_u^{(t+1)} = \frac{1}{2} r_u^{(t)} + \frac{1}{2} \sum_{i \to u} \frac{1}{d_i} r_i^{(t)}
+$$
+
+</Formula>
+
+Giữ hai vector:
+- $r$: PageRank ước lượng, ban đầu $r = 0$.
+- $q$: phần dư, tức $q_u = p_u - r_u$, với $p_u$ là PageRank thật. Ban đầu $q = a$, với $a$ là vector dịch chuyển.
+
+Nếu phần dư của $u$ còn lớn, tức là ta đang đánh giá thấp $u$, thì đẩy nó đi tiếp. Nếu nhỏ thì không đụng đến $u$.
+
+**▸ PHÉP PUSH**
+
+<Formula title="Push(u, r, q)">
+
+$$
+\begin{aligned}
+r_u' &= r_u + (1 - \beta) q_u \\
+q_u' &= \frac{1}{2} \beta q_u \\
+q_v' &= q_v + \frac{1}{2} \beta \frac{q_u}{d_u} \quad \text{với mỗi } v \text{ mà } u \to v
+\end{aligned}
+$$
+
+</Formula>
+
+Nghĩa là: cập nhật $r$, rồi đi một bước của bước ngẫu nhiên lười: đứng yên ở $u$ với xác suất 1/2 và chia đều phần 1/2 còn lại cho các láng giềng.
+
+**▸ THUẬT TOÁN**
+
+- **Khởi tạo:** $r = 0$, $q = a$.
+- **Lặp:** chọn đỉnh $u$ có $q_u / d_u \ge \varepsilon$ rồi gọi Push, đến khi không còn đỉnh như vậy.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Các lần Push trên đồ thị 4 đỉnh và so với PPR chính xác](/content/MAT3565/C7/push-steps.svg)
+
+**▸ ĐẢM BẢO**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Tiêu chí</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Kết quả</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Thời gian của PageRank xấp xỉ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O\left(\dfrac{1}{\varepsilon (1 - \beta)}\right)$ với sai số phần dư không quá $\varepsilon$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Thời gian của phương pháp lũy thừa</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O\left(\dfrac{\log n}{\varepsilon (1 - \beta)}\right)$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Chất lượng cắt</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Nếu có lát cắt độ dẫn $\phi$ và thể tích $k$ thì phương pháp tìm được lát cắt có độ dẫn $O(\sqrt{\phi / \log k})$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+$\beta$ càng lớn, tức dịch chuyển càng ít, thì bước đi càng lan xa, và càng phát hiện được cụm ở xa đỉnh hạt giống.
+
+**▸ VÌ SAO HOẠT ĐỘNG**
+
+Đặt $\text{PR}(\beta, a)$ là PageRank với tham số $\beta$ và vector dịch chuyển $a$. Theo Jeh và Widom (2002):
+
+<Formula title="Phân tách PageRank">
+
+$$
+\text{PR}(\beta, a) = (1 - \beta) a + \beta \, \text{PR}(\beta, M a)
+$$
+
+</Formula>
+
+$\text{PR}(\beta, a)[u]$ là xác suất kết thúc ở $u$ sau một bước đi xuất phát từ phân phối $a$, có độ dài ngẫu nhiên phân phối hình học.
+- Độ dài 0 có xác suất $1 - \beta$, khi đó vẫn ở phân phối $a$.
+- Độ dài lớn hơn 0 có xác suất $\beta$. Sau một bước phân phối là $Ma$, và bước đi không có trí nhớ nên phần còn lại như thể bắt đầu từ $Ma$.

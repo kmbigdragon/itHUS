@@ -1,0 +1,45 @@
+---
+title: "7. Phân cụm liên kết đơn"
+author: "Trần Đăng Quang Minh"
+---
+
+**Mục tiêu:** Chia $n$ đối tượng $p_1, \dots, p_n$ thành các cụm, sao cho các đối tượng ở khác cụm nằm cách xa nhau.
+
+**▸ ĐỊNH NGHĨA**
+
+**Hàm khoảng cách** $d$ thỏa mãn:
+- $d(p_i, p_j) = 0$ khi và chỉ khi $p_i = p_j$.
+- $d(p_i, p_j) \ge 0$.
+- $d(p_i, p_j) = d(p_j, p_i)$.
+
+**k-cụm (k-clustering):** chia các đối tượng thành $k$ nhóm khác rỗng.
+
+**Độ giãn cách (spacing):** khoảng cách nhỏ nhất giữa hai đối tượng thuộc hai cụm khác nhau.
+
+**Bài toán.** Cho số nguyên $k$, tìm k-cụm có độ giãn cách lớn nhất.
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Coi mỗi đối tượng là một cụm.
+- **Bước 2:** Tìm cặp đối tượng gần nhất thuộc hai cụm khác nhau rồi nối chúng lại.
+- **Bước 3:** Lặp lại $n - k$ lần, đến khi còn đúng $k$ cụm.
+
+Đây chính là **thuật toán Kruskal** nhưng dừng khi còn $k$ thành phần liên thông. Cách làm tương đương: tìm MST rồi xóa $k - 1$ cạnh dài nhất.
+
+**▸ TÍNH ĐÚNG ĐẮN**
+
+**Định lý.** Gọi $C^*$ là cách phân cụm nhận được khi xóa $k - 1$ cạnh dài nhất của MST. Khi đó $C^*$ là k-cụm có độ giãn cách lớn nhất.
+
+**Chứng minh.** Độ giãn cách của $C^*$ bằng độ dài $d^*$ của cạnh dài thứ $k - 1$ trong MST.
+
+Xét một cách phân cụm $C$ bất kỳ khác $C^*$. Khi đó có $p_i, p_j$ cùng cụm trong $C^*$ nhưng khác cụm trong $C$. Trên đường đi từ $p_i$ đến $p_j$ trong cụm của $C^*$ có một cạnh $(p, q)$ nối hai cụm khác nhau của $C$.
+- Cạnh $(p, q)$ có độ dài không quá $d^*$, vì nó không bị xóa.
+- Do đó độ giãn cách của $C$ không quá $d^*$.
+
+**▸ VÍ DỤ**
+
+MST ở các bài trước có các cạnh $DE(1), AC(2), BD(3), CD(4), DF(7)$.
+- $k = 2$: xóa $DF$, ta được $\{A, B, C, D, E\}$ và $\{F\}$, độ giãn cách bằng $7$.
+- $k = 3$: xóa thêm $CD$, ta được $\{A, C\}$, $\{B, D, E\}$ và $\{F\}$, độ giãn cách bằng $4$.
+
+**Ứng dụng:** phân loại tài liệu, tìm kiếm ảnh y khoa tương tự, phân loại thiên thể, phân nhóm các loại ung thư theo biểu hiện gen.

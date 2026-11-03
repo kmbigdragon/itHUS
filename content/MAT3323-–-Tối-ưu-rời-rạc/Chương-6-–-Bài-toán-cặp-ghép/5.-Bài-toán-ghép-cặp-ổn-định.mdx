@@ -1,0 +1,131 @@
+---
+title: "5. Bài toán ghép cặp ổn định"
+author: "Trần Đăng Quang Minh"
+---
+
+**Bài toán.** Có $n$ bệnh viện và $n$ sinh viên y khoa. Mỗi bệnh viện xếp hạng toàn bộ sinh viên, mỗi sinh viên xếp hạng toàn bộ bệnh viện. Cần ghép mỗi bệnh viện với một sinh viên sao cho không ai muốn "đi đêm" với nhau.
+
+**▸ ĐỊNH NGHĨA**
+
+**Cặp ghép (matching)** $M$ là tập các cặp $h - s$, mỗi bệnh viện và mỗi sinh viên xuất hiện tối đa một lần. $M$ **hoàn hảo** nếu $|M| = n$.
+
+**Cặp không ổn định (unstable pair).** Bệnh viện $h$ và sinh viên $s$ không được ghép với nhau, nhưng đồng thời:
+- $h$ thích $s$ hơn sinh viên hiện tại của mình.
+- $s$ thích $h$ hơn bệnh viện hiện tại của mình.
+
+Khi đó cả $h$ và $s$ đều có lợi nếu tự thỏa thuận với nhau.
+
+**Ghép cặp ổn định (stable matching)** là cặp ghép hoàn hảo không có cặp không ổn định nào.
+
+**▸ VÍ DỤ**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Bệnh viện</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thứ 1</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thứ 2</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thứ 3</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold"></th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Sinh viên</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thứ 1</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thứ 2</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thứ 3</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">A</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">X</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Y</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Z</td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center">X</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">B</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">A</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">C</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">B</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Y</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">X</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Z</td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Y</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">A</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">B</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">C</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">C</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">X</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Y</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Z</td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Z</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">A</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">B</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">C</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+- $\{A-Z, \ B-Y, \ C-X\}$ không ổn định vì $A$ và $Y$ đều thích nhau hơn người đang ghép.
+- $\{A-X, \ B-Y, \ C-Z\}$ là ghép cặp ổn định.
+- $\{A-Y, \ B-X, \ C-Z\}$ cũng là ghép cặp ổn định.
+
+Như vậy một bài toán có thể có nhiều ghép cặp ổn định.
+
+**▸ LUÔN TỒN TẠI KHÔNG?**
+
+Câu trả lời không hiển nhiên. Với bài toán tương tự là **bạn cùng phòng (stable roommate)**, thì ghép cặp ổn định **có thể không tồn tại**.
+
+**Ví dụ:** 4 người xếp hạng những người còn lại:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Người</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thứ 1</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thứ 2</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thứ 3</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">A</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">B</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">C</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">D</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">B</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">C</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">A</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">D</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">C</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">A</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">B</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">D</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">D</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">A</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">B</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">C</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Có 3 cách ghép, cách nào cũng không ổn định:
+- $A-B, \ C-D$: cặp $B, C$ không ổn định.
+- $A-C, \ B-D$: cặp $A, B$ không ổn định.
+- $A-D, \ B-C$: cặp $A, C$ không ổn định.
+
+Với bệnh viện và sinh viên thì khác: ghép cặp ổn định luôn tồn tại, như bài sau sẽ chứng minh.

@@ -1,0 +1,73 @@
+---
+title: "5. Thuật toán Floyd-Warshall"
+author: "Trần Đăng Quang Minh"
+---
+
+Slide chỉ liệt kê mục này trong dàn bài chứ không có nội dung chi tiết. Phần dưới đây là kiến thức chuẩn, ghi thêm cho đủ để tham khảo.
+
+Thuật toán giải bài toán **mọi cặp**, cho phép trọng số âm nhưng không được có chu trình âm.
+
+**▸ QUY HOẠCH ĐỘNG**
+
+Đánh số các đỉnh từ $1$ đến $n$. Gọi $D_k(i, j)$ là độ dài đường đi ngắn nhất từ $i$ đến $j$ mà các đỉnh trung gian chỉ thuộc $\{1, \dots, k\}$.
+
+Đường đi tốt nhất hoặc không qua $k$, hoặc qua $k$ đúng một lần:
+$$
+D_k(i, j) = \min \{ D_{k-1}(i, j), \ D_{k-1}(i, k) + D_{k-1}(k, j) \}
+$$
+
+Khởi tạo $D_0(i, i) = 0$, $D_0(i, j) = c_{ij}$ nếu có cạnh $(i, j)$, ngược lại bằng $\infty$.
+
+Thuật toán gồm 3 vòng lặp lồng nhau, chạy trong $O(n^3)$ thời gian và $O(n^2)$ bộ nhớ.
+
+**Kiểm tra chu trình âm:** có chu trình âm khi và chỉ khi sau khi chạy xong có $D_n(i, i) < 0$ với $i$ nào đó.
+
+**▸ VÍ DỤ**
+
+Đồ thị 4 đỉnh có các cung: $1 \to 2$ độ dài $3$, $1 \to 4$ độ dài $7$, $2 \to 1$ độ dài $8$, $2 \to 3$ độ dài $2$, $3 \to 1$ độ dài $5$, $3 \to 4$ độ dài $1$, $4 \to 1$ độ dài $2$.
+
+$$
+D_0 =
+\begin{bmatrix}
+0 & 3 & \infty & 7 \\
+8 & 0 & 2 & \infty \\
+5 & \infty & 0 & 1 \\
+2 & \infty & \infty & 0
+\end{bmatrix}
+\quad
+D_1 =
+\begin{bmatrix}
+0 & 3 & \infty & 7 \\
+8 & 0 & 2 & 15 \\
+5 & 8 & 0 & 1 \\
+2 & 5 & \infty & 0
+\end{bmatrix}
+$$
+
+$$
+D_2 =
+\begin{bmatrix}
+0 & 3 & 5 & 7 \\
+8 & 0 & 2 & 15 \\
+5 & 8 & 0 & 1 \\
+2 & 5 & 7 & 0
+\end{bmatrix}
+\quad
+D_3 =
+\begin{bmatrix}
+0 & 3 & 5 & 6 \\
+7 & 0 & 2 & 3 \\
+5 & 8 & 0 & 1 \\
+2 & 5 & 7 & 0
+\end{bmatrix}
+\quad
+D_4 =
+\begin{bmatrix}
+0 & 3 & 5 & 6 \\
+5 & 0 & 2 & 3 \\
+3 & 6 & 0 & 1 \\
+2 & 5 & 7 & 0
+\end{bmatrix}
+$$
+
+$D_4$ là ma trận khoảng cách cần tìm.

@@ -1,0 +1,189 @@
+---
+title: "8. Mạng nơ-ron đồ thị"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ VÌ SAO CẦN GNN**
+
+Hạn chế của biểu diễn nông (tra bảng):
+- Cần $O(|V|)$ tham số, các đỉnh không dùng chung tham số.
+- Không tạo được biểu diễn cho đỉnh chưa thấy khi huấn luyện.
+- Không dùng đặc trưng của đỉnh.
+
+Công cụ học sâu hiện tại được thiết kế cho chuỗi và lưới. Đồ thị thì phức tạp hơn: kích thước tùy ý, không có tính cục bộ không gian, không có thứ tự đỉnh cố định. Đưa thẳng ma trận kề vào mạng nơ-ron thì có quá nhiều tham số, không dùng được cho đồ thị khác kích thước, và phụ thuộc vào thứ tự đỉnh.
+
+**▸ Ý TƯỞNG**
+
+Lân cận của mỗi đỉnh tạo thành một **đồ thị tính toán**. Đỉnh gom thông tin từ các láng giềng bằng mạng nơ-ron. Mô hình có thể sâu tùy ý: biểu diễn tầng $k$ lấy thông tin từ các đỉnh cách $k$ bước.
+
+![Đồ thị tính toán 2 tầng của đỉnh A](/content/MAT3565/C7/gnn-compute.svg)
+
+**▸ CÔNG THỨC CƠ BẢN**
+
+Đỉnh $v$ có đặc trưng $x_v$, các láng giềng $N(v)$:
+
+<Formula title="GNN cơ bản">
+
+$$
+h_v^{(0)} = x_v, \qquad h_v^{(\ell + 1)} = \sigma \left( W_\ell \sum_{u \in N(v)} \frac{h_u^{(\ell)}}{|N(v)|} + B_\ell h_v^{(\ell)} \right), \qquad z_v = h_v^{(L)}
+$$
+
+</Formula>
+
+- $W_\ell$, $B_\ell$: ma trận trọng số cần học.
+- $\sigma$: hàm phi tuyến, ví dụ ReLU.
+- $L$: số tầng.
+
+![Tính một tầng GNN bằng số tại đỉnh A](/content/MAT3565/C7/gnn-numeric.svg)
+
+**▸ HUẤN LUYỆN**
+
+Với bài toán có giám sát, ví dụ phân loại đỉnh:
+
+<Formula title="Mất mát có giám sát cho phân loại nhị phân">
+
+$$
+\min_\Theta \mathcal{L} = -\sum_{v} \left[ y_v \log \sigma(z_v^T \theta) + (1 - y_v) \log (1 - \sigma(z_v^T \theta)) \right]
+$$
+
+</Formula>
+
+**▸ KHUNG THIẾT KẾ GNN**
+
+Một tầng GNN gồm **thông điệp** và **gộp**:
+
+<Formula title="Một tầng GNN">
+
+$$
+m_u^{(\ell)} = \text{MSG}^{(\ell)}(h_u^{(\ell - 1)}), \qquad h_v^{(\ell)} = \text{AGG}^{(\ell)}\left( \{ m_u^{(\ell)}, u \in N(v) \}, \, m_v^{(\ell)} \right)
+$$
+
+</Formula>
+
+Thông tin của chính $v$ có thể bị mất nếu $h_v^{(\ell)}$ không phụ thuộc $h_v^{(\ell - 1)}$, nên ta thêm thông điệp của $v$ vào, bằng cách ghép hoặc cộng.
+
+**▸ BA MÔ HÌNH THƯỜNG GẶP**
+
+<Formula title="GCN">
+
+$$
+h_v^{(\ell)} = \sigma \left( \sum_{u \in N(v)} W^{(\ell)} \frac{h_u^{(\ell - 1)}}{|N(v)|} \right)
+$$
+
+</Formula>
+
+<Formula title="GraphSAGE: gộp từ láng giềng, rồi ghép với chính đỉnh đó">
+
+$$
+h_v^{(\ell)} = \sigma \left( W^{(\ell)} \cdot \text{CONCAT}\left( h_v^{(\ell - 1)}, \, \text{AGG}(\{ h_u^{(\ell - 1)}, \forall u \in N(v) \}) \right) \right)
+$$
+
+</Formula>
+
+Hàm gộp có thể là trung bình, hoặc lấy MLP từng vector rồi lấy trung bình hay max. Có thể chuẩn hóa L2 từng tầng để các vector cùng tỉ lệ.
+
+<Formula title="GAT">
+
+$$
+h_v^{(\ell)} = \sigma \left( \sum_{u \in N(v)} \alpha_{vu} W^{(\ell)} h_u^{(\ell - 1)} \right)
+$$
+
+</Formula>
+
+Trong GCN và GraphSAGE, $\alpha_{vu} = 1 / |N(v)|$, tức mọi láng giềng quan trọng như nhau. GAT học các trọng số này:
+
+<Formula title="Trọng số chú ý">
+
+$$
+e_{vu} = a\left( W^{(\ell)} h_u^{(\ell - 1)}, \, W^{(\ell)} h_v^{(\ell - 1)} \right), \qquad \alpha_{vu} = \frac{\exp(e_{vu})}{\sum_{k \in N(v)} \exp(e_{vk})}
+$$
+
+</Formula>
+
+$a$ có thể là mạng nơ-ron một tầng trên phép ghép hai vector, huấn luyện cùng cả mô hình. Để ổn định, có thể dùng **chú ý nhiều đầu**: tính nhiều bộ $\alpha$ độc lập rồi ghép hoặc cộng kết quả.
+
+![Tính trọng số chú ý và tổng có trọng số trong GAT](/content/MAT3565/C7/gat-steps.svg)
+
+GAT tính song song được trên các cạnh, số tham số cố định bất kể kích thước đồ thị, chỉ chú ý trong lân cận, và dùng được cho đỉnh mới.
+
+**▸ HÀM KÍCH HOẠT**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Hàm</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Công thức</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Ghi chú</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">ReLU</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\max(x, 0)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Thường dùng nhất</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Sigmoid</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\dfrac{1}{1 + e^{-x}}$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Chỉ dùng khi cần giới hạn miền giá trị</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">PReLU</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\max(x, 0) + a \min(x, 0)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$a$ học được, thực nghiệm tốt hơn ReLU</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ BIẾN ĐỔI ĐỒ THỊ**
+
+Đồ thị đầu vào chưa chắc đã là đồ thị tính toán tốt nhất.
+
+**Thiếu đặc trưng:**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold"></th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Hằng số cho mọi đỉnh</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">One-hot theo ID</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Biểu đạt</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Trung bình, GNN vẫn học được từ cấu trúc</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Cao, mỗi đỉnh có ID riêng</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Dùng cho đỉnh mới</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tốt</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không dùng được</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Chi phí tính toán</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Thấp, chỉ 1 chiều</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Cao, $O(\vert V\vert)$ chiều</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Khi nào dùng</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Mọi đồ thị, có đỉnh mới</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Đồ thị nhỏ, không có đỉnh mới</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Cũng có thể thêm đặc trưng hữu ích như bậc, PageRank, hệ số gom cụm.
+
+**Cấu trúc không phù hợp:**
+- **Quá thưa:** thêm cạnh ảo nối các đỉnh cách 2 bước (dùng $A + A^2$), hoặc thêm một đỉnh ảo nối mọi đỉnh. Hai đỉnh cách nhau 10 bước sẽ còn cách nhau 2 bước.
+- **Quá dày:** lấy mẫu láng giềng khi truyền thông điệp.
+- **Quá lớn:** lấy mẫu đồ thị con để tính biểu diễn.
+
+![Thêm cạnh ảo, thêm đỉnh ảo và lấy mẫu láng giềng](/content/MAT3565/C7/graph-manipulation.svg)
+
+Lấy mẫu láng giềng cho biểu diễn gần giống dùng mọi láng giềng về kỳ vọng, mà giảm mạnh chi phí tính toán.

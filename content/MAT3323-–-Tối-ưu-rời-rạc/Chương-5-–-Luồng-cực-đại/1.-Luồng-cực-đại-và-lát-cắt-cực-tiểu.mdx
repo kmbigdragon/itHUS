@@ -1,0 +1,53 @@
+---
+title: "1. Luồng cực đại và lát cắt cực tiểu"
+author: "Trần Đăng Quang Minh"
+---
+
+**Mạng luồng (flow network)** là bộ $G = (V, E, s, t, c)$ gồm:
+- Đồ thị có hướng $(V, E)$ với **nút phát (source)** $s$ và **nút thu (sink)** $t$.
+- **Dung tích (capacity)** không âm $c(e)$ trên mỗi cạnh $e$.
+
+Có thể hình dung đây là mạng vận chuyển: hàng đi từ $s$ qua mạng đến $t$, mỗi tuyến chỉ chở được tối đa $c(e)$.
+
+Cả chương này dùng mạng sau làm ví dụ.
+
+![Mạng luồng 6 đỉnh](/content/MAT3323/C5/network.svg)
+
+**▸ BÀI TOÁN LÁT CẮT CỰC TIỂU**
+
+**Lát cắt s-t (st-cut)** là cách chia tập đỉnh thành $(A, B)$ với $s \in A$ và $t \in B$.
+
+**Dung tích của lát cắt** là tổng dung tích các cạnh đi từ $A$ sang $B$. Các cạnh đi từ $B$ sang $A$ không được tính.
+$$
+cap(A, B) = \sum_{e \in \delta^+(A)} c(e)
+$$
+trong đó $\delta^+(A)$ là tập cạnh đi ra khỏi $A$, $\delta^-(A)$ là tập cạnh đi vào $A$.
+
+**Bài toán.** Tìm lát cắt có dung tích nhỏ nhất.
+
+**▸ BÀI TOÁN LUỒNG CỰC ĐẠI**
+
+**Luồng s-t (st-flow)** là hàm $f$ thỏa mãn hai điều kiện:
+- **Dung tích:** với mọi cạnh $e$,
+$$
+0 \le f(e) \le c(e)
+$$
+- **Cân bằng luồng:** với mọi $v \in V - \{s, t\}$, luồng vào bằng luồng ra,
+$$
+\sum_{e \in \delta^-(v)} f(e) = \sum_{e \in \delta^+(v)} f(e)
+$$
+
+**Giá trị của luồng** là lượng đi ra khỏi $s$ (trừ đi lượng đi vào $s$):
+$$
+val(f) = \sum_{e \in \delta^+(s)} f(e) - \sum_{e \in \delta^-(s)} f(e)
+$$
+
+**Bài toán.** Tìm luồng có giá trị lớn nhất.
+
+**▸ ⚠️ LƯU Ý**
+
+Kozen định nghĩa luồng theo cách khác, gọi là **đối xứng lệch**: với mọi cặp đỉnh, $f(u, v) = -f(v, u)$. Cân bằng luồng lúc này viết gọn thành $\sum_v f(u, v) = 0$. Hai cách định nghĩa cho cùng kết quả, cách này chỉ tiện hơn khi viết chứng minh.
+
+**▸ LỊCH SỬ**
+
+Ford và Fulkerson công bố định lý luồng cực đại - lát cắt cực tiểu năm 1955, khi làm việc tại RAND. Bài toán đến từ bản đồ đường sắt nối Liên Xô với các nước Đông Âu, trong đó dung lượng đường sắt là dung tích cạnh. Thời đó người ta quan tâm đến lát cắt cực tiểu hơn, vì nó cho biết cần phá ít đường ray nhất ở đâu để cắt đứt liên lạc.

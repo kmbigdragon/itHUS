@@ -1,0 +1,122 @@
+---
+title: "6. Thuật toán Gale-Shapley"
+author: "Trần Đăng Quang Minh"
+---
+
+**Thuật toán Gale-Shapley (deferred acceptance):** Bệnh viện lần lượt đề nghị, sinh viên giữ lại đề nghị tốt nhất đang có.
+
+- **Bước 1:** Khởi tạo $M$ rỗng.
+- **Bước 2:** Chừng nào còn bệnh viện $h$ chưa ghép và chưa đề nghị hết mọi sinh viên, gọi $s$ là sinh viên có hạng cao nhất trong danh sách của $h$ mà $h$ chưa đề nghị. Khi đó:
+  - Nếu $s$ chưa ghép: thêm $h - s$ vào $M$.
+  - Nếu $s$ thích $h$ hơn bệnh viện hiện tại $h'$: thay $h' - s$ bằng $h - s$.
+  - Nếu không: $s$ từ chối $h$.
+
+**▸ VÍ DỤ**
+
+Dùng lại ví dụ ở bài trước.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Bước</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Đề nghị</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Kết quả</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$M$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$A \to X$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$X$ nhận</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$A-X$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$B \to Y$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$Y$ nhận</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$A-X, \ B-Y$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$C \to X$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$X$ từ chối, vì thích $A$ hơn $C$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$A-X, \ B-Y$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$C \to Y$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$Y$ từ chối, vì thích $B$ hơn $C$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$A-X, \ B-Y$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">5</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$C \to Z$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$Z$ nhận</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$A-X, \ B-Y, \ C-Z$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ TÍNH ĐÚNG ĐẮN**
+
+**Nhận xét 1.** Bệnh viện đề nghị theo thứ tự ưu tiên giảm dần.
+
+**Nhận xét 2.** Sinh viên đã được ghép thì không bao giờ mất ghép, chỉ đổi sang bệnh viện tốt hơn.
+
+**Dừng.** Thuật toán dừng sau tối đa $n^2$ vòng lặp, vì mỗi vòng có một đề nghị mới và chỉ có $n^2$ đề nghị khác nhau. Có những dữ liệu cần đến $n(n-1) + 1$ đề nghị.
+
+**Kết quả là ghép cặp hoàn hảo.** Giả sử có bệnh viện $h$ chưa được ghép khi kết thúc. Khi đó có một sinh viên $s$ chưa ghép. Theo Nhận xét 2, $s$ chưa từng được đề nghị. Nhưng $h$ chưa ghép thì đã đề nghị hết mọi sinh viên. Mâu thuẫn. Vậy mọi bệnh viện đều được ghép, và do số lượng bằng nhau nên mọi sinh viên cũng được ghép.
+
+**Không có cặp không ổn định.** Xét cặp $h - s$ không thuộc kết quả $M^*$.
+- Nếu $h$ chưa từng đề nghị $s$: do đề nghị theo thứ tự ưu tiên, $h$ thích sinh viên hiện tại hơn $s$.
+- Nếu $h$ đã đề nghị $s$: $s$ đã từ chối $h$, ngay lúc đó hoặc về sau, nên $s$ thích bệnh viện hiện tại hơn $h$.
+
+Cả hai trường hợp đều cho thấy $h - s$ không phải cặp không ổn định.
+
+**Định lý (Gale, Shapley 1962).** Thuật toán luôn tìm được một ghép cặp ổn định, với mọi dữ liệu đầu vào.
+
+**▸ TỐI ƯU CHO BỆNH VIỆN**
+
+**Đối tác hợp lệ (valid partner).** $s$ là đối tác hợp lệ của $h$ nếu có một ghép cặp ổn định nào đó ghép $h$ với $s$.
+
+**Định lý.** Mọi lần chạy Gale-Shapley đều cho cùng một kết quả, trong đó mỗi bệnh viện nhận được đối tác hợp lệ **tốt nhất** của mình.
+
+**Chứng minh.** Giả sử có bệnh viện bị đối tác hợp lệ từ chối. Gọi $h$ là bệnh viện đầu tiên như vậy, $s$ là đối tác hợp lệ từ chối $h$, và $M$ là ghép cặp ổn định có $h - s$. Khi $s$ từ chối $h$, $s$ đang giữ bệnh viện $h'$ mà $s$ thích hơn $h$.
+
+Gọi $s'$ là đối tác của $h'$ trong $M$. Đến lúc này $h'$ chưa bị đối tác hợp lệ nào từ chối (vì $h$ là đầu tiên), nên $h'$ thích $s$ hơn $s'$. Vậy $h' - s$ không ổn định trong $M$. Mâu thuẫn.
+
+**Định lý.** Đổi lại, mỗi sinh viên nhận được đối tác hợp lệ **tệ nhất** của mình.
+
+**▸ VÍ DỤ**
+
+Bài toán ở trên có hai ghép cặp ổn định: $\{A-X, B-Y, C-Z\}$ và $\{A-Y, B-X, C-Z\}$.
+- Bệnh viện đề nghị thì được $\{A-X, B-Y, C-Z\}$: $A$ và $B$ được người mình xếp thứ nhất.
+- Nếu đổi lại, để sinh viên đề nghị thì được $\{A-Y, B-X, C-Z\}$: $X$ và $Y$ được bệnh viện mình xếp thứ nhất.
+
+Vì vậy bên nào đề nghị thì bên đó có lợi.
+
+**▸ ⚠️ LƯU Ý**
+
+Nếu mỗi người đều biết danh sách của người khác, thì bệnh viện (bên đề nghị) không thể có lợi hơn bằng cách khai gian danh sách, nhưng sinh viên (bên nhận đề nghị) thì có thể.
+
+**▸ MỞ RỘNG**
+
+- Có thể khai báo một số đối tượng là không chấp nhận được.
+- Bệnh viện có thể có nhiều chỗ.
+- Số chỗ và số sinh viên có thể khác nhau.
+
+Khi đó $M$ không ổn định nếu có $h$ và $s$ chấp nhận được lẫn nhau, đồng thời:
+- $s$ chưa được ghép, hoặc $s$ thích $h$ hơn bệnh viện đang ghép.
+- $h$ còn chỗ trống, hoặc $h$ thích $s$ hơn một sinh viên đã nhận.
+
+**Định lý.** Ghép cặp ổn định vẫn tồn tại. Thuật toán chỉ cần mở rộng từ Gale-Shapley một cách đơn giản.
+
+**▸ ỨNG DỤNG**
+
+- **NRMP** (Mỹ, từ 1952): ghép sinh viên y khoa với bệnh viện. Từ 1998 chuyển sang dạng tối ưu cho sinh viên. Nếu thêm ràng buộc như vợ chồng muốn ở cùng nhau thì ghép cặp ổn định không còn chắc chắn tồn tại.
+- **Tuyển sinh trung học ở New York:** 90 nghìn học sinh và 500 chương trình học.
+- **Mạng phân phối nội dung (CDN):** ghép hàng tỷ người dùng với máy chủ, 10 giây một lần.
+- **Giải Nobel Kinh tế 2012** trao cho Lloyd Shapley và Alvin Roth vì các công trình về chủ đề này.

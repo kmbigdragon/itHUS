@@ -1,0 +1,59 @@
+---
+title: "3. K-means"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ BÀI TOÁN**
+
+Cho không gian Euclid và số cụm $k$. Tìm các tâm cụm sao cho tổng bình phương khoảng cách từ mỗi điểm đến tâm cụm của nó là nhỏ nhất.
+
+<Formula title="Hàm mục tiêu của k-means">
+
+$$
+\min_{\mu_1, \dots, \mu_k} \sum_{i=1}^{k} \sum_{x \in C_i} \|x - \mu_i\|^2
+$$
+
+</Formula>
+
+Đây là cách phát biểu bài toán, không phải thuật toán. Tìm nghiệm chính xác là NP-khó. Lời giải xấp xỉ là **thuật toán Lloyd**, hay còn gọi là thuật toán k-means.
+
+**▸ THUẬT TOÁN LLOYD**
+
+- **Khởi tạo:** chọn $k$ tâm.
+- **Lặp đến khi hội tụ:**
+  - **Bước 1:** gán mỗi điểm vào cụm có tâm gần nhất.
+  - **Bước 2:** sau khi gán xong, cập nhật mỗi tâm thành trung bình các điểm trong cụm.
+
+Hội tụ nghĩa là không điểm nào đổi cụm và các tâm không đổi.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+Chạy thật trên 34 điểm sinh từ 3 cụm. Dấu × là tâm, đường đứt là đường đi của tâm. Mỗi cụm một màu và một hình.
+
+![K-means qua các vòng gán điểm và dời tâm](/content/MAT3565/C4/kmeans-steps.svg)
+
+**▸ KHỞI TẠO**
+
+Kết quả phụ thuộc nhiều vào tâm ban đầu, và có thể tệ tùy ý. Có hai cách chọn:
+- Chọn ngẫu nhiên các điểm dữ liệu.
+- **K-means++.**
+
+**K-means++:** lấy một mẫu nhỏ, phân cụm mẫu bằng thuật toán bất kỳ rồi dùng các tâm làm khởi tạo. Khi lấy mẫu, duyệt các điểm theo thứ tự ngẫu nhiên, và xác suất thêm một điểm vào mẫu tỉ lệ với $D(x)^2$:
+
+<Formula title="Xác suất chọn điểm x trong k-means++">
+
+$$
+P(x) \propto D(x)^2, \qquad D(x) = \text{khoảng cách từ } x \text{ đến điểm đã chọn gần nhất}
+$$
+
+</Formula>
+
+Kích thước mẫu bằng $k$ nhân với một hệ số lôgarit theo tổng số điểm.
+
+![Xác suất chọn tâm tiếp theo tỉ lệ với bình phương khoảng cách đến tâm đã chọn](/content/MAT3565/C4/kmeanspp.svg)
+
+**▸ CHỌN k**
+
+Thử nhiều giá trị $k$ và xem khoảng cách trung bình đến tâm. Khoảng cách này giảm nhanh cho đến $k$ đúng, sau đó thay đổi rất ít.
+
+![Khoảng cách trung bình đến tâm theo số cụm k](/content/MAT3565/C4/choose-k.svg)

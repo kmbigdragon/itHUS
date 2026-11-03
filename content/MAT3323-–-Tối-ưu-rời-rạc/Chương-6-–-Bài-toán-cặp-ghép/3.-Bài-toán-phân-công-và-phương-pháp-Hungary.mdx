@@ -1,0 +1,191 @@
+---
+title: "3. Bài toán phân công và phương pháp Hungary"
+author: "Trần Đăng Quang Minh"
+---
+
+**Bài toán phân công (Assignment problem).** Có $n$ người và $n$ việc. Biết chi phí $c_{ij}$ khi giao việc $j$ cho người $i$. Hãy phân công mỗi người một việc, mỗi việc một người, sao cho tổng chi phí nhỏ nhất.
+
+Theo ngôn ngữ đồ thị: cho đồ thị hai phía đầy đủ có trọng số với $|X| = |Y|$, tìm cặp ghép hoàn hảo có trọng số nhỏ nhất.
+
+Có $n!$ cách phân công nên không thể thử hết.
+
+**▸ LỊCH SỬ**
+
+- **Thorndike (1950):** phát biểu bài toán theo cách hiện đại.
+- **Kuhn (1955):** đưa ra thuật toán đa thức đầu tiên, đặt tên là "Hungary" để tôn vinh hai nhà toán học König và Egerváry.
+- **Munkres (1957):** nhận xét thuật toán có thể cài đặt trong $O(n^4)$.
+- **Edmonds, Karp và Tomizawa (1971):** cải tiến thành $O(n^3)$.
+- Sau này người ta phát hiện **Jacobi** (1804-1851) đã phát biểu bài toán và đề xuất thuật toán đa thức từ thế kỷ 19.
+
+**▸ CƠ SỞ CỦA PHƯƠNG PHÁP**
+
+**Định lý.** Nếu cộng hoặc trừ một số vào tất cả các phần tử của một hàng hoặc một cột trong ma trận chi phí, thì nghiệm tối ưu của ma trận mới cũng là nghiệm tối ưu của ma trận cũ.
+
+Lý do: mỗi phân công dùng đúng một phần tử ở mỗi hàng và mỗi cột, nên mọi phân công đều thay đổi cùng một lượng.
+
+Vì vậy ta biến đổi để ma trận có nhiều số 0. Nếu chọn được $n$ số 0 nằm ở các hàng và cột khác nhau thì đó là nghiệm tối ưu, vì tổng chi phí mới bằng 0 mà chi phí luôn không âm.
+
+**▸ PHƯƠNG PHÁP HUNGARY**
+
+- **Bước 1:** Trừ mỗi hàng cho phần tử nhỏ nhất của hàng đó.
+- **Bước 2:** Trừ mỗi cột cho phần tử nhỏ nhất của cột đó.
+- **Bước 3:** Kẻ số đường (hàng hoặc cột) **ít nhất** để phủ hết các số 0.
+- **Bước 4:** Nếu số đường bằng $n$ thì chọn được phân công tối ưu từ các số 0, kết thúc. Nếu ít hơn $n$ thì sang Bước 5.
+- **Bước 5:** Tìm phần tử nhỏ nhất $\delta$ không bị phủ. Trừ $\delta$ khỏi mọi hàng không bị phủ, rồi cộng $\delta$ vào mọi cột bị phủ. Quay lại Bước 3.
+
+Nói cách khác, ở Bước 5: phần tử không bị phủ thì trừ $\delta$, phần tử bị phủ hai lần thì cộng $\delta$, phần tử bị phủ một lần giữ nguyên.
+
+**▸ VÍ DỤ 1**
+
+Ba nhân viên ở Austin, Boston, Chicago cần bay đến Denver, Edmonton, Fargo. Bảng giá vé (USD):
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Từ \ Đến</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Denver</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Edmonton</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Fargo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Austin</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">250</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">400</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">350</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Boston</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">400</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">600</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">350</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Chicago</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">200</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">400</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">250</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**Bước 1:** Trừ các hàng cho 250, 350, 200.
+$$
+\begin{bmatrix}
+250 & 400 & 350 \\
+400 & 600 & 350 \\
+200 & 400 & 250
+\end{bmatrix}
+\rightarrow
+\begin{bmatrix}
+0 & 150 & 100 \\
+50 & 250 & 0 \\
+0 & 200 & 50
+\end{bmatrix}
+$$
+
+**Bước 2:** Trừ các cột cho 0, 150, 0.
+$$
+\begin{bmatrix}
+0 & 0 & 100 \\
+50 & 100 & 0 \\
+0 & 50 & 50
+\end{bmatrix}
+$$
+
+**Bước 3, 4:** Cần ít nhất 3 đường để phủ hết các số 0, nên đã có phân công tối ưu.
+
+**Kết quả:** Austin đi Edmonton, Boston đi Fargo, Chicago đi Denver. Tổng chi phí là $400 + 350 + 200 = 950$ USD.
+
+**▸ VÍ DỤ 2**
+
+Bốn xe ủi ở bốn gara cần đến bốn công trường. Bảng khoảng cách (dặm):
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Xe \ Công trường</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">A</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">B</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">C</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">D</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">90</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">75</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">75</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">80</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">35</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">85</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">55</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">65</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">125</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">95</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">90</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">105</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">45</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">110</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">95</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">115</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**Bước 1, 2:** Trừ các hàng cho 75, 35, 90, 45. Trừ cột D cho 5.
+$$
+\begin{bmatrix}
+15 & 0 & 0 & 0 \\
+0 & 50 & 20 & 25 \\
+35 & 5 & 0 & 10 \\
+0 & 65 & 50 & 65
+\end{bmatrix}
+$$
+
+**Bước 3, 4:** Phủ được bằng 3 đường (hàng 1, cột A, cột C), ít hơn 4.
+
+**Bước 5:** Phần tử nhỏ nhất không bị phủ là $\delta = 5$.
+$$
+\begin{bmatrix}
+20 & 0 & 5 & 0 \\
+0 & 45 & 20 & 20 \\
+35 & 0 & 0 & 5 \\
+0 & 60 & 50 & 60
+\end{bmatrix}
+$$
+
+**Bước 3, 4:** Phủ được bằng 3 đường (hàng 1, hàng 3, cột A), ít hơn 4.
+
+**Bước 5:** Phần tử nhỏ nhất không bị phủ là $\delta = 20$.
+$$
+\begin{bmatrix}
+40 & 0 & 5 & 0 \\
+0 & 25 & 0 & 0 \\
+55 & 0 & 0 & 5 \\
+0 & 40 & 30 & 40
+\end{bmatrix}
+$$
+
+**Bước 3, 4:** Cần 4 đường, nên đã có phân công tối ưu.
+
+**Kết quả:** Xe 1 đến D, xe 2 đến C, xe 3 đến B, xe 4 đến A. Tổng quãng đường là $80 + 55 + 95 + 45 = 275$ dặm.
+
+**▸ ⚠️ LƯU Ý**
+
+Nghiệm tối ưu có thể không duy nhất. Ở Ví dụ 2 còn một cách khác cũng chọn được 4 số 0: xe 1 đến B, xe 2 đến D, xe 3 đến C, xe 4 đến A, tổng cũng là $75 + 65 + 90 + 45 = 275$.

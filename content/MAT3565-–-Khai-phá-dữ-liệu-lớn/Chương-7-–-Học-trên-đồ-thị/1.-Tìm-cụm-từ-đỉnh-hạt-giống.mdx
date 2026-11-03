@@ -1,0 +1,61 @@
+---
+title: "1. Tìm cụm từ đỉnh hạt giống"
+author: "Trần Đăng Quang Minh"
+---
+
+Mạng lưới thường được tổ chức thành các cụm, hay cộng đồng. Ví dụ: tìm thị trường nhỏ bằng cách chia đồ thị từ khóa-nhà quảng cáo.
+
+Đồ thị lớn đến mức chỉ chạy được thuật toán tuyến tính. Vì vậy ta dùng thuật toán dựa trên PageRank, có thời gian chạy tỉ lệ với **kích thước cụm**, không phải kích thước đồ thị.
+
+**Ý tưởng:** cho đỉnh hạt giống $s$, tính PageRank cá nhân hóa (PPR) quanh $s$. Nếu $s$ nằm trong một cụm tốt thì bước ngẫu nhiên sẽ bị kẹt trong cụm đó.
+
+**▸ THẾ NÀO LÀ CỤM TỐT**
+
+- Nhiều cạnh trong cụm.
+- Ít cạnh giữa các cụm.
+
+<Formula title="Lát cắt của cụm A">
+
+$$
+\text{cut}(A) = \sum_{i \in A, \, j \notin A} w_{ij}
+$$
+
+</Formula>
+
+Chỉ dùng lát cắt thì chưa đủ, vì lát cắt nhỏ nhất thường chỉ tách ra một đỉnh lẻ: nó chỉ xét cạnh ra ngoài mà không xét độ kết nối bên trong.
+
+<Formula title="Độ dẫn (conductance)">
+
+$$
+\phi(A) = \frac{|\{(i, j) \in E : i \in A, \, j \notin A\}|}{\min(\text{vol}(A), \, 2m - \text{vol}(A))}, \qquad \text{vol}(A) = \sum_{i \in A} d_i
+$$
+
+</Formula>
+
+- $m$: số cạnh của đồ thị.
+- $\text{vol}(A) = 2 \cdot$ số cạnh trong $A$ $+$ số cạnh ra khỏi $A$.
+
+Độ dẫn cho các phần cân bằng hơn. Càng thấp càng tốt.
+
+![So sánh độ dẫn của ba cách cắt đồ thị](/content/MAT3565/C7/conductance.svg)
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** chọn đỉnh hạt giống $s$.
+- **Bước 2:** chạy PPR với tập dịch chuyển $\{s\}$.
+- **Bước 3:** sắp xếp đỉnh theo điểm PPR giảm dần: $r_1 \gt r_2 \gt \dots \gt r_n$.
+- **Bước 4 (quét):** với mỗi $i$ tính $\phi(A_i)$, với $A_i = \{r_1, \dots, r_i\}$. Cực tiểu địa phương của $\phi(A_i)$ là cụm tốt.
+
+![Tìm cụm bằng PPR và đường cong độ dẫn](/content/MAT3565/C7/ppr-sweep.svg)
+
+**▸ QUÉT TRONG THỜI GIAN TUYẾN TÍNH**
+
+Duyệt qua các đỉnh, giữ một bảng băm các đỉnh đã có trong tập. Khi thêm đỉnh $i + 1$:
+
+<Formula title="Cập nhật khi thêm đỉnh i + 1">
+
+$$
+\text{vol}(A_{i+1}) = \text{vol}(A_i) + d_{i+1}, \qquad \text{cut}(A_{i+1}) = \text{cut}(A_i) + d_{i+1} - 2 \, \#(\text{cạnh của } i + 1 \text{ nối với } A_i)
+$$
+
+</Formula>

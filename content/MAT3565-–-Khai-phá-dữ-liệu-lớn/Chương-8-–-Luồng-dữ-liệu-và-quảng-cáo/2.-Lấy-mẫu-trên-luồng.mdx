@@ -1,0 +1,79 @@
+---
+title: "2. Lấy mẫu trên luồng"
+author: "Trần Đăng Quang Minh"
+---
+
+Vì không lưu được toàn bộ luồng, ta giữ một mẫu đại diện. Có hai bài toán:
+- **Lấy một tỉ lệ cố định**, ví dụ 1 trên 10. Mẫu lớn dần theo luồng.
+- **Giữ mẫu kích thước cố định** $s$ trên luồng vô hạn. Tại mọi thời điểm $k$, mỗi phần tử đã gặp có cùng xác suất nằm trong mẫu.
+
+**▸ LẤY MỘT TỈ LỆ CỐ ĐỊNH**
+
+**Cách ngây thơ:** với mỗi truy vấn sinh số ngẫu nhiên từ 0 đến 9, giữ lại nếu bằng 0.
+
+**Vấn đề:** phải cẩn thận với câu hỏi được trả lời bằng mẫu.
+
+**Ví dụ:** luồng (user, truy vấn, thời gian). Hỏi: tỉ lệ truy vấn của một user bị lặp lại là bao nhiêu? Giả sử mỗi user có $x$ truy vấn một lần và $d$ truy vấn hai lần.
+
+- Đáp án đúng:
+
+<Formula title="Tỉ lệ trùng thật">
+
+$$
+\frac{d}{x + d}
+$$
+
+</Formula>
+
+- Mẫu 10% có $(x + 2d)/10$ phần tử. Một truy vấn lặp hai lần chỉ còn đủ hai bản với xác suất $\frac{1}{10} \cdot \frac{1}{10}$, tức có $d/100$ cặp. Số phần tử khác nhau trong mẫu là $\frac{x + 2d}{10} - \frac{d}{100} = \frac{10x + 19d}{100}$.
+- Đáp án từ mẫu:
+
+<Formula title="Tỉ lệ trùng theo mẫu">
+
+$$
+\frac{d / 100}{(10x + 19d) / 100} = \frac{d}{10x + 19d} \;\neq\; \frac{d}{x + d}
+$$
+
+</Formula>
+
+**Giải pháp:** không lấy mẫu truy vấn mà **lấy mẫu user**. Chọn 1/10 số user và giữ mọi truy vấn của họ.
+
+**▸ TỔNG QUÁT: BĂM THEO KHÓA**
+
+Muốn lấy mẫu tỉ lệ $a/b$ của luồng:
+- **Bước 1:** chọn khóa là một phần của bộ, tùy ứng dụng. Ví dụ bộ (user, truy vấn, thời gian) thì khóa là user.
+- **Bước 2:** băm khóa đều vào $b$ bucket.
+- **Bước 3:** giữ bộ nếu giá trị băm nhỏ hơn $a$.
+
+Ví dụ mẫu 30%: băm vào 10 bucket, lấy bộ rơi vào 3 bucket đầu.
+
+![Băm user vào bucket và so sánh kết quả lấy mẫu theo truy vấn với theo user](/content/MAT3565/C8/sample-hash.svg)
+
+**▸ GIỮ MẪU KÍCH THƯỚC CỐ ĐỊNH**
+
+Lý do: bộ nhớ có hạn, và không biết trước độ dài luồng. Tại thời điểm $n$, mỗi phần tử phải nằm trong mẫu với xác suất $s/n$.
+
+**Thuật toán Reservoir Sampling:**
+- **Bước 1:** lưu $s$ phần tử đầu tiên.
+- **Bước 2:** khi phần tử thứ $n$ đến ($n \gt s$), giữ nó với xác suất $s/n$, nếu không thì bỏ.
+- **Bước 3:** nếu giữ, nó thay một phần tử chọn đều ngẫu nhiên trong mẫu.
+
+![Reservoir sampling từng bước và kiểm tra tần suất bằng mô phỏng](/content/MAT3565/C8/reservoir-steps.svg)
+
+**▸ CHỨNG MINH**
+
+Quy nạp: sau $n$ phần tử, mỗi phần tử đã gặp nằm trong mẫu với xác suất $s/n$.
+
+**Cơ sở:** khi $n = s$, mọi phần tử nằm trong mẫu với xác suất $s/s = 1$.
+
+**Bước quy nạp:** phần tử $n + 1$ vào mẫu với xác suất $s/(n + 1)$. Một phần tử đang ở trong mẫu được giữ lại với xác suất:
+
+<Formula title="Xác suất phần tử cũ ở lại">
+
+$$
+\underbrace{\left( 1 - \frac{s}{n + 1} \right)}_{\text{bỏ phần tử } n + 1} + \underbrace{\frac{s}{n + 1} \cdot \frac{s - 1}{s}}_{\text{giữ } n + 1 \text{, không chọn phần tử này}} = \frac{n}{n + 1}
+$$
+
+</Formula>
+
+Vậy xác suất nằm trong mẫu tại thời điểm $n + 1$ là $\dfrac{s}{n} \cdot \dfrac{n}{n + 1} = \dfrac{s}{n + 1}$.

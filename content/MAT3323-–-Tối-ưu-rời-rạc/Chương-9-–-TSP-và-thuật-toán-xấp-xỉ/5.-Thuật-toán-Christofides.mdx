@@ -1,0 +1,50 @@
+---
+title: "5. Thuật toán Christofides"
+author: "Trần Đăng Quang Minh"
+---
+
+Thuật toán 2-xấp xỉ phải đi mỗi cạnh của cây 2 lần. Christofides tiết kiệm bằng cách chỉ thêm đúng các cạnh cần thiết để có thể đi hết một vòng.
+
+**Nhắc lại:** Đồ thị liên thông có **chu trình Euler** (đi qua mỗi cạnh đúng một lần) khi và chỉ khi mọi đỉnh có bậc chẵn.
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Tìm cây bao trùm nhỏ nhất $T$.
+- **Bước 2:** Gọi $O$ là tập các đỉnh bậc lẻ trong $T$. Số đỉnh này luôn chẵn. Tìm cặp ghép hoàn hảo trọng số nhỏ nhất $M$ trên đồ thị đầy đủ của $O$.
+- **Bước 3:** Hợp $T \cup M$ liên thông và mọi đỉnh có bậc chẵn. Tìm một chu trình Euler trong đó.
+- **Bước 4:** Bỏ các đỉnh lặp khỏi chu trình Euler, được chu trình Hamilton $H$.
+
+**▸ VÍ DỤ**
+
+Dùng lại 6 thành phố ở bài trước.
+
+![Cây cộng cặp ghép, và chu trình tối ưu để so sánh](/content/MAT3323/C9/tsp-christofides.svg)
+
+- **Bước 1:** Cây $T$ gồm $af, fb, fc, fd, de$, có $c(T) \approx 15.17$.
+- **Bước 2:** Các đỉnh bậc lẻ là $a, b, c, e$. Cặp ghép nhỏ nhất là $M = \{ae, bc\}$ với $c(M) = 4 + 3.61 = 7.61$.
+- **Bước 3:** Chu trình Euler trên $T \cup M$ là $a, f, b, c, f, d, e, a$, độ dài $c(T) + c(M) \approx 22.77$.
+- **Bước 4:** Bỏ lần lặp của $f$, được $H = a, f, b, c, d, e, a$ với $c(H) \approx 20.22$.
+
+Theo lý thuyết, $c(H)$ không vượt quá $\frac{3}{2} \cdot 20.17 \approx 30.25$. Trong thực tế thường tốt hơn cận này nhiều. Với ví dụ trong slide, thuật toán chỉ lệch tối ưu dưới 10%.
+
+**▸ CHỨNG MINH**
+
+**Định lý (Christofides, 1976).** Thuật toán Christofides là $\frac{3}{2}$-xấp xỉ cho TSP metric.
+
+**Chứng minh.** Gọi $H^*$ là chu trình tối ưu.
+
+**(1)** $c(T) \le c(H^*)$, giống như bài trước.
+
+**(2)** $c(M) \le \frac{1}{2} c(H^*)$. Gọi $\tau^*$ là chu trình tối ưu chỉ đi qua các đỉnh trong $O$.
+- Theo bất đẳng thức tam giác thì $c(\tau^*) \le c(H^*)$, vì đi tắt qua các đỉnh không thuộc $O$ không tốn hơn.
+- $\tau^*$ là chu trình trên số chẵn đỉnh, nên chia được thành hai cặp ghép hoàn hảo bằng cách lấy cạnh xen kẽ. Cặp ghép rẻ hơn có chi phí không quá $\frac{1}{2} c(\tau^*)$.
+- $M$ là cặp ghép rẻ nhất, nên $c(M) \le \frac{1}{2} c(\tau^*) \le \frac{1}{2} c(H^*)$.
+
+**(3)** Bỏ đỉnh lặp không làm tăng chi phí, nên
+$$
+c(H) \le c(T) + c(M) \le \frac{3}{2} c(H^*)
+$$
+
+**▸ TSP EUCLID**
+
+**Định lý (Arora 1996, Mitchell 1996).** TSP Euclid có PTAS. Hai tác giả này nhận giải Gödel năm 2010 cho kết quả trên.

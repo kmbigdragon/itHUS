@@ -1,0 +1,109 @@
+---
+title: "1. Các khái niệm cơ bản"
+author: "Trần Đăng Quang Minh"
+---
+
+**Đồ thị vô hướng** $G = (V, E)$ gồm tập đỉnh $V$ và tập cạnh $E$ nối các cặp đỉnh. Ký hiệu $n = |V|$, $m = |E|$.
+
+**Ví dụ:** $V = \{1, 2, \dots, 8\}$, $E = \{1\text{-}2, 1\text{-}3, 2\text{-}3, 2\text{-}4, 2\text{-}5, 3\text{-}5, 3\text{-}7, 3\text{-}8, 4\text{-}5, 5\text{-}6, 7\text{-}8\}$. Khi đó $n = 8$, $m = 11$.
+
+**▸ ỨNG DỤNG**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Đồ thị</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Đỉnh</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Cạnh</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Giao thông</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Giao lộ, sân bay</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Đường, đường bay</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Truyền thông</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Điện thoại, máy tính</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Cáp quang</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Mạng xã hội</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Người</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Quan hệ bạn bè</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Tài chính</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Cổ phiếu, tiền tệ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Giao dịch</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Trò chơi</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Thế cờ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Nước đi hợp lệ</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Phân tử</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Nguyên tử</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Liên kết</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ BIỂU DIỄN ĐỒ THỊ**
+
+**Ma trận kề:** ma trận $n \times n$ với $A_{uv} = 1$ nếu $(u, v)$ là cạnh, ngược lại $A_{uv} = 0$.
+
+**Danh sách kề:** mảng theo chỉ số đỉnh, mỗi đỉnh lưu danh sách các đỉnh kề với nó.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold"></th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Ma trận kề</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Danh sách kề</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bộ nhớ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\Theta(n^2)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\Theta(m + n)$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Kiểm tra $(u, v)$ có là cạnh</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\Theta(1)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(\deg(u))$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Liệt kê tất cả các cạnh</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\Theta(n^2)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\Theta(m + n)$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Ở cả hai cách, mỗi cạnh được lưu 2 lần. Đồ thị thực tế thường thưa, nên người ta hay dùng danh sách kề.
+
+**▸ ĐƯỜNG ĐI VÀ CHU TRÌNH**
+
+- **Đường đi (path):** dãy đỉnh $v_1, v_2, \dots, v_k$ mà hai đỉnh liên tiếp có cạnh nối.
+- **Đường đi đơn (simple path):** đường đi có các đỉnh khác nhau.
+- **Liên thông (connected):** giữa mọi cặp đỉnh đều có đường đi.
+- **Chu trình (cycle):** đường đi $v_1, \dots, v_k$ với $v_1 = v_k$, $k > 2$ và $k - 1$ đỉnh đầu khác nhau.
+
+**▸ CÂY**
+
+**Cây (tree)** là đồ thị vô hướng liên thông và không có chu trình.
+
+**Định lý.** Cho $G$ là đồ thị vô hướng có $n$ đỉnh. Hai điều bất kỳ dưới đây suy ra điều còn lại:
+- $G$ liên thông.
+- $G$ không chứa chu trình.
+- $G$ có $n - 1$ cạnh.
+
+**Cây có gốc (rooted tree):** chọn một đỉnh $r$ làm gốc. Khi đó mỗi đỉnh khác gốc có một đỉnh cha và có thể có các đỉnh con. Cây có gốc dùng để mô hình hóa cấu trúc phân cấp.

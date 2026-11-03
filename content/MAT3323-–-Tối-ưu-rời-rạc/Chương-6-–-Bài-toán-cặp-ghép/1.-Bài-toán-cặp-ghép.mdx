@@ -1,0 +1,48 @@
+---
+title: "1. Bài toán cặp ghép"
+author: "Trần Đăng Quang Minh"
+---
+
+Cho đồ thị vô hướng $G = (V, E)$ với trọng số cạnh $c$.
+
+**Cặp ghép (matching)** là một tập con của $E$ gồm các cạnh đôi một không kề nhau, tức là không có hai cạnh nào chung đỉnh.
+
+**Bài toán cặp ghép tổng quát:** Tìm cặp ghép có trọng số cực tiểu.
+
+**▸ CÁC DẠNG BÀI TOÁN**
+
+- **Ghép cặp hai phía (bipartite matching):** $G$ là đồ thị hai phía.
+- **Ghép cặp lực lượng cực đại (cardinality matching):** Mọi trọng số bằng $-1$. Khi đó cặp ghép có trọng số cực tiểu chính là cặp ghép có nhiều cạnh nhất.
+- **Ghép cặp hoàn hảo (perfect matching):** Mọi đỉnh đều kề với một cạnh trong cặp ghép, tức là cặp ghép có $\dfrac{|V|}{2}$ cạnh.
+
+**▸ THUẬT NGỮ**
+
+- Đỉnh được **phủ (covered)** nếu nó kề với một cạnh trong cặp ghép.
+- Cặp ghép **tối đại (maximal)** là cặp ghép không thêm được cạnh nào nữa.
+- Cặp ghép **cực đại (maximum)** là cặp ghép phủ được nhiều đỉnh nhất.
+
+Cặp ghép tối đại chưa chắc đã là cực đại.
+
+**▸ BIẾN ĐỔI TƯƠNG ĐƯƠNG**
+
+**Từ hoàn hảo về một phần.** Muốn tìm cặp ghép hoàn hảo có trọng số cực tiểu, ta giảm trọng số mọi cạnh đi một số $M$ đủ lớn, chẳng hạn
+$$
+M = 1 + \sum_{e \in E} |c(e)|
+$$
+rồi giải bài toán cặp ghép có trọng số cực tiểu. Vì $M$ rất lớn, nghiệm tối ưu sẽ có nhiều cạnh nhất có thể.
+
+**Từ một phần về hoàn hảo.** Muốn tìm cặp ghép có trọng số cực tiểu:
+- **Bước 1:** Thêm $|V|$ đỉnh giả, được tập đỉnh mới $V'$.
+- **Bước 2:** Xây dựng đồ thị đầy đủ $G'$ trên $V'$, với $c'(e) = c(e)$ nếu $e \in E$ và $c'(e) = 0$ với các cạnh còn lại.
+- **Bước 3:** Tìm cặp ghép hoàn hảo có trọng số cực tiểu trên $G'$, rồi bỏ đi các cạnh đã thêm vào.
+
+**▸ ỨNG DỤNG**
+
+- **Trực tiếp:** phân việc cho máy, phân nhân sự cho công việc, xếp sinh viên vào lớp.
+- **Gián tiếp:** định tuyến xe, trao đổi thận, theo dõi nhiều vật thể, nhận dạng chữ viết tay, xử lý tín hiệu.
+
+**Ví dụ: Trao đổi thận.** Người hiến và người nhận không cùng nhóm máu có thể đổi thận với một cặp khác cũng đang gặp tình trạng tương tự. Mỗi cặp là một đỉnh, hai cặp đổi được cho nhau thì có cạnh, và ta cần tìm cặp ghép lớn nhất.
+
+**▸ TRÊN ĐỒ THỊ TỔNG QUÁT**
+
+Bài toán cặp ghép lực lượng cực đại và bài toán cặp ghép trọng số cực tiểu trên đồ thị tổng quát đều giải được trong thời gian đa thức (xem sách của Korte và Vygen). Môn học chỉ đi sâu vào đồ thị hai phía.

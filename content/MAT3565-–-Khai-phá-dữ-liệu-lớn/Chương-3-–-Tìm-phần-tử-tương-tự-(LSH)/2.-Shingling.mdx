@@ -1,0 +1,40 @@
+---
+title: "2. Shingling"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ k-SHINGLE**
+
+**k-shingle** (hay k-gram) của một tài liệu là một dãy $k$ token liên tiếp xuất hiện trong tài liệu. Token có thể là ký tự, từ, hoặc thứ khác tùy ứng dụng.
+
+**Ví dụ:** $k = 2$, tài liệu $D_1 = abcab$. Tập 2-shingle là $S(D_1) = \{ab, bc, ca\}$.
+
+Để nén, có thể băm mỗi shingle về 4 byte. Tài liệu được biểu diễn bằng tập các giá trị băm, ví dụ $h(D_1) = \{1, 5, 7\}$.
+
+Trong thực tế thường chọn $k = 8, 9$ hoặc $10$.
+
+**Lợi ích của shingle:**
+- Hai tài liệu giống nhau thì có nhiều shingle chung.
+- Đổi một từ chỉ ảnh hưởng đến các shingle ở trong khoảng cách $k - 1$ quanh từ đó.
+
+**▸ ĐỘ TƯƠNG ĐỒNG JACCARD**
+
+<Formula title="Độ tương đồng và khoảng cách Jaccard">
+
+$$
+\text{sim}(C_1, C_2) = \frac{|C_1 \cap C_2|}{|C_1 \cup C_2|}, \qquad d(C_1, C_2) = 1 - \text{sim}(C_1, C_2)
+$$
+
+</Formula>
+
+**▸ BIỂU DIỄN BẰNG MA TRẬN**
+
+Mã hóa các tập bằng vector 0/1 trong một ma trận:
+- Hàng là phần tử (shingle), cột là tập (tài liệu).
+- Ô bằng 1 nếu shingle thuộc tài liệu.
+
+Độ tương đồng của hai cột là Jaccard của hai tập tương ứng. Ma trận thường rất thưa nên ta không lưu thật, chỉ hình dung nó tồn tại.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Tách shingle, lập ma trận Boolean và tính Jaccard cho hai tài liệu](/content/MAT3565/C3/shingling.svg)

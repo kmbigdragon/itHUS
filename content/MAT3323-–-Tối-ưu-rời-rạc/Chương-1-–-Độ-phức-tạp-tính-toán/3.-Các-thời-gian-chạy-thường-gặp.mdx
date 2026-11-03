@@ -1,0 +1,154 @@
+---
+title: "3. Các thời gian chạy thường gặp"
+author: "Trần Đăng Quang Minh"
+---
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thời gian</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Tên gọi</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Ví dụ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(1)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Hằng</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Phép toán số học, truy cập phần tử thứ $i$ của mảng</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(\log n)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Lôgarit</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tìm kiếm nhị phân</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(n)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tuyến tính</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Gộp hai danh sách đã sắp xếp, Target-Sum</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(n \log n)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Linearithmic</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Mergesort</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(n^2)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bậc hai</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Cặp điểm gần nhất (duyệt mọi cặp)</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(n^3)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bậc ba</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">3-Sum (duyệt mọi bộ ba)</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(n^k)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Đa thức</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tìm tập độc lập có $k$ đỉnh</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$O(2^{n^k})$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Mũ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tìm tập độc lập lớn nhất</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Dưới đây là một số ví dụ đáng nhớ.
+
+**▸ THỜI GIAN TUYẾN TÍNH: TARGET-SUM**
+
+**Bài toán.** Cho mảng đã sắp xếp gồm $n$ số nguyên khác nhau và số nguyên $T$. Tìm hai phần tử có tổng bằng $T$.
+
+Thử hết mọi cặp mất $O(n^2)$. Tận dụng việc mảng đã sắp xếp, ta chỉ cần $O(n)$:
+- Đặt $i$ ở đầu mảng, $j$ ở cuối mảng.
+- Nếu $a_i + a_j < T$ thì tăng $i$. Nếu $a_i + a_j > T$ thì giảm $j$. Nếu bằng $T$ thì xong.
+
+**Ví dụ:** Mảng $-20, 10, 20, 30, 35, 40, 60, 70$ với $T = 60$.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$a_i$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$a_j$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Tổng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$-20$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$70$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$50$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tăng $i$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$10$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$70$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$80$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Giảm $j$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$10$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$60$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$70$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Giảm $j$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$10$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$40$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$50$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tăng $i$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$20$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$40$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$60$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tìm thấy</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ THỜI GIAN LÔGARIT: TÌM KIẾM NHỊ PHÂN**
+
+Mỗi vòng lặp, ta so sánh $x$ với phần tử giữa rồi bỏ đi một nửa mảng. Sau $k$ vòng, khoảng còn lại có độ dài không quá $n / 2^k$, nên số vòng lặp không quá $1 + \log_2 n$.
+
+**▸ THỜI GIAN LINEARITHMIC: KHOẢNG TRỐNG LỚN NHẤT**
+
+**Bài toán.** Cho $n$ thời điểm $x_1, \dots, x_n$ có file gửi đến máy chủ. Tìm khoảng thời gian dài nhất không có file nào.
+
+**Cách giải:** Sắp xếp các thời điểm, rồi tính hiệu của hai thời điểm liên tiếp và lấy hiệu lớn nhất. Tổng thời gian $O(n \log n)$.
+
+**▸ THỜI GIAN BẬC HAI VÀ BẬC BA: 3-SUM**
+
+**Bài toán.** Cho mảng $n$ số nguyên khác nhau, tìm ba số có tổng bằng $0$.
+
+- Duyệt mọi bộ ba: $O(n^3)$.
+- Sắp xếp mảng, rồi với mỗi $a_i$ giải Target-Sum trên phần còn lại với $T = -a_i$: $O(n^2)$.
+
+Thuật toán tốt nhất đã biết chạy trong $O\left(n^2 / (\log n / \log\log n)\right)$. Người ta phỏng đoán không tồn tại thuật toán $O(n^{2 - \varepsilon})$ với $\varepsilon > 0$.
+
+**▸ THỜI GIAN ĐA THỨC: TẬP ĐỘC LẬP CÓ K ĐỈNH**
+
+**Tập độc lập (independent set)** là tập đỉnh mà hai đỉnh bất kỳ trong đó không có cạnh nối.
+
+**Bài toán.** Với $k$ là hằng số, tìm $k$ đỉnh tạo thành một tập độc lập.
+
+Có $\binom{n}{k} \le \dfrac{n^k}{k!}$ tập con $k$ đỉnh. Kiểm tra mỗi tập mất $O(k^2)$. Tổng thời gian $O(k^2 n^k / k!) = O(n^k)$.
+
+Với $k = 17$ đây vẫn là thời gian đa thức, nhưng không dùng được trong thực tế.
+
+**▸ THỜI GIAN MŨ: TẬP ĐỘC LẬP LỚN NHẤT**
+
+**Bài toán.** Tìm tập độc lập có nhiều đỉnh nhất.
+
+Duyệt tất cả $2^n$ tập con, mỗi tập kiểm tra mất $O(n^2)$. Tổng thời gian $O(n^2 2^n)$.
+
+**▸ ⚠️ LƯU Ý**
+
+Thời gian mũ được định nghĩa là $O(2^{n^k})$ với hằng số $k > 0$ nào đó. Không dùng $O(2^n)$ làm định nghĩa vì nó không chứa $3^n$. Cũng không dùng $O(2^{cn})$ vì nó không chứa $n! = 2^{\Theta(n \log n)}$.

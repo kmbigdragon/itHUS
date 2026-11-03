@@ -1,0 +1,83 @@
+---
+title: "1. Bài toán phân cụm"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ BÀI TOÁN**
+
+Cho một tập điểm và một khái niệm khoảng cách giữa các điểm. Nhóm các điểm thành một số **cụm** sao cho:
+- Các điểm trong cùng cụm gần nhau.
+- Các điểm khác cụm xa nhau.
+
+Thường thì các điểm nằm trong không gian nhiều chiều, và độ tương đồng được đo bằng khoảng cách Euclid, cosine, Jaccard hoặc edit distance.
+
+**Ví dụ:**
+- **Vật thể bầu trời:** 2 tỉ vật thể, mỗi vật thể là bức xạ ở 7 dải tần. Cần nhóm thành thiên hà, sao gần, chuẩn tinh.
+- **Bài hát:** mỗi bài hát là một điểm, mỗi user là một chiều, $x_i = 1$ nếu user $i$ có nghe bài đó. Với Spotify, số chiều lên đến hàng chục triệu.
+- **Tài liệu:** mỗi chiều là một từ, $x_i = 1$ nếu từ $i$ có trong tài liệu. Tài liệu có các từ giống nhau thường cùng chủ đề.
+
+Với tài liệu có ba cách nhìn:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Xem tài liệu như</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Độ đo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Vector</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Khoảng cách cosine</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Tập hợp</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Khoảng cách Jaccard</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Điểm</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Khoảng cách Euclid</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ LỜI NGUYỀN SỐ CHIỀU**
+
+Phân cụm trong 2 chiều trông rất dễ, nhưng dữ liệu thực có thể có 10 đến 100000 chiều, và ở đó **gần như mọi cặp điểm đều rất xa nhau**.
+
+**Ví dụ:** 10000 điểm phân bố đều trong khối đơn vị, truy vấn nằm ở gốc. Muốn lấy 10 láng giềng gần nhất (0.1% dữ liệu), cạnh của khối phải phủ là:
+
+<Formula title="Cạnh khối cần phủ để lấy tỉ lệ p của dữ liệu trong d chiều">
+
+$$
+\ell = p^{1/d} = 0.001^{1/d}
+$$
+
+</Formula>
+
+![Cạnh khối cần phủ tăng nhanh theo số chiều](/content/MAT3565/C4/curse.svg)
+
+Với 1 chiều chỉ cần đi $0.001$, với 2 chiều cần $0.032$, nhưng với 10 chiều đã phải đi $50\%$ chiều dài.
+
+**▸ PHÂN LOẠI PHƯƠNG PHÁP**
+
+**Theo cách làm:**
+- **Phân cấp:**
+  - Gộp dần (từ dưới lên): ban đầu mỗi điểm là một cụm, lặp lại việc gộp hai cụm gần nhất.
+  - Chia dần (từ trên xuống): bắt đầu với một cụm rồi chia đệ quy.
+- **Gán điểm:** giữ một tập cụm, mỗi điểm thuộc về cụm gần nhất.
+
+**Theo không gian:**
+- **Euclid:** điểm là vector số thực, tóm tắt được một nhóm bằng trung bình của chúng, gọi là **tâm (centroid)**. Dùng chuẩn L1, L2.
+- **Không Euclid:** không có khái niệm vị trí và tâm. Dùng Jaccard, Hamming, cosine.
+
+**Theo bộ nhớ:**
+- Vừa bộ nhớ: phân cụm trực tiếp, ví dụ K-means.
+- Không vừa bộ nhớ: đọc từng phần, phân cụm trong bộ nhớ và giữ lại bản tóm tắt, ví dụ BFR, CURE.
+
+**▸ NÊN DÙNG LOẠI NÀO**
+
+- Cụm tròn, lồi: gán điểm cho kết quả tốt.
+- Cụm hình dạng lạ, ví dụ hai vòng đồng tâm có cùng tâm: phân cấp có thể tốt hơn.

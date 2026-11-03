@@ -1,0 +1,65 @@
+---
+title: "3. AdaBoost"
+author: "Trần Đăng Quang Minh"
+---
+
+**Boosting:** kết hợp nhiều bộ phân loại "yếu" thành một "hội đồng" mạnh. Khác với bagging, các cây được học **tuần tự**, cây sau cố gắng sửa lỗi của cây trước. Kết quả cuối là tổng có trọng số.
+
+**▸ CÂY MỘT TẦNG**
+
+**Stump** là cây chỉ có 1 tầng, tách theo một thuộc tính. Đây là bộ học yếu. Theo lý thuyết boosting, nếu bộ học yếu có độ chính xác trên 50% thì học được bộ phân loại hoàn hảo.
+
+**▸ THUẬT TOÁN ADABOOST**
+
+Dữ liệu $\{(x_i, y_i)\}_{i=1}^N$ với $y_i \in \{1, -1\}$.
+
+- **Khởi tạo:** $w_i = 1/N$.
+- **Với mỗi vòng $t$:**
+  - **Bước 1:** học stump $G_t$ theo dữ liệu có trọng số $w_i$.
+  - **Bước 2:** tính sai số có trọng số.
+  - **Bước 3:** tính trọng số của cây.
+  - **Bước 4:** cập nhật trọng số các mẫu.
+
+<Formula title="Sai số có trọng số của vòng t">
+
+$$
+err_t = \frac{\sum_{i=1}^{N} w_i \, I(y_i \ne G_t(x_i))}{\sum_{i=1}^{N} w_i}
+$$
+
+</Formula>
+
+<Formula title="Trọng số của cây">
+
+$$
+\alpha_t = \log \left( \frac{1 - err_t}{err_t} \right)
+$$
+
+</Formula>
+
+Bộ phân loại có độ chính xác 50% thì trọng số bằng 0.
+
+<Formula title="Cập nhật trọng số mẫu">
+
+$$
+w_i \leftarrow w_i \exp \left[ \alpha_t I(y_i \ne G_t(x_i)) \right]
+$$
+
+</Formula>
+
+Mẫu khó phân loại có trọng số cao hơn ở vòng sau.
+
+<Formula title="Dự đoán cuối cùng">
+
+$$
+G(x) = \text{sign} \left[ \sum_{t=1}^{T} \alpha_t G_t(x) \right]
+$$
+
+</Formula>
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![AdaBoost qua ba vòng và kết quả kết hợp](/content/MAT3565/C9/adaboost-steps.svg)
+
+Mỗi vòng, các điểm bị phân loại sai ở vòng trước to lên, nên stump mới tập trung vào chúng.
+
+AdaBoost tương đương với huấn luyện cộng dồn với mất mát hàm mũ (Friedman và cộng sự, 2000).

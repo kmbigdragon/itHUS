@@ -1,0 +1,42 @@
+---
+title: "2. Thuật toán tham lam tổng quát"
+author: "Trần Đăng Quang Minh"
+---
+
+Prim, Kruskal, Borůvka đều là trường hợp riêng của thuật toán dưới đây, nên chỉ cần chứng minh một lần.
+
+**▸ HAI QUY TẮC TÔ MÀU**
+
+**Quy tắc đỏ.** Cho $C$ là một chu trình không có cạnh đỏ. Chọn một cạnh chưa tô màu của $C$ có trọng số **lớn nhất** và tô đỏ.
+
+**Quy tắc xanh.** Cho $D$ là một tập cạnh cắt không có cạnh xanh. Chọn một cạnh chưa tô màu của $D$ có trọng số **nhỏ nhất** và tô xanh.
+
+**▸ THUẬT TOÁN**
+
+Áp dụng hai quy tắc trên, theo thứ tự tùy ý, cho đến khi tất cả các cạnh được tô màu. Các cạnh xanh tạo thành một cây bao trùm nhỏ nhất.
+
+Có thể dừng ngay khi có $n - 1$ cạnh xanh.
+
+**▸ TÍNH ĐÚNG ĐẮN**
+
+**Mệnh đề (bất biến màu).** Luôn tồn tại một cây bao trùm nhỏ nhất $T^*$ chứa mọi cạnh xanh và không chứa cạnh đỏ nào.
+
+**Chứng minh.** Quy nạp theo số bước. Lúc đầu chưa có cạnh nào được tô nên bất biến đúng.
+
+*Áp dụng quy tắc xanh.* Gọi $D$ là tập cạnh cắt được chọn và $f$ là cạnh sẽ tô xanh.
+- Nếu $f \in T^*$ thì bất biến vẫn đúng.
+- Nếu $f \notin T^*$: xét chu trình cơ bản $C$ tạo ra khi thêm $f$ vào $T^*$. Do chu trình và tập cạnh cắt có chung số chẵn cạnh nên có cạnh khác $e \in C \cap D$.
+- Cạnh $e$ không xanh (vì $D$ không có cạnh xanh) và không đỏ (vì $e \in T^*$), nên $e$ chưa tô màu. Theo quy tắc xanh thì $c_e \ge c_f$.
+- Do đó $T^* \cup \{f\} - \{e\}$ cũng là một cây bao trùm nhỏ nhất và thỏa mãn bất biến.
+
+*Áp dụng quy tắc đỏ.* Chứng minh tương tự. Gọi $C$ là chu trình được chọn và $e$ là cạnh sẽ tô đỏ.
+- Nếu $e \notin T^*$ thì bất biến vẫn đúng.
+- Nếu $e \in T^*$: xét tập cạnh cắt cơ bản $D$ tạo ra khi xóa $e$ khỏi $T^*$. Có cạnh khác $f \in C \cap D$.
+- Cạnh $f$ không xanh (vì $f \notin T^*$) và không đỏ (vì $C$ không có cạnh đỏ), nên $f$ chưa tô màu và $c_e \ge c_f$.
+- Do đó $T^* \cup \{f\} - \{e\}$ cũng là một cây bao trùm nhỏ nhất và thỏa mãn bất biến.
+
+**Định lý.** Thuật toán luôn dừng, và tập cạnh xanh tạo ra một cây bao trùm nhỏ nhất.
+
+**Chứng minh.** Cần chỉ ra chừng nào còn cạnh $e$ chưa tô màu thì luôn áp dụng được một trong hai quy tắc. Các cạnh xanh tạo thành một rừng.
+- **Trường hợp 1:** Hai đầu của $e$ thuộc cùng một cây xanh. Áp dụng quy tắc đỏ cho chu trình tạo ra khi thêm $e$ vào cây xanh đó.
+- **Trường hợp 2:** Hai đầu của $e$ thuộc hai cây xanh khác nhau. Áp dụng quy tắc xanh cho tập cạnh cắt tạo bởi một trong hai cây. Tập này không có cạnh xanh và có ít nhất cạnh $e$ chưa tô.

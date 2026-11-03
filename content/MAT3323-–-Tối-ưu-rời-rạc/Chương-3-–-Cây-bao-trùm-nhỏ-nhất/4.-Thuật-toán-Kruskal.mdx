@@ -1,0 +1,97 @@
+---
+title: "4. Thuật toán Kruskal"
+author: "Trần Đăng Quang Minh"
+---
+
+**Ý tưởng:** Xét các cạnh theo trọng số tăng dần. Thêm cạnh vào cây trừ khi nó tạo ra chu trình.
+
+**Định lý.** Thuật toán Kruskal tìm được cây bao trùm nhỏ nhất.
+
+Lý do: đây cũng là trường hợp riêng của thuật toán tham lam. Xét cạnh $e$:
+- **Hai đầu thuộc cùng một cây xanh:** tô đỏ $e$ theo quy tắc đỏ. Mọi cạnh khác trong chu trình đều là cạnh xanh.
+- **Hai đầu thuộc hai cây xanh khác nhau:** tô xanh $e$ theo quy tắc xanh. Không có cạnh nào trong tập cạnh cắt nhỏ hơn $e$, vì Kruskal xét cạnh nhỏ trước.
+
+**▸ CÀI ĐẶT**
+
+- **Bước 1:** Sắp xếp các cạnh theo trọng số tăng dần.
+- **Bước 2:** Dùng cấu trúc **union-find** để biết hai đỉnh có cùng thành phần liên thông không.
+- **Bước 3:** Với cạnh $(u, v)$: nếu `FIND-SET(u)` khác `FIND-SET(v)` thì thêm cạnh vào $T$ và gọi `UNION(u, v)`.
+
+**Định lý.** Thuật toán Kruskal chạy trong $O(m \log m)$.
+
+Thời gian chủ yếu là để sắp xếp cạnh. Do $m \le n^2$ nên $\log m$ là $O(\log n)$.
+
+**▸ VÍ DỤ**
+
+Vẫn dùng đồ thị ở bài trước.
+
+![Đồ thị 6 đỉnh có trọng số](/content/MAT3323/C3/mst-graph.svg)
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Cạnh</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Trọng số</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Kết quả</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Tổng trọng số</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$DE$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Thêm</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$AC$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Thêm</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">3</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$BD$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Thêm</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">6</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$CD$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Thêm</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">10</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$BC$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">5</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bỏ (tạo chu trình $B, C, D$)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">10</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$AB$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">6</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bỏ (tạo chu trình $A, B, D, C$)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">10</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$DF$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">7</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Thêm, đã đủ $n - 1 = 5$ cạnh</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">17</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Kết quả trùng với thuật toán Prim, trọng số $17$.
+
+**▸ THUẬT TOÁN REVERSE-DELETE**
+
+Đây là cách làm ngược lại với Kruskal. Bắt đầu với tất cả các cạnh, xét theo trọng số giảm dần: xóa cạnh trừ khi việc đó làm mất liên thông.
+
+Thuật toán này cũng là trường hợp riêng của thuật toán tham lam:
+- **Xóa $e$ không mất liên thông:** áp dụng quy tắc đỏ cho chu trình chứa $e$.
+- **Xóa $e$ làm mất liên thông:** áp dụng quy tắc xanh, vì $e$ là cạnh duy nhất còn lại trong tập cạnh cắt.
+
+Theo Thorup (2000), có thể cài đặt trong $O(m \log n (\log\log n)^3)$.

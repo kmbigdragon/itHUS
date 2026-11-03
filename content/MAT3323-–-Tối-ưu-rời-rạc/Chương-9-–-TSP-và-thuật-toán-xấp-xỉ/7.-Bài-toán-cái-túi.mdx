@@ -1,0 +1,136 @@
+---
+title: "7. Bài toán cái túi"
+author: "Trần Đăng Quang Minh"
+---
+
+**Bài toán.** Có $N$ đồ vật, đồ vật $n$ có trọng lượng $w_n > 0$ và giá trị $v_n > 0$. Túi chứa được tối đa $W$. Chọn đồ vật để tổng giá trị lớn nhất.
+
+**▸ THAM LAM KHÔNG TỐI ƯU**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Đồ vật</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">1</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">2</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">3</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">4</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">5</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Giá trị</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">6</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">18</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">22</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">28</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Trọng lượng</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">5</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">6</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">7</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Với $W = 11$, tham lam theo tỷ số $v_n / w_n$ chọn $\{5, 2, 1\}$, được giá trị $35$. Trong khi nghiệm tối ưu là $\{3, 4\}$, được giá trị $40$.
+
+**▸ NP-KHÓ**
+
+**Bài toán SUBSET-SUM:** Cho các số $u_i$ và số $t$, có tập con nào có tổng bằng $t$ không? Bài toán này đưa được về cái túi: đặt $v_i = w_i = u_i$, $V = W = t$. Do đó bài toán cái túi là NP-khó.
+
+**▸ QUY HOẠCH ĐỘNG**
+
+**Cách 1: theo trọng lượng.** Gọi $OPT(n, w)$ là giá trị lớn nhất khi chọn trong $\{1, \dots, n\}$ với giới hạn trọng lượng $w$:
+$$
+OPT(n, w) =
+\begin{cases}
+0 & \text{if } n = 0 \\
+OPT(n-1, w) & \text{if } w_n > w \\
+\max \{ OPT(n-1, w), \ v_n + OPT(n-1, w - w_n) \} & \text{otherwise}
+\end{cases}
+$$
+Thời gian $O(NW)$.
+
+**Cách 2: theo giá trị.** Gọi $OPT(n, v)$ là trọng lượng nhỏ nhất để đạt đúng giá trị $v$ khi chọn trong $\{1, \dots, n\}$. Đáp án là $v$ lớn nhất mà $OPT(N, v) \le W$. Thời gian $O(NV^*)$ với $V^*$ là giá trị tối ưu.
+
+Cả hai đều là **giả đa thức**, không phải đa thức theo kích thước đầu vào.
+
+**▸ FPTAS**
+
+**Ý tưởng:** Nếu các giá trị nhỏ thì cách 2 chạy nhanh. Vậy ta làm tròn các giá trị xuống một khoảng nhỏ hơn, chấp nhận sai số nhỏ.
+
+- **Bước 1:** Gọi $V$ là giá trị lớn nhất của một đồ vật, $\varepsilon$ là độ chính xác. Đặt $\theta = \dfrac{\varepsilon V}{N}$.
+- **Bước 2:** Làm tròn giá trị: $\bar{v}_n = \lfloor v_n / \theta \rfloor$.
+- **Bước 3:** Chạy quy hoạch động cách 2 với các giá trị $\bar{v}_n$.
+- **Bước 4:** Trả về tập đồ vật tìm được.
+
+**Thời gian chạy.** Giả sử $w_n \le W$ với mọi $n$. Khi đó $V \le V^* \le NV$. Giá trị lớn nhất sau khi làm tròn là $\bar{V} = V / \theta$, nên
+$$
+O(N \bar{V}^*) = O(N \cdot N \bar{V}) = O\left( N^2 \frac{V}{\theta} \right) = O\left( \frac{N^3}{\varepsilon} \right)
+$$
+
+**Chất lượng nghiệm.** Gọi $S^*$ là nghiệm tối ưu của dữ liệu gốc và $\bar{S}$ là nghiệm tối ưu của dữ liệu làm tròn. Khi đó
+$$
+\sum_{n \in \bar{S}} v_n \ge \sum_{n \in \bar{S}} \theta \bar{v}_n \ge \sum_{n \in S^*} \theta \bar{v}_n \ge \sum_{n \in S^*} (v_n - \theta) \ge V^* - N\theta = V^* - \varepsilon V \ge (1 - \varepsilon) V^*
+$$
+
+**▸ VÍ DỤ**
+
+Với $W = 11$ và $\theta = 100000$:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Đồ vật</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Trọng lượng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Giá trị gốc</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Giá trị làm tròn</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">134221</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">656342</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">6</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">5</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1810013</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">18</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">6</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">22217800</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">222</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">5</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">7</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">28343199</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">283</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Bài toán làm tròn có nghiệm tối ưu là $\{1, 2, 5\}$ với giá trị $290$. Đây cũng là nghiệm tối ưu của bài toán gốc, với giá trị $29133762$.
+
+Các thuật toán tốt hơn: Ibarra, Kim (1975) và Lawler (1979) đạt $O(N \log(1/\varepsilon) + 1/\varepsilon^4)$ bằng cách chia đồ vật thành nhóm lớn và nhóm nhỏ.

@@ -1,0 +1,101 @@
+---
+title: "6. Hệ gợi ý Pixie"
+author: "Trần Đăng Quang Minh"
+---
+
+**Pixie** là hệ gợi ý của Pinterest, dựa trên bước ngẫu nhiên có khởi động lại. Từ 100 tỉ pin, nó chọn ra 1000 pin trong 50 ms, phục vụ 200000 lần mỗi giây.
+
+**▸ ĐỒ THỊ**
+
+Đồ thị hai phía: pin và board. Pin nối với board chứa nó.
+
+**▸ THUẬT TOÁN**
+
+Với tập truy vấn $Q$ và xác suất khởi động lại $\alpha$:
+
+```python
+ALPHA = 0.5
+pin_node = QUERY_NODES.sample_by_weight()
+for i in range(N_STEPS):
+    board_node = pin_node.get_random_neighbor()
+    pin_node = board_node.get_random_neighbor()
+    pin_node.visit_count += 1
+    if random() < ALPHA:
+        pin_node = QUERY_NODES.sample_by_weight()
+```
+
+Kết quả là top 1000 pin có số lần ghé cao nhất.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+Mỗi vòng lặp gồm:
+- **Bước 1:** từ pin hiện tại đi đến một board ngẫu nhiên.
+- **Bước 2:** từ board đi đến một pin ngẫu nhiên, tăng số đếm của pin đó.
+- **Bước 3:** với xác suất $\alpha$, quay về một đỉnh trong $Q$.
+
+![Chạy Pixie trên đồ thị pin và board nhỏ](/content/MAT3565/C6/pixie.svg)
+
+**▸ MỞ RỘNG**
+
+- **Trọng số cạnh:** ưu tiên một số cạnh, ví dụ cạnh đến pin cùng ngôn ngữ, và cá nhân hóa theo user.
+- **Nhiều pin truy vấn:** mỗi pin có độ quan trọng riêng. Chạy song song rồi cộng số đếm. Số bước cấp cho mỗi pin tỉ lệ với bậc của nó.
+- **Multi-hit booster:** pin được ghé từ nhiều pin truy vấn liên quan hơn pin có cùng tổng nhưng chỉ từ một pin truy vấn:
+
+<Formula title="Cộng số đếm từ nhiều pin truy vấn">
+
+$$
+V[p] = \left( \sum_{q \in Q} \sqrt{V_q[p]} \right)^2
+$$
+
+</Formula>
+
+- **Dừng sớm:** đi đến khi pin thứ 1000 có ít nhất 20 lần ghé.
+
+**▸ THU GỌN ĐỒ THỊ**
+
+Đồ thị Pinterest có 200 tỉ cạnh nhưng không cần tất cả. Pin quá phổ biến nằm trong hàng triệu board, khi đi vào đó tín hiệu sẽ phân tán. Vì vậy chỉ giữ các board có vector chủ đề giống với pin.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Loại</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Số lượng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Mỗi phần tử</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Bộ nhớ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Đỉnh pin</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">3 tỉ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">8 byte</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">24 GiB</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Đỉnh board</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2 tỉ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">8 byte</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">16 GiB</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Cạnh vô hướng</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">20 tỉ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">8 byte</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">160 GiB</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Tổng</td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center">208 GiB</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ LỢI ÍCH**
+
+- Rất nhanh: top 1000 trong 50 ms, sau khoảng 100000 bước.
+- Một máy chạy được 1500 bước đi song song.
+- Toàn bộ đồ thị nằm vừa RAM của một máy, muốn mở rộng thì thêm máy.

@@ -1,0 +1,112 @@
+---
+title: "4. LSH và kỹ thuật dải băng"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ Ý TƯỞNG**
+
+Mục tiêu: tìm các tài liệu có Jaccard ít nhất $s$, ví dụ $s = 0.8$. So từng cặp chữ ký vẫn quá lâu, nên ta băm các cột của $M$ nhiều lần sao cho chỉ các cột giống nhau mới có khả năng rơi vào cùng bucket. **Cặp ứng viên** là cặp cùng bucket.
+
+**▸ THUẬT TOÁN DẢI BĂNG**
+
+- **Bước 1:** chia ma trận $M$ thành $b$ dải, mỗi dải $r$ hàng.
+- **Bước 2:** với mỗi dải, băm phần cột trong dải đó vào bảng băm có $k$ bucket, $k$ càng lớn càng tốt.
+- **Bước 3:** cặp ứng viên là cặp cột rơi vào cùng bucket ở **ít nhất 1 dải**.
+- **Bước 4:** kiểm tra lại các cặp ứng viên trong bộ nhớ, và nếu muốn thì đọc thêm một lượt để kiểm tra trên tài liệu gốc.
+
+Để đơn giản, ta coi "cùng bucket" nghĩa là "giống hệt nhau trong dải đó". Giả thiết này chỉ để phân tích dễ hơn.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+Sinh 5 tập có chủ đích rồi tính chữ ký 12 hàng bằng Min-Hash thật, $b = 4$, $r = 3$. Ô tô màu là các cột giống hệt nhau trong dải đó.
+
+![Chia chữ ký thành 4 dải, cột giống nhau trong một dải thành cặp ứng viên](/content/MAT3565/C3/lsh-bands.svg)
+
+Kết quả cho thấy cả hai loại cặp:
+- $(D_1, D_2)$ và $(D_4, D_5)$ giống nhau thật, Jaccard trên 0.8, và trùng ở nhiều dải.
+- $(D_3, D_4)$ và $(D_3, D_5)$ chỉ có Jaccard 0.27 nhưng trùng ở dải 4. Đây là dương tính giả, sẽ bị loại ở bước kiểm tra.
+- $(D_1, D_3)$ có Jaccard 0.31 và không trùng dải nào, nên không phải so sánh.
+
+**▸ PHÂN TÍCH XÁC SUẤT**
+
+Gọi $t = \text{sim}(C_1, C_2)$. Khi đó:
+- Xác suất một hàng trùng nhau: $t$.
+- Xác suất mọi hàng trong một dải trùng nhau: $t^r$.
+- Xác suất có hàng trong dải khác nhau: $1 - t^r$.
+- Xác suất không dải nào trùng: $(1 - t^r)^b$.
+
+<Formula title="Xác suất thành cặp ứng viên">
+
+$$
+P(t) = 1 - (1 - t^r)^b
+$$
+
+</Formula>
+
+**▸ VÍ DỤ**
+
+Có 100000 tài liệu, chữ ký dài 100 số (40 MB). Tìm cặp có $s = 0.8$, chọn $b = 20$, $r = 5$.
+
+**Trường hợp 1:** $t = 0.8$, ta muốn đây là ứng viên.
+- Xác suất trùng ở một dải: $0.8^5 = 0.328$.
+- Xác suất không trùng ở cả 20 dải: $(1 - 0.328)^{20} = 0.00035$.
+- Nghĩa là chỉ khoảng $1/3000$ cặp giống 80% bị bỏ sót (âm tính giả).
+
+**Trường hợp 2:** $t = 0.3$, ta không muốn đây là ứng viên.
+- Xác suất trùng ở một dải: $0.3^5 = 0.00243$.
+- Xác suất trùng ở ít nhất 1 dải: $1 - (1 - 0.00243)^{20} = 0.0474$.
+- Nghĩa là khoảng 4.74% cặp giống 30% thành ứng viên (dương tính giả), sẽ bị loại khi kiểm tra.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$t$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">0.2</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">0.3</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">0.4</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">0.5</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">0.6</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">0.7</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">0.8</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$1 - (1 - t^5)^{20}$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.006</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.047</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.186</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.470</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.802</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.975</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.9996</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ ĐƯỜNG CONG S**
+
+Một hàm băm cho xác suất tăng tuyến tính theo $t$. Thứ ta muốn là một bước nhảy tại ngưỡng: dưới ngưỡng thì xác suất 0, trên ngưỡng thì xác suất 1. Chọn $b$ và $r$ sẽ cho đường cong chữ S gần với bước nhảy đó.
+
+![Đường cong S với r bằng 5 và b bằng 10, tô vùng dương tính giả và âm tính giả](/content/MAT3565/C3/s-curve.svg)
+
+Vị trí dốc nhất của đường cong (theo sách MMDS) xấp xỉ:
+
+<Formula title="Ngưỡng của đường cong S">
+
+$$
+t \approx \left( \frac{1}{b} \right)^{1/r}
+$$
+
+</Formula>
+
+**▸ CHỌN b VÀ r**
+
+- Chọn số hàm băm $M = b \cdot r$, số dải $b$ và số hàng $r$ để cân bằng dương tính giả và âm tính giả.
+- Dương tính giả chỉ tốn thêm thời gian kiểm tra. Âm tính giả thì mất luôn, vì cặp đó không bao giờ được xét.
+
+Ví dụ nếu đổi sang 10 dải, mỗi dải 10 hàng, thì dương tính giả giảm nhưng âm tính giả tăng.
+
+![Ba đường cong S với tích r nhân b bằng 50](/content/MAT3565/C3/s-curve-compare.svg)

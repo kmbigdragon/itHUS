@@ -1,0 +1,158 @@
+---
+title: "6. Giải chính xác TSP"
+author: "Trần Đăng Quang Minh"
+---
+
+Dù là NP-khó, TSP vẫn được giải chính xác với hàng chục nghìn thành phố. Cách làm là kết hợp LP, mặt phẳng cắt và nhánh cận.
+
+**▸ PHƯƠNG PHÁP DANTZIG-FULKERSON-JOHNSON (1954)**
+
+Dantzig, Fulkerson và Johnson đã tìm được chu trình tối ưu qua 49 thành phố của Mỹ (rút gọn thành 42 thành phố khi tính). Bài báo của họ đã có đủ các ý tưởng về mặt phẳng cắt, nhánh cận và heuristic.
+
+- **Bước 1:** Tạo LP với biến $x_e$, $x_e = 1$ nếu chu trình đi qua cạnh $e$.
+- **Bước 2:** Giải LP. Nếu nghiệm nguyên và là một chu trình thì dừng.
+- **Bước 3:** Nếu không thì tìm ràng buộc mới bị nghiệm hiện tại vi phạm, thêm vào, rồi quay lại Bước 2.
+
+**▸ MÔ HÌNH**
+
+Với TSP đối xứng trên $K_n$:
+$$
+\begin{align*}
+\min \quad & c^\top x \\
+\text{s.t.} \quad & x(\delta(i)) = 2, \quad \forall i \in V \\
+& x(E(W)) \le |W| - 1, \quad \forall W \subset V \setminus \{1\}, \ 3 \le |W| \le n - 3 \\
+& x_{ij} \in \{0, 1\}, \quad \forall ij \in E
+\end{align*}
+$$
+
+Trong đó $\delta(i)$ là các cạnh kề với $i$, $E(W)$ là các cạnh có hai đầu đều thuộc $W$.
+- **Ràng buộc bậc:** mỗi đỉnh có đúng 2 cạnh trong chu trình.
+- **Ràng buộc loại chu trình con (SEC):** tập $W$ không được tự tạo thành chu trình riêng.
+
+Số SEC là hàm mũ, nhưng không cần liệt kê trước. Chỉ khi nào nghiệm vi phạm thì mới thêm vào, nên LP nới lỏng vẫn giải được trong thời gian đa thức.
+
+**▸ BÀI TOÁN TÁCH**
+
+**Bài toán tách (separation).** Cho một điểm, kiểm tra nó có thỏa mãn mọi bất đẳng thức trong họ không, và nếu không thì tìm một bất đẳng thức bị vi phạm.
+
+**Định lý (Grötschel, Lovász, Schrijver).** Bài toán tách và bài toán tối ưu là tương đương về độ phức tạp đa thức.
+
+Với SEC, bài toán tách giải được bằng lát cắt cực tiểu. Vì vậy các kiến thức về luồng ở Chương 5 được dùng trực tiếp ở đây.
+
+**▸ ĐA DIỆN TSP**
+
+**Đa diện TSP đối xứng** $Q_T^n$ là bao lồi của các vector đặc trưng của mọi chu trình trong $K_n$.
+
+**Định lý.** $\dim Q_T^n = \dfrac{n(n-3)}{2} = |E| - |V|$.
+
+Muốn cắt tốt thì nên dùng các bất đẳng thức định nghĩa **diện lớn nhất (facet)** của đa diện. Ngoài SEC còn có ràng buộc 2-matching, comb, clique tree, path, star, ladder, domino.
+
+Số facet tăng rất nhanh:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$n$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">5</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">6</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">7</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">8</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">9</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Số chu trình</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">12</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">60</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">360</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2520</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">20160</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Số facet</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">20</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">100</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">3437</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">194187</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">42104442</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**Quan hệ giữa nghiệm nguyên và nới lỏng.** Với chi phí thỏa mãn bất đẳng thức tam giác, ta biết $\text{IP-OPT} \le \frac{3}{2} \text{LP-SEC}$ (Wolsey), và có phỏng đoán chưa được chứng minh là $\text{IP-OPT} \le \frac{4}{3} \text{LP-SEC}$.
+
+**▸ NHÁNH VÀ CẮT**
+
+Các bộ giải TSP hiện đại như **Concorde** kết hợp:
+- **Cận trên:** heuristic, như Chained Lin-Kernighan.
+- **Cận dưới:** LP với các lát cắt, đây là phần khó nhất.
+- **Chia nhánh** khi không cắt được nữa.
+- **Sinh cột:** LP đầy đủ có rất nhiều biến, nên ban đầu chỉ giữ khoảng $3|V|$ biến.
+
+Khi gap giữa hai cận bằng 0 thì ta đã chứng minh được nghiệm là tối ưu.
+
+**▸ CÁC KỶ LỤC**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Năm</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Tác giả</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Số thành phố</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">1954</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Dantzig, Fulkerson, Johnson</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">49</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">1977</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Grötschel</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">120</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">1987</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Padberg, Rinaldi</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">532</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">1991</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Padberg, Rinaldi</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2392</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">1992</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Applegate, Bixby, Chvátal, Cook (ABCC)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">3038</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">1998</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">ABCC</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">13509</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">2001</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">ABCC</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">15112</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">2004</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">ABCC</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">24978</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">2006</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">ABCC</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">85900</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Ví dụ với 13509 thành phố của Mỹ, cây nhánh cận có 9539 nút và tốn khoảng 4 năm CPU.

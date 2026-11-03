@@ -1,0 +1,63 @@
+---
+title: "5. Cửa sổ giảm dần theo hàm mũ"
+author: "Trần Đăng Quang Minh"
+---
+
+**Bài toán:** tìm phần tử hoặc tập phần tử phổ biến **hiện tại**, ví dụ phim đang được xem nhiều, sản phẩm đang bán chạy.
+
+**▸ Ý TƯỞNG**
+
+Thay vì đếm thô trong $N$ phần tử cuối, ta tính tổng trơn trên toàn luồng, phần tử càng xa càng có trọng số nhỏ.
+
+<Formula title="Tổng giảm dần tại thời điểm t">
+
+$$
+S_t = \sum_{i=1}^{t} a_i (1 - c)^{t - i}
+$$
+
+</Formula>
+
+$c$ là hằng số rất nhỏ, ví dụ $10^{-6}$ hoặc $10^{-9}$. Khi $a_{t+1}$ đến thì **nhân tổng hiện tại với $(1 - c)$ rồi cộng $a_{t+1}$**.
+
+**▸ ĐẾM PHẦN TỬ**
+
+Coi luồng là nhiều luồng nhị phân, mỗi phần tử $x$ có một luồng: $1$ nếu $x$ xuất hiện, $0$ nếu không. **Trọng số** của $x$ là:
+
+<Formula title="Trọng số của phần tử x">
+
+$$
+S_t(x) = \sum_{i=1}^{t} \delta_i (1 - c)^{t - i}, \qquad \delta_i = 1 \text{ nếu } a_i = x, \; \delta_i = 0 \text{ nếu không}
+$$
+
+</Formula>
+
+Khi phần tử $a_t$ đến:
+- **Bước 1:** nhân trọng số của mọi phần tử với $(1 - c)$.
+- **Bước 2:** cộng 1 vào trọng số của phần tử $a_t$.
+
+![Cập nhật trọng số từng bước trong cửa sổ giảm dần](/content/MAT3565/C8/decay-steps.svg)
+
+**▸ TÍNH CHẤT QUAN TRỌNG**
+
+<Formula title="Tổng mọi trọng số">
+
+$$
+\sum_t (1 - c)^t = \frac{1}{1 - (1 - c)} = \frac{1}{c}
+$$
+
+</Formula>
+
+Muốn tìm các phần tử có trọng số lớn hơn $1/2$: vì tổng là $1/c$, nên có **không quá $2/c$** phần tử có trọng số từ $1/2$ trở lên. Do đó $2/c$ là giới hạn số phần tử cần theo dõi. Các phần tử có trọng số dưới $1/2$ được bỏ.
+
+**▸ MỞ RỘNG CHO TẬP PHẦN TỬ**
+
+Có quá nhiều tập nên không đếm hết được. Khi giỏ $B$ đến:
+- **Bước 1:** nhân mọi số đếm với $(1 - c)$.
+- **Bước 2:** với phần tử trong $B$ chưa được đếm, tạo số đếm mới.
+- **Bước 3:** cộng 1 vào số đếm của mọi phần tử và tập đang được đếm có trong $B$.
+- **Bước 4:** bỏ các số đếm nhỏ hơn $1/2$.
+- **Bước 5:** tạo số đếm mới cho các tập theo luật dưới đây.
+
+**Luật tạo số đếm mới:** bắt đầu đếm $S \subseteq B$ khi mọi tập con thực sự của $S$ đã được đếm từ trước khi $B$ đến. Ví dụ đếm $\{i, j\}$ khi cả $i$ và $j$ đã được đếm trước đó. Giống ý tưởng của A-Priori.
+
+**Số lượng:** số đếm của phần tử đơn nhỏ hơn $(2/c) \cdot$ (số phần tử trung bình trong một giỏ). Với tập lớn hơn thì không có giới hạn rõ ràng, nhưng ta thận trọng khi bắt đầu đếm. Nếu đếm mọi tập gặp phải, một giỏ 20 phần tử đã tạo ra 1 triệu số đếm.

@@ -1,0 +1,53 @@
+---
+title: "7. Spam trên web"
+author: "Trần Đăng Quang Minh"
+---
+
+**Spam** là mọi hành động có chủ ý nhằm đẩy thứ hạng của một trang lên cao hơn giá trị thật của nó. Khoảng 10-15% số trang web là spam.
+
+**▸ SPAM TỪ KHÓA**
+
+Công cụ tìm kiếm thời đầu xếp hạng theo số lần từ khóa xuất hiện và vị trí của nó, ví dụ tiêu đề. Do đó, một người bán áo có thể giả vờ trang của mình nói về phim:
+- Thêm từ "movie" 1000 lần với màu chữ trùng màu nền, chỉ công cụ tìm kiếm mới thấy.
+- Hoặc tìm "movie", sao chép trang đứng đầu vào trang của mình rồi làm cho vô hình.
+
+**Giải pháp của Google:**
+- Tin những gì người khác nói về bạn, không tin bạn nói về mình: dùng chữ của liên kết (anchor text) và phần chữ xung quanh.
+- Dùng PageRank để đo độ quan trọng.
+
+Người bán áo thua, vì người khác không nói trang đó về phim, và nó không đủ quan trọng. Kể cả tạo 1000 trang trỏ về mình với chữ "movie", các trang đó không có liên kết đến nên PageRank thấp.
+
+**▸ TRANG TRẠI LIÊN KẾT**
+
+Với spammer, có ba loại trang:
+- **Không tiếp cận được.**
+- **Tiếp cận được:** ví dụ trang bình luận blog, có thể chèn liên kết.
+- **Sở hữu:** kiểm soát hoàn toàn.
+
+**Mục tiêu:** đẩy PageRank của trang đích $t$ lên cao nhất:
+- Lấy càng nhiều liên kết từ các trang tiếp cận được càng tốt.
+- Dựng trang trại liên kết để nhân hệ số PageRank.
+
+![Cấu trúc trang trại liên kết với M trang sở hữu](/content/MAT3565/C6/spam-farm.svg)
+
+**▸ PHÂN TÍCH**
+
+Gọi $N$ là số trang trên web, $M$ là số trang spammer sở hữu, $x$ là PageRank đến từ các trang tiếp cận được, và $y$ là PageRank của $t$.
+
+Hạng của mỗi trang sở hữu: $\dfrac{\beta y}{M} + \dfrac{1 - \beta}{N}$.
+
+$$
+y = x + \beta M \left[ \frac{\beta y}{M} + \frac{1 - \beta}{N} \right] + \frac{1 - \beta}{N} = x + \beta^2 y + \frac{\beta (1 - \beta) M}{N} + \frac{1 - \beta}{N}
+$$
+
+Số hạng cuối rất nhỏ nên bỏ qua. Giải theo $y$:
+
+<Formula title="PageRank của trang đích">
+
+$$
+y = \frac{x}{1 - \beta^2} + c \frac{M}{N}, \qquad c = \frac{\beta}{1 + \beta}
+$$
+
+</Formula>
+
+Với $\beta = 0.85$ thì $\dfrac{1}{1 - \beta^2} \approx 3.6$: PageRank thu được từ bên ngoài được nhân lên 3.6 lần. Và cứ tăng $M$ thì $y$ tăng theo.

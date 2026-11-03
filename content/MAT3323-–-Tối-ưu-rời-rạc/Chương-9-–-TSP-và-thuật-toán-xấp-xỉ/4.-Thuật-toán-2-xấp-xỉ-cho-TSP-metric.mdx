@@ -1,0 +1,76 @@
+---
+title: "4. Thuật toán 2-xấp xỉ cho TSP metric"
+author: "Trần Đăng Quang Minh"
+---
+
+Xét TSP mà chi phí thỏa mãn **bất đẳng thức tam giác**. Điều kiện này nói rằng đi đường thẳng không tốn hơn đi vòng.
+
+**Ý tưởng:** Tính cây bao trùm nhỏ nhất, rồi từ cây đó dựng chu trình.
+
+**▸ THUẬT TOÁN APPROX-TSP**
+
+- **Bước 1:** Chọn một đỉnh gốc $r$, tìm cây bao trùm nhỏ nhất $T$.
+- **Bước 2:** Duyệt $T$ theo **thứ tự trước (preorder)**. Lấy danh sách đỉnh theo thứ tự lần đầu được thăm.
+- **Bước 3:** Trả về chu trình $H$ đi theo danh sách đó, rồi quay về $r$.
+
+Thời gian chủ yếu là để chạy Prim, $\Theta(V^2)$ trên đồ thị đầy đủ.
+
+**▸ VÍ DỤ**
+
+Xét 6 thành phố trên mặt phẳng, chi phí là khoảng cách Euclid.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Đỉnh</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$a$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$b$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$c$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$d$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$e$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$f$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tọa độ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$(0, 0)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$(4, 0)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$(6, 3)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$(3, 5)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$(0, 4)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$(3, 2)$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+![Cây bao trùm nhỏ nhất và chu trình của thuật toán 2-xấp xỉ](/content/MAT3323/C9/tsp-2approx.svg)
+
+- **Bước 1:** Cây bao trùm nhỏ nhất gồm các cạnh $af, fb, fc, fd, de$, có trọng số $c(T) \approx 15.17$.
+- **Bước 2:** Duyệt từ gốc $a$, đi hết các cạnh của cây (mỗi cạnh 2 lần):
+$$
+W = a, f, b, f, c, f, d, e, d, f, a
+$$
+Độ dài của $W$ là $2 c(T) \approx 30.33$. Giữ lại lần xuất hiện đầu tiên của mỗi đỉnh thì được $a, f, b, c, d, e$.
+- **Bước 3:** Chu trình $H = a, f, b, c, d, e, a$ có chi phí $c(H) \approx 20.22$.
+
+Chu trình tối ưu là $a, b, f, c, d, e, a$ với chi phí $20.17$. Ở ví dụ này, thuật toán cho kết quả rất sát tối ưu.
+
+**▸ CHỨNG MINH**
+
+**Định lý.** APPROX-TSP là thuật toán 2-xấp xỉ cho TSP metric.
+
+**Chứng minh.** Gọi $H^*$ là chu trình tối ưu.
+
+**(1)** $c(T) \le c(H^*)$. Xóa một cạnh của $H^*$ thì được một cây bao trùm. Chi phí không âm nên cây này không đắt hơn $H^*$, và $T$ là cây rẻ nhất.
+
+**(2)** $c(W) = 2 c(T)$. Đường đi đầy đủ $W$ đi qua mỗi cạnh của $T$ đúng 2 lần.
+
+**(3)** $c(H) \le c(W)$. Khi bỏ một đỉnh lặp, ta đi thẳng thay vì đi vòng, và theo bất đẳng thức tam giác thì không tốn hơn.
+
+Kết hợp lại:
+$$
+c(H) \le c(W) = 2 c(T) \le 2 c(H^*)
+$$

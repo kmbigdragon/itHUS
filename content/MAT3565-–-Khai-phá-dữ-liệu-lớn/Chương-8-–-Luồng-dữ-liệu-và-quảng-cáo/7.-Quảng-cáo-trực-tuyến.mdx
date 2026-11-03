@@ -1,0 +1,82 @@
+---
+title: "7. Quảng cáo trực tuyến"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ LỊCH SỬ**
+
+- **Banner (1995-2001):** trả tiền theo mỗi 1000 lần hiển thị (CPM). Tỉ lệ nhấp thấp, ít hiệu quả.
+- **Quảng cáo theo hiệu suất:** do Overture đưa ra khoảng năm 2000, Google làm theo với AdWords năm 2002. Nhà quảng cáo đấu giá từ khóa, chỉ trả tiền khi có người nhấp.
+
+**▸ BÀI TOÁN**
+
+Luồng truy vấn đến: $q_1, q_2, \dots$ Nhiều nhà quảng cáo đấu giá cho mỗi truy vấn. Khi $q_i$ đến, công cụ tìm kiếm chọn một số nhà quảng cáo để hiển thị.
+
+**Mục tiêu:** tối đa doanh thu.
+
+**▸ XẾP HẠNG THEO DOANH THU KỲ VỌNG**
+
+Không xếp theo giá đấu mà theo doanh thu kỳ vọng trên một lần hiển thị:
+
+<Formula title="Doanh thu kỳ vọng">
+
+$$
+\text{Doanh thu kỳ vọng} = \text{Giá đấu} \times \text{CTR}
+$$
+
+</Formula>
+
+CTR là tỉ lệ nhấp.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Nhà quảng cáo</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Giá đấu</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">CTR</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Giá đấu × CTR</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">B</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">\$0.75</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2%</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.5 xu</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">C</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">\$0.50</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2.5%</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.25 xu</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">A</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">\$1.00</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1%</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1 xu</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+A trả giá cao nhất nhưng xếp cuối vì ít người nhấp.
+
+**▸ HAI KHÓ KHĂN**
+
+- **Ngân sách:** mỗi nhà quảng cáo có ngân sách giới hạn, và không được tính quá ngân sách ngày. Vấn đề điều tiết: quảng cáo tốt trên truy vấn phổ biến có thể tiêu hết ngân sách rất nhanh, và ghi nhận nhấp chuột chậm nên có thể tạo ra nhấp miễn phí.
+- **CTR chưa biết:** mỗi cặp quảng cáo và truy vấn có CTR khác nhau, phải ước lượng bằng mô hình học máy. Từ đó có bài toán **khai thác và khám phá**: tiếp tục hiện quảng cáo đã biết CTR tốt, hay thử quảng cáo mới? Xem bài về bandit ở chương sau.
+
+**▸ PHÁT BIỂU ADWORDS**
+
+**Cho trước:**
+- Các giá đấu của nhà quảng cáo cho các truy vấn.
+- CTR của mỗi cặp nhà quảng cáo và truy vấn.
+- Ngân sách của mỗi nhà quảng cáo.
+- Giới hạn số quảng cáo hiển thị mỗi truy vấn.
+
+**Trả lời mỗi truy vấn bằng tập nhà quảng cáo sao cho:**
+- Kích thước tập không vượt giới hạn.
+- Mỗi nhà quảng cáo đã đấu giá truy vấn đó.
+- Mỗi nhà quảng cáo còn đủ ngân sách để trả nếu được nhấp.

@@ -1,0 +1,75 @@
+---
+title: "3. Bộ lọc Bloom"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ BÀI TOÁN LỌC**
+
+Cho danh sách khóa $S$. Xác định bộ nào của luồng có khóa thuộc $S$.
+
+Dùng bảng băm là cách hiển nhiên, nhưng không đủ bộ nhớ nếu $S$ quá lớn, hoặc phải xử lý hàng triệu bộ lọc trên cùng luồng.
+
+**Ví dụ:**
+- **Lọc thư rác:** 1 triệu user, mỗi user có 1000 địa chỉ tin cậy.
+- **Lọc nội dung:** user không thấy lại cùng một quảng cáo nhiều lần.
+
+**▸ CÁCH ĐẦU TIÊN: MỘT HÀM BĂM**
+
+- Tạo mảng $B$ gồm $n$ bit, ban đầu toàn 0.
+- Với mỗi $s \in S$, bật bit $B[h(s)] = 1$.
+- Với phần tử $a$ của luồng, cho qua nếu $B[h(a)] = 1$.
+
+Có **dương tính giả** vì phần tử rơi vào bit 1 chưa chắc thuộc $S$, nhưng **không có âm tính giả** vì phần tử rơi vào bit 0 chắc chắn không thuộc $S$.
+
+**Ví dụ:** $|S| = 1$ tỉ địa chỉ, $|B| = 1$ GB $= 8$ tỉ bit. Khoảng $1/8$ số bit được bật, nên khoảng $1/8$ địa chỉ ngoài $S$ lọt qua. Thật ra ít hơn một chút, vì nhiều địa chỉ có thể rơi vào cùng một bit.
+
+**▸ PHÂN TÍCH: PHI TIÊU VÀ BIA**
+
+Ném $m$ phi tiêu vào $n$ bia đều nhau. Xác suất một bia trúng ít nhất một phi tiêu:
+
+<Formula title="Xác suất một bit được bật">
+
+$$
+1 - \left( 1 - \frac{1}{n} \right)^{n (m / n)} \approx 1 - e^{-m / n}
+$$
+
+</Formula>
+
+Vì $(1 - 1/n)^n \to 1/e$ khi $n \to \infty$.
+
+**Ví dụ:** $m = 10^9$, $n = 8 \cdot 10^9$: tỉ lệ bit 1 là $1 - e^{-1/8} = 0.1175$, so với ước lượng thô $1/8 = 0.125$.
+
+**▸ BỘ LỌC BLOOM**
+
+Dùng $k$ hàm băm độc lập $h_1, \dots, h_k$ trên **cùng một mảng** $B$.
+
+- **Khởi tạo:** với mỗi $s \in S$ và mỗi $i$, bật $B[h_i(s)] = 1$.
+- **Khi chạy:** phần tử $x$ đến. Nếu $B[h_i(x)] = 1$ với mọi $i$ thì coi $x$ thuộc $S$. Nếu không thì bỏ.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Bloom với hai hàm băm: bật bit rồi kiểm tra ba phần tử](/content/MAT3565/C8/bloom-steps.svg)
+
+**▸ PHÂN TÍCH**
+
+Giờ có $km$ phi tiêu nên tỉ lệ bit 1 là $1 - e^{-km/n}$. Phần tử phải trúng bit 1 ở cả $k$ hàm:
+
+<Formula title="Xác suất dương tính giả của Bloom">
+
+$$
+\left( 1 - e^{-km/n} \right)^k
+$$
+
+</Formula>
+
+<Formula title="Số hàm băm tối ưu">
+
+$$
+k^* = \frac{n}{m} \ln 2
+$$
+
+</Formula>
+
+![Xác suất dương tính giả theo số hàm băm](/content/MAT3565/C8/bloom-k.svg)
+
+Với $m = 1$ tỉ, $n = 8$ tỉ: $k^* = 8 \ln 2 = 5.54 \approx 6$, sai số $(1 - e^{-3/4})^6 = 0.0216$.

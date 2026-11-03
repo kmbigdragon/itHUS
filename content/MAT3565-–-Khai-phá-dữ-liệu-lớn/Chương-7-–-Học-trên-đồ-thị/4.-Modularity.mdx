@@ -1,0 +1,54 @@
+---
+title: "4. Modularity"
+author: "Trần Đăng Quang Minh"
+---
+
+**Cộng đồng** là tập các đỉnh kết nối chặt với nhau. **Modularity** đo xem mạng được chia thành cộng đồng tốt đến đâu.
+
+**▸ ĐỊNH NGHĨA**
+
+Với cách chia $S$ thành các nhóm:
+
+<Formula title="Ý tưởng của modularity">
+
+$$
+Q \propto \sum_{s \in S} \big[ (\text{số cạnh trong nhóm } s) - (\text{kỳ vọng số cạnh trong nhóm } s) \big]
+$$
+
+</Formula>
+
+**Mô hình null:** tạo đồ thị $G'$ có cùng $n$ đỉnh, $m$ cạnh và cùng phân phối bậc, nhưng các cạnh nối ngẫu nhiên. Kỳ vọng số cạnh giữa hai đỉnh bậc $k_i$ và $k_j$ là:
+
+$$
+k_i \cdot \frac{k_j}{2m} = \frac{k_i k_j}{2m}
+$$
+
+Do đó:
+
+<Formula title="Modularity">
+
+$$
+Q(G, S) = \frac{1}{2m} \sum_{s \in S} \sum_{i \in s} \sum_{j \in s} \left( A_{ij} - \frac{k_i k_j}{2m} \right)
+$$
+
+</Formula>
+
+Trong đó $A_{ij} = 1$ nếu có cạnh $i - j$ và bằng 0 nếu không. Viết cách khác, với $\delta(c_i, c_j) = 1$ khi $i, j$ cùng cộng đồng:
+
+<Formula title="Modularity theo cộng đồng của từng đỉnh">
+
+$$
+Q = \frac{1}{2m} \sum_{ij} \left[ A_{ij} - \frac{k_i k_j}{2m} \right] \delta(c_i, c_j)
+$$
+
+</Formula>
+
+**▸ Ý NGHĨA GIÁ TRỊ**
+
+- $Q$ nằm trong khoảng $[-1, 1]$.
+- $Q$ dương nếu số cạnh trong nhóm nhiều hơn kỳ vọng.
+- $Q$ từ $0.3$ đến $0.7$ cho thấy có cấu trúc cộng đồng rõ rệt.
+
+![Modularity của ba cách chia cùng một đồ thị](/content/MAT3565/C7/modularity.svg)
+
+Ta có thể tìm cộng đồng bằng cách **tối đa hóa modularity**.

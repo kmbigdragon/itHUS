@@ -1,0 +1,74 @@
+---
+title: "3. MapReduce"
+author: "Trần Đăng Quang Minh"
+---
+
+**MapReduce** là một kiểu lập trình để viết chương trình song song dễ dàng, tự xử lý lỗi phần cứng và phần mềm, và quản lý được dữ liệu rất lớn. Các cài đặt: Hadoop, Spark, Flink và bản gốc của Google.
+
+**▸ BA BƯỚC CỦA MAPREDUCE**
+
+- **Bước 1: Map.** Áp dụng hàm Map do người dùng viết lên từng phần tử đầu vào. Kết quả là 0, 1 hoặc nhiều cặp khóa-giá trị.
+- **Bước 2: Nhóm theo khóa (group by key).** Hệ thống tự sắp xếp và gom các cặp cùng khóa, tạo ra các cặp khóa-(danh sách giá trị).
+- **Bước 3: Reduce.** Áp dụng hàm Reduce do người dùng viết lên từng khóa-(danh sách giá trị).
+
+Khung này luôn giữ nguyên, chỉ có Map và Reduce thay đổi theo bài toán.
+
+**▸ VÍ DỤ: ĐẾM TỪ**
+
+Cho một tệp văn bản rất lớn, đếm số lần xuất hiện của mỗi từ.
+
+```python
+map(key, value):
+    # key: tên tài liệu, value: nội dung tài liệu
+    for each word w in value:
+        emit(w, 1)
+
+reduce(key, values):
+    # key: một từ, values: danh sách các số đếm
+    result = 0
+    for each count v in values:
+        result += v
+    emit(key, result)
+```
+
+Hình dưới chạy thuật toán trên hai tài liệu ngắn:
+
+![Đếm từ qua ba bước Map, nhóm theo khóa và Reduce](/content/MAT3565/C1/wordcount.svg)
+
+Hàm phân hoạch quyết định mỗi khóa đi về reducer nào. Thường dùng $h(\text{key}) \bmod R$ với $R$ là số reducer, nên mọi cặp cùng khóa về cùng một reducer.
+
+**▸ HỆ THỐNG LO NHỮNG GÌ**
+
+Người lập trình chỉ viết Map và Reduce. Phần còn lại môi trường MapReduce tự lo:
+- Chia dữ liệu đầu vào.
+- Lập lịch chạy trên các máy.
+- Thực hiện bước nhóm theo khóa. Trong thực tế đây thường là nút thắt cổ chai.
+- Xử lý máy hỏng.
+- Quản lý liên lạc giữa các máy.
+
+**▸ KHI MÁY HỎNG**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Máy hỏng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Việc phải làm</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Máy chạy Map</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Các tác vụ Map đã xong hoặc đang chạy trên máy đó được đặt lại thành rảnh và chạy lại. Các máy Reduce được báo là tác vụ đã chuyển sang máy khác.</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Máy chạy Reduce</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Chỉ các tác vụ đang chạy được đặt lại và chạy lại.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ ⚠️ LƯU Ý**
+
+Tác vụ Map đã xong vẫn phải chạy lại vì kết quả của nó nằm trên đĩa cục bộ của máy hỏng. Còn kết quả của tác vụ Reduce đã xong nằm trên hệ tệp phân tán nên không mất.

@@ -1,0 +1,85 @@
+---
+title: "6. Thuật toán Edmonds-Karp"
+author: "Trần Đăng Quang Minh"
+---
+
+**Thuật toán đường tăng ngắn nhất (shortest augmenting path)**, do Dinitz (1970) và Edmonds, Karp (1972) đề xuất độc lập.
+
+Thuật toán giống hệt Ford-Fulkerson, chỉ khác là luôn chọn đường tăng **ít cạnh nhất**. Đường này tìm được bằng BFS, không cần dùng Dijkstra.
+
+Ưu điểm là thời gian chạy không phụ thuộc vào giá trị dung tích, nên là thuật toán đa thức mạnh.
+
+**▸ VÍ DỤ**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Vòng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Đường tăng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Số cạnh</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Cổ chai</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Giá trị luồng</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$s \to a \to c \to t$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$s \to a \to d \to t$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">6</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">10</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$s \to b \to d \to t$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">14</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$s \to b \to d \to c \to t$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">5</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">19</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Số cạnh của đường tăng không giảm qua các vòng. Đây chính là điều mà phân tích bên dưới dựa vào.
+
+**▸ ĐỒ THỊ LỚP**
+
+Cho đồ thị $G$ với đỉnh nguồn $s$. Gọi $\ell(v)$ là số cạnh của đường đi ngắn nhất từ $s$ đến $v$.
+
+**Đồ thị lớp (level graph)** $L_G$ là đồ thị con của $G$ chỉ gồm các cạnh $(v, w)$ có $\ell(w) = \ell(v) + 1$.
+
+- Tính được $L_G$ trong $O(m + n)$: chạy BFS rồi bỏ các cạnh ngang và cạnh đi lùi.
+- $P$ là đường đi ngắn nhất từ $s$ đến $v$ trong $G$ khi và chỉ khi $P$ là đường đi từ $s$ đến $v$ trong $L_G$.
+
+**▸ PHÂN TÍCH**
+
+**Bổ đề 1.** Độ dài của đường tăng ngắn nhất không bao giờ giảm.
+
+Lý do: sau khi tăng luồng dọc theo đường $P$ trong đồ thị lớp, các cạnh mới xuất hiện đều là cạnh đi ngược lớp. Đường đi qua cạnh đi ngược lớp thì dài hơn đường hiện tại, ít nhất là thêm 2 cạnh.
+
+**Bổ đề 2.** Sau tối đa $m$ lần tăng luồng, độ dài của đường tăng ngắn nhất tăng ngặt.
+
+Lý do: mỗi lần tăng, ít nhất một cạnh cổ chai bị xóa khỏi đồ thị lớp. Không có cạnh mới nào được thêm vào đồ thị lớp đến khi độ dài đường ngắn nhất tăng ngặt.
+
+**Định lý.** Thuật toán Edmonds-Karp chạy trong $O(m^2 n)$.
+- Mỗi lần tìm đường bằng BFS mất $O(m + n)$.
+- Mỗi độ dài $k$ có $O(m)$ lần tăng luồng (Bổ đề 2), và $1 \le k < n$ vì đường tăng là đường đơn. Vậy có $O(mn)$ lần tăng luồng.
+
+**▸ ⚠️ LƯU Ý**
+
+Trên một số mạng, cần đến $\Theta(mn)$ lần tăng luồng thật. Vì vậy muốn nhanh hơn thì phải giảm thời gian cho mỗi lần tăng, đó là ý tưởng của thuật toán Dinic ở bài sau.

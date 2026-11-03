@@ -1,0 +1,30 @@
+---
+title: "2. Hệ tệp phân tán"
+author: "Trần Đăng Quang Minh"
+---
+
+Dữ liệu lớn không nằm vừa một máy, nên ta tính toán trên cụm máy phổ thông. Việc này có ba khó khăn.
+
+**▸ KHÓ KHĂN KHI TÍNH TOÁN TRÊN CỤM MÁY**
+
+- **Phân phối tính toán:** làm sao chia việc cho nhiều máy, và làm sao để viết chương trình phân tán dễ dàng.
+- **Máy hỏng:** một máy chạy được khoảng 3 năm (1000 ngày). Có 1000 máy thì mỗi ngày hỏng khoảng 1 máy. Có 1 triệu máy thì mỗi ngày hỏng khoảng 1000 máy.
+- **Sao chép dữ liệu qua mạng rất lâu.**
+
+Cách giải quyết:
+- **Mang tính toán đến chỗ dữ liệu**, không mang dữ liệu đến chỗ tính toán.
+- **Lưu mỗi tệp thành nhiều bản** để không mất dữ liệu khi máy hỏng.
+
+Spark và Hadoop làm theo hai ý này. Chúng có hệ tệp phân tán (GFS của Google, HDFS của Hadoop) và mô hình lập trình (MapReduce, Spark).
+
+**▸ HỆ TỆP PHÂN TÁN**
+
+Dùng cho các tệp rất lớn (hàng trăm GB đến TB), ít khi sửa tại chỗ, chủ yếu là đọc và ghi thêm vào cuối. Gồm ba thành phần:
+
+- **Máy chủ chunk (chunk server):** tệp được chia thành các chunk liên tiếp, mỗi chunk thường 16-64 MB. Mỗi chunk được sao thành 2 hoặc 3 bản, cố gắng đặt ở các rack khác nhau.
+- **Master node** (trong HDFS gọi là Name Node): lưu metadata, tức chunk nào nằm ở đâu.
+- **Thư viện client:** hỏi master để biết vị trí chunk, sau đó kết nối thẳng đến máy chủ chunk để đọc.
+
+![Tệp được chia thành chunk, sao lưu trên nhiều máy, client hỏi master rồi đọc trực tiếp](/content/MAT3565/C1/chunk-servers.svg)
+
+Máy chủ chunk đồng thời là máy tính toán. Nhờ đó tính toán chạy ngay trên máy có dữ liệu.

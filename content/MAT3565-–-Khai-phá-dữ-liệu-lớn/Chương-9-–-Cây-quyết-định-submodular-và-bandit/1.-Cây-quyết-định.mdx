@@ -1,0 +1,87 @@
+---
+title: "1. Cây quyết định"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ VÌ SAO VẪN HỌC CÂY QUYẾT ĐỊNH**
+
+Hai thí nghiệm cho thấy dữ liệu nhiều rất quan trọng (Banko và Brill 2001; Google 2017): khi dữ liệu lớn, chênh lệch giữa các mô hình giảm đi, còn mô hình phức tạp thì tận dụng được dữ liệu tốt hơn nữa.
+
+Dù vậy, mô hình truyền thống vẫn quan trọng:
+- Trong một số bài toán, chúng tốt hơn học sâu.
+- Mô hình sâu khó mở rộng và cần nhiều dữ liệu. Mô hình truyền thống cho phép đưa kiến thức có sẵn vào dễ hơn.
+
+Cây quyết định có từ những năm 1980 (Breiman 1984, ID3, C4.5), và cây tăng cường, rừng ngẫu nhiên vẫn là lựa chọn hàng đầu cho dữ liệu dạng bảng.
+
+**▸ BÀI TOÁN**
+
+- $d$ thuộc tính $X^{(1)}, \dots, X^{(d)}$, mỗi thuộc tính có thể là phân loại hoặc số.
+- $Y$ là biến đầu ra: phân loại thì là bài toán **phân loại**, số thì là **hồi quy**.
+- Dữ liệu $D$ gồm $n$ mẫu $(x_i, y_i)$.
+
+**Cây quyết định** là kế hoạch dạng cây: mỗi nút trong kiểm tra một thuộc tính, mỗi lá đưa ra dự đoán. Ở đây xét phép tách nhị phân $X^{(j)} \lt v$.
+
+**Dự đoán:** thả mẫu $x_i$ từ gốc xuống đến lá, rồi lấy giá trị lưu ở lá.
+
+![Cây quyết định độ sâu 2 và các vùng nó chia trên mặt phẳng](/content/MAT3565/C9/dt-tree.svg)
+
+**▸ XÂY CÂY**
+
+Tại mỗi nút $G$, với dữ liệu $D_G$ đến được nút đó, cần trả lời 3 câu hỏi. Mỗi lần xây cây cần ít nhất một lượt đọc dữ liệu.
+
+**(1) Tách thế nào?** Chọn thuộc tính và giá trị làm tốt nhất một tiêu chí.
+
+**Hồi quy:** chọn phép tách tạo ra $D, D_L, D_R$ làm giảm phương sai nhiều nhất.
+
+<Formula title="Tiêu chí tách cho hồi quy">
+
+$$
+|D| \cdot \text{Var}(D) - \left( |D_L| \cdot \text{Var}(D_L) + |D_R| \cdot \text{Var}(D_R) \right)
+$$
+
+</Formula>
+
+![Tính độ giảm phương sai cho từng ngưỡng](/content/MAT3565/C9/dt-regression.svg)
+
+**Phân loại:** dùng **độ lợi thông tin**, đo xem $X$ cho biết bao nhiêu về $Y$.
+
+<Formula title="Entropy">
+
+$$
+H(Y) = -\sum_{j} P(Y = y_j) \log_2 P(Y = y_j)
+$$
+
+</Formula>
+
+<Formula title="Entropy có điều kiện">
+
+$$
+H(Y \mid X) = \sum_{j} P(X = v_j) \, H(Y \mid X = v_j)
+$$
+
+</Formula>
+
+<Formula title="Độ lợi thông tin">
+
+$$
+IG(Y \mid X) = H(Y) - H(Y \mid X)
+$$
+
+</Formula>
+
+- Entropy cao: phân phối đều, gần như không đoán được gì.
+- Entropy thấp: phân phối tập trung vào vài giá trị.
+
+![Tính độ lợi thông tin qua bốn bước](/content/MAT3565/C9/ig-steps.svg)
+
+**(2) Khi nào dừng?** Có nhiều cách, thường dùng:
+- Lá đã đủ "thuần": phương sai nhỏ hơn ngưỡng.
+- Số mẫu ở lá quá ít.
+
+**(3) Dự đoán thế nào?**
+- **Hồi quy:** trung bình các $y_i$ ở lá, hoặc xây hồi quy tuyến tính trên các mẫu ở lá.
+- **Phân loại:** $y_i$ phổ biến nhất ở lá.
+
+**▸ NHẬN XÉT**
+
+Cây quyết định là công cụ khai phá dữ liệu phổ biến nhất vì dễ diễn giải, dễ cài đặt, dễ dùng, tính toán rẻ, làm được cả phân loại và hồi quy. Nhược điểm là dễ quá khớp, nhưng có thể khắc phục bằng các phương pháp kết hợp ở bài sau.

@@ -1,0 +1,54 @@
+---
+title: "5. Thuật toán PCY"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ Ý TƯỞNG**
+
+Ở lượt 1 của A-Priori, phần lớn bộ nhớ bỏ không vì chỉ đếm từng item. **PCY** dùng phần trống đó để giảm số cặp phải đếm ở lượt 2.
+
+![Cách dùng bộ nhớ của A-Priori và PCY qua hai lượt](/content/MAT3565/C2/memory.svg)
+
+**▸ THUẬT TOÁN**
+
+**Lượt 1:** ngoài đếm item, giữ thêm một bảng băm. Mỗi bucket chỉ lưu số đếm, không lưu các cặp.
+
+```python
+for each basket:
+    for each item in basket:
+        add 1 to item's count
+    # phần mới của PCY
+    for each pair of items in basket:
+        hash the pair to a bucket
+        add 1 to the count of that bucket
+```
+
+**Giữa hai lượt:** thay bảng băm bằng **bitmap**. Bit bằng 1 nếu bucket có số đếm ít nhất $s$ (bucket phổ biến). Mỗi số đếm 4 byte đổi thành 1 bit, nên bitmap chỉ chiếm $1/32$ bộ nhớ.
+
+**Lượt 2:** chỉ đếm cặp $\{i, j\}$ thỏa cả hai điều kiện:
+
+<Formula title="Điều kiện để là cặp ứng viên trong PCY">
+
+$$
+i, j \text{ đều phổ biến} \quad \text{và} \quad \text{bit}[h(i, j)] = 1
+$$
+
+</Formula>
+
+**▸ VÌ SAO ĐÚNG**
+
+- Bucket chứa một cặp phổ biến thì chắc chắn là bucket phổ biến.
+- Bucket phổ biến chưa chắc chứa cặp phổ biến, vì nhiều cặp ít gặp có thể cộng dồn lại.
+- Bucket có tổng nhỏ hơn $s$ thì không có cặp nào trong đó phổ biến. Các cặp này bị loại, kể cả khi cả hai item đều phổ biến.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+Dùng 8 giỏ của bài trước (có $B_3 = \{m, c, b, n\}$), $s = 3$, 5 bucket.
+
+![PCY qua ba bước: băm cặp vào bucket, đổi sang bitmap, đếm cặp ứng viên](/content/MAT3565/C2/pcy-steps.svg)
+
+Kết quả: PCY chỉ phải đếm 5 cặp ở lượt 2, trong khi A-Priori phải đếm cả 6. Cặp $mj$ bị loại ngay nhờ bitmap. Cặp $bj$ vẫn phải đếm dù cuối cùng không phổ biến, vì nó rơi vào bucket 2 có tổng lớn.
+
+**▸ MỞ RỘNG**
+
+Sách MMDS (mục 6.4) còn có hai biến thể tiếp theo là **Multistage** và **Multihash**.

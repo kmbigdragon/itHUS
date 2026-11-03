@@ -1,0 +1,85 @@
+---
+title: "3. Bài toán phủ, đóng gói và phân hoạch"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ VÍ DỤ: BÀI TOÁN PHỦ TẬP HỢP**
+
+Có $M = \{1, \dots, m\}$ là các khu vực, $N = \{1, \dots, n\}$ là các vị trí có thể đặt trạm cấp cứu. $S_j \subseteq M$ là các khu vực mà trạm $j$ phục vụ được trong 8 phút, $c_j$ là chi phí đặt trạm $j$. Cần đặt các trạm sao cho mọi khu vực đều được phục vụ và chi phí nhỏ nhất.
+
+**Dữ liệu cụ thể:** $M = \{1, \dots, 5\}$, $N = \{1, \dots, 6\}$, $c_j = 1$, và
+$$
+S_1 = \{1, 2\}, \ S_2 = \{1, 3, 5\}, \ S_3 = \{2, 4, 5\}, \ S_4 = \{3\}, \ S_5 = \{1\}, \ S_6 = \{4, 5\}
+$$
+
+Ta lập **ma trận liên thuộc** $A$, với $a_{ij} = 1$ nếu khu vực $i$ thuộc $S_j$:
+$$
+A =
+\begin{bmatrix}
+1 & 1 & 0 & 0 & 1 & 0 \\
+1 & 0 & 1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 1 & 0 & 0 \\
+0 & 0 & 1 & 0 & 0 & 1 \\
+0 & 1 & 1 & 0 & 0 & 1
+\end{bmatrix}
+$$
+
+**Biến:** $x_j = 1$ nếu đặt trạm tại $j$, ngược lại $x_j = 0$.
+
+**Mô hình:**
+$$
+\begin{align*}
+\min \quad & \sum_{j=1}^{n} c_j x_j \\
+\text{s.t.} \quad & \sum_{j=1}^{n} a_{ij} x_j \ge 1, \quad i = 1, \dots, m \\
+& x \in \{0, 1\}^n
+\end{align*}
+$$
+
+**Đáp án:** Đặt 2 trạm tại vị trí 2 và 3, vì $S_2 \cup S_3 = M$.
+
+**▸ BA BÀI TOÁN TẬP HỢP**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold"></th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Phủ (Set Covering)</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Đóng gói (Set Packing)</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Phân hoạch (Set Partitioning)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Ý nghĩa</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Phủ mỗi phần tử ít nhất 1 lần</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Phủ càng nhiều càng tốt, không chồng lấn</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Phủ mỗi phần tử đúng 1 lần</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Mục tiêu</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\min c^\top x$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\max c^\top x$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\max$ hoặc $\min c^\top x$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Ràng buộc</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$Ax \ge \mathbf{1}$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$Ax \le \mathbf{1}$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$Ax = \mathbf{1}$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Biến</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$x \in \{0, 1\}^n$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$x \in \{0, 1\}^n$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$x \in \{0, 1\}^n$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Trong cả ba, mọi phần tử của ma trận $A$ đều là 0 hoặc 1, và vế phải đều bằng 1.
+
+**Ứng dụng:**
+- **Xếp lịch tổ bay:** $M$ là các chặng bay cần phủ, $N$ là các lịch bay.
+- **Định tuyến xe:** $M$ là khách hàng, $N$ là các tuyến đường.

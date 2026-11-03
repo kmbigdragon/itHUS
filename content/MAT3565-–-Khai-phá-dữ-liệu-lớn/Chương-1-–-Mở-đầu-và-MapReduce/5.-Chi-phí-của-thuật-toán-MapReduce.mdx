@@ -1,0 +1,50 @@
+---
+title: "5. Chi phí của thuật toán MapReduce"
+author: "Trần Đăng Quang Minh"
+---
+
+Với MapReduce, ký hiệu $O$ lớn không có ích lắm vì lúc nào cũng có thể thêm máy. Ta đo chi phí theo ba đại lượng:
+
+- **Chi phí truyền thông:** tổng I/O của mọi tiến trình.
+- **Chi phí truyền thông đã trôi qua (elapsed):** I/O lớn nhất dọc theo một đường đi bất kỳ.
+- **Chi phí tính toán (elapsed):** tương tự, nhưng chỉ tính thời gian chạy của tiến trình.
+
+**▸ CÔNG THỨC CHO THUẬT TOÁN MAPREDUCE**
+
+<Formula title="Chi phí truyền thông">
+
+$$
+\text{Comm} = \text{input} + 2 \cdot \sum (\text{file từ Map sang Reduce}) + \sum (\text{output của Reduce})
+$$
+
+</Formula>
+
+Có hệ số 2 vì mỗi tệp trung gian được tính hai lần: một lần Map ghi ra, một lần Reduce đọc vào.
+
+<Formula title="Chi phí truyền thông đã trôi qua">
+
+$$
+\text{Elapsed} = \max_{\text{Map}} (\text{input} + \text{output}) + \max_{\text{Reduce}} (\text{input} + \text{output})
+$$
+
+</Formula>
+
+**▸ Ý NGHĨA**
+
+- Thường chỉ có một trong hai chi phí I/O và tính toán là lớn hẳn, nên có thể bỏ qua cái còn lại.
+- **Tổng chi phí** là số tiền bạn trả khi thuê máy trên đám mây.
+- **Chi phí đã trôi qua** là thời gian thực phải chờ khi chạy song song.
+
+**▸ VÍ DỤ: CHI PHÍ PHÉP NỐI**
+
+Đặt giới hạn $s$ cho lượng đầu vào hoặc đầu ra của mỗi tiến trình. $s$ có thể là lượng vừa bộ nhớ chính hoặc vừa đĩa cục bộ.
+
+<Formula title="Chi phí nối R và S">
+
+$$
+\text{Tổng} = O(|R| + |S| + |R \bowtie S|), \qquad \text{Elapsed} = O(s)
+$$
+
+</Formula>
+
+Ta chọn $k$ và số tiến trình Map sao cho không vượt giới hạn $s$. Nếu có chỉ mục phù hợp, chi phí tính toán tuyến tính theo đầu vào cộng đầu ra, nên cũng cỡ chi phí truyền thông.

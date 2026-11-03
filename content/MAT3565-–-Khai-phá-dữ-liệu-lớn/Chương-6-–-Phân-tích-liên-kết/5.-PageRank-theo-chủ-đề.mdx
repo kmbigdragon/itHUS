@@ -1,0 +1,43 @@
+---
+title: "5. PageRank theo chủ đề"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ Ý TƯỞNG**
+
+PageRank thường đo độ quan trọng chung. Ví dụ truy vấn "Trojan" cần kết quả khác nhau nếu bạn quan tâm đến thể thao, lịch sử hay bảo mật. **PageRank theo chủ đề** đánh giá trang theo mức độ gần với một chủ đề.
+
+Khi dịch chuyển, bước ngẫu nhiên không nhảy đến trang bất kỳ mà chỉ nhảy vào **tập dịch chuyển** $S$ gồm các trang liên quan đến chủ đề. Mỗi tập $S$ cho một vector $r_S$.
+
+<Formula title="PageRank theo chủ đề">
+
+$$
+A_{ij} = \begin{cases} \beta M_{ij} + \dfrac{1 - \beta}{|S|} & \text{nếu } i \in S \\[2mm] \beta M_{ij} & \text{nếu } i \notin S \end{cases}
+$$
+
+</Formula>
+
+$A$ vẫn là ma trận ngẫu nhiên theo cột. Ta tính như PageRank thường: nhân với $M$, cộng thêm $(1 - \beta)/|S|$ cho các trang trong $S$. Cũng có thể gán trọng số khác nhau cho các trang trong $S$.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Lặp PageRank theo chủ đề và ảnh hưởng của tập S và hệ số beta](/content/MAT3565/C6/topic-pr.svg)
+
+**▸ CHỌN CHỦ ĐỀ**
+
+Có thể tính sẵn PageRank cho 16 chủ đề cấp cao của DMOZ như nghệ thuật, kinh doanh, thể thao. Khi truy vấn thì chọn theo:
+- User chọn từ danh sách.
+- Phân loại truy vấn theo chủ đề.
+- Ngữ cảnh truy vấn, ví dụ trang đang đọc, hoặc lịch sử: "bóng rổ" rồi đến "Jordan".
+- Bookmark của user.
+
+**▸ BƯỚC NGẪU NHIÊN CÓ KHỞI ĐỘNG LẠI**
+
+Trường hợp đặc biệt: $S$ chỉ có **một đỉnh**. Kết quả đo độ gần của mọi đỉnh với đỉnh đó.
+
+Một độ đo độ gần tốt phải tính đến:
+- Nhiều kết nối, nhiều đường đi.
+- Kết nối trực tiếp và gián tiếp.
+- Bậc của đỉnh.
+
+Đường đi ngắn nhất không tốt vì bỏ qua các đỉnh bậc 1. Luồng cực đại không tốt vì không phạt đường dài. Bước ngẫu nhiên có khởi động lại thỏa cả bốn yêu cầu.

@@ -1,0 +1,32 @@
+---
+title: "2. Bagging và rừng ngẫu nhiên"
+author: "Trần Đăng Quang Minh"
+---
+
+**Ý tưởng kết hợp:** học nhiều cây rồi gộp dự đoán. Galton năm 1906: 787 người đoán cân nặng một con bò, trung bình là 1197 pound, thật là 1198 pound.
+
+**▸ BAGGING**
+
+**Bagging** (bootstrap aggregation) học nhiều cây song song trên các mẫu độc lập của dữ liệu:
+
+- **Bước 1: Lấy mẫu bootstrap.** Từ $D$ có $n$ điểm, tạo nhiều tập $D'$ có $n$ điểm bằng cách **lấy mẫu có hoàn lại**. Khoảng 63% điểm là khác nhau, 37% là trùng.
+- **Bước 2: Học song song.** Học một cây độc lập trên mỗi mẫu.
+- **Bước 3: Gộp.** Lấy trung bình (hồi quy) hoặc đa số (phân loại).
+
+![Bagging qua ba bước trên 10 điểm với ba cây một tầng](/content/MAT3565/C9/bagging-steps.svg)
+
+**▸ RỪNG NGẪU NHIÊN**
+
+Cây quyết định là tham lam. Nếu có một thuộc tính dự đoán rất mạnh thì cây nào cũng chọn nó, nên các cây giống nhau và có tương quan. Trong khi đó kết hợp tốt nhất khi các bộ dự đoán độc lập.
+
+**Rừng ngẫu nhiên:** học như bagging, nhưng tại mỗi lần tách, chỉ xét một tập con ngẫu nhiên các thuộc tính (**feature bagging**).
+
+<Formula title="Số thuộc tính xét tại mỗi lần tách, khi có p thuộc tính">
+
+$$
+\sqrt{p}
+$$
+
+</Formula>
+
+Nhờ đó tương quan giữa các cây bị phá vỡ. Rừng ngẫu nhiên cho kết quả rất tốt trong nhiều bài toán phân loại.

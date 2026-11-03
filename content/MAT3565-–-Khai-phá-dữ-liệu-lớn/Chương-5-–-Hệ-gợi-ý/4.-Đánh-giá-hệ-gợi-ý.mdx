@@ -1,0 +1,48 @@
+---
+title: "4. Đánh giá hệ gợi ý"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ CÁCH ĐÁNH GIÁ**
+
+Giấu một phần đánh giá đã biết làm tập kiểm tra, rồi so dự đoán với giá trị thật.
+
+<Formula title="Căn sai số bình phương trung bình (RMSE)">
+
+$$
+\text{RMSE} = \sqrt{\frac{1}{N} \sum_{(x, i)} (\hat{r}_{xi} - r_{xi})^2}
+$$
+
+</Formula>
+
+$\hat{r}_{xi}$ là dự đoán, $r_{xi}$ là đánh giá thật, $N$ là số điểm so sánh.
+
+Các độ đo khác:
+- **Độ chính xác ở top 10:** tỉ lệ item liên quan trong top 10.
+- **Độ phủ:** số item hoặc user mà hệ thống dự đoán được.
+- **Độ chuẩn xác (mô hình 0/1):** tỉ lệ dự đoán đúng.
+- **ROC:** đường đánh đổi giữa dương tính giả và âm tính giả.
+
+**▸ ⚠️ LƯU Ý**
+
+Chỉ tập trung vào độ chính xác đôi khi là sai hướng, vì còn sự đa dạng, ngữ cảnh và thứ tự gợi ý. Ngoài ra ta chỉ cần dự đoán đúng các đánh giá cao, trong khi RMSE có thể phạt một phương pháp tốt với đánh giá cao nhưng kém với phần còn lại.
+
+**▸ ĐỘ PHỨC TẠP**
+
+Bước tốn kém là tìm $k$ khách hàng giống nhất, mất $O(|X|)$. Không thể làm lúc chạy, nên tính trước. Tính trước kiểu ngây thơ mất $O(k \cdot |X|)$. Có thể tăng tốc bằng những gì đã học:
+- Tìm láng giềng trong không gian nhiều chiều (LSH).
+- Phân cụm.
+- Giảm chiều.
+
+**▸ MẸO THỰC TẾ**
+
+- Dùng hết dữ liệu. Đừng giảm dữ liệu chỉ để chạy được thuật toán phức tạp, vì phương pháp đơn giản trên dữ liệu lớn thường tốt nhất.
+- Thêm dữ liệu, ví dụ thêm thể loại phim từ IMDB. Nhiều dữ liệu thắng thuật toán tốt hơn.
+
+**▸ NETFLIX PRIZE**
+
+- **Huấn luyện:** 100 triệu đánh giá, 480000 user, 17770 phim, trong 6 năm (2000-2005).
+- **Kiểm tra:** vài đánh giá cuối của mỗi user, khoảng 2.8 triệu.
+- **Tiêu chí:** RMSE. Hệ thống Cinematch của Netflix có RMSE $0.9514$.
+- **Giải thưởng:** 1 triệu đô cho người cải thiện được $10\%$. Có hơn 2700 đội tham gia.
+- **Đề:** dữ liệu giữ lại gồm 1.5 triệu đánh giá để hiện điểm trên bảng xếp hạng và 1.5 triệu đánh giá chỉ Netflix biết, dùng để quyết định người thắng.

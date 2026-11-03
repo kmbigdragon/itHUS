@@ -1,0 +1,90 @@
+---
+title: "1. Mô hình hệ gợi ý"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ VÌ SAO CẦN HỆ GỢI Ý**
+
+Cửa hàng truyền thống có kệ hàng giới hạn, nên chỉ trưng những món bán chạy. Trên web, chi phí giới thiệu một sản phẩm gần như bằng 0, nên số lựa chọn rất nhiều (hiện tượng **đuôi dài**). Càng nhiều lựa chọn thì càng cần bộ lọc tốt.
+
+Các loại gợi ý:
+- **Không cá nhân hóa:** do biên tập viên chọn, hoặc thống kê đơn giản như top 10, phổ biến nhất, mới tải lên.
+- **Cá nhân hóa:** dành riêng cho từng user, ví dụ Amazon, Netflix, Youtube. Đây là nội dung của chương này.
+
+**▸ MÔ HÌNH**
+
+- $X$: tập khách hàng.
+- $S$: tập item.
+- $R$: tập đánh giá, có thứ tự toàn phần, ví dụ 1-5 sao hoặc số thực trong $[0, 1]$.
+
+<Formula title="Hàm tiện ích">
+
+$$
+u : X \times S \to R
+$$
+
+</Formula>
+
+Hàm $u$ cho bởi **ma trận tiện ích**: hàng là user, cột là item, ô là đánh giá.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold"></th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Avatar</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">LOTR</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Matrix</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Pirates</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Alice</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Bob</td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.5</td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.3</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Carol</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">David</td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center"></td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.4</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ BA VẤN ĐỀ CHÍNH**
+
+- **Thu thập đánh giá đã biết:**
+  - Trực tiếp: hỏi user. Trong thực tế không hiệu quả vì user ngại bị làm phiền. Có thể trả tiền để người ta gán nhãn.
+  - Gián tiếp: suy ra từ hành động, ví dụ đã mua thì coi là đánh giá cao. Nhưng khó biết đánh giá thấp.
+- **Ngoại suy đánh giá chưa biết:** chủ yếu quan tâm các đánh giá cao, vì ta muốn biết user thích gì, không phải không thích gì.
+- **Đánh giá phương pháp:** đo độ tốt của dự đoán.
+
+Khó khăn của ngoại suy:
+- **Ma trận thưa:** đa số user chưa đánh giá đa số item.
+- **Khởi động lạnh:** item mới chưa có đánh giá, user mới chưa có lịch sử.
+
+**▸ BA CÁCH TIẾP CẬN**
+
+- Dựa trên nội dung.
+- Lọc cộng tác.
+- Yếu tố ẩn.

@@ -1,0 +1,75 @@
+---
+title: "1. Quy hoạch nguyên"
+author: "Trần Đăng Quang Minh"
+---
+
+Nhiều đại lượng trong thực tế không chia nhỏ được, ví dụ số xe, số máy, hay có mở tuyến đường hay không. Khi đó các biến phải nhận giá trị nguyên.
+
+**▸ CÁC DẠNG BÀI TOÁN**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Tên</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Mục tiêu</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Ràng buộc</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Biến</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Quy hoạch tuyến tính (LP)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\max c^\top x$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$Ax \le b$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$x \ge 0$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Quy hoạch nguyên (ILP)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\max c^\top x$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$Ax \le b$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$x \ge 0$, nguyên</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Quy hoạch nhị phân (BIP)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\max c^\top x$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$Ax \le b$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$x \in \{0, 1\}^n$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Quy hoạch nguyên hỗn hợp (MILP)</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\max c^\top x + h^\top y$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$Ax + Gy \le b$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$x \ge 0$; $y \ge 0$, nguyên</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ LÀM TRÒN KHÔNG GIẢI QUYẾT ĐƯỢC**
+
+Cách đầu tiên ai cũng nghĩ đến là giải **bài toán nới lỏng (relaxation)**, tức là bỏ điều kiện nguyên, rồi làm tròn. Cách này không dùng được:
+- Trong $\mathbb{R}^n$ có $2^n$ cách làm tròn lên hoặc xuống.
+- Nghiệm làm tròn có thể ra khỏi miền chấp nhận được.
+- Nghiệm nguyên tối ưu có thể ở rất xa nghiệm của bài toán nới lỏng. Nó có thể nằm bên trong miền chứ không ở đỉnh.
+
+**▸ VÍ DỤ**
+
+$$
+\begin{align*}
+\max \quad & 100x_1 + 64x_2 \\
+\text{s.t.} \quad & 50x_1 + 31x_2 \le 250 \\
+& 3x_1 - 2x_2 \ge -4 \\
+& x_1, x_2 \in \mathbb{Z}_+
+\end{align*}
+$$
+
+- Nghiệm LP là $\left(\dfrac{376}{193}, \dfrac{950}{193}\right) \approx (1.95, 4.92)$, với giá trị khoảng $509.84$.
+- Làm tròn lên thành $(2, 5)$ thì vi phạm ràng buộc đầu tiên, vì $50 \cdot 2 + 31 \cdot 5 = 255 > 250$.
+- Nghiệm nguyên tối ưu là $(5, 0)$ với giá trị $500$, rất xa nghiệm LP.
+
+**▸ HAI CÁCH GIẢI CHÍNH**
+
+Hai phương pháp được học ở chương sau:
+- **Mặt phẳng cắt (cutting planes):** thêm dần ràng buộc để cắt bỏ nghiệm không nguyên.
+- **Nhánh cận (branch and bound):** chia miền thành các miền con và dùng cận để loại bớt.

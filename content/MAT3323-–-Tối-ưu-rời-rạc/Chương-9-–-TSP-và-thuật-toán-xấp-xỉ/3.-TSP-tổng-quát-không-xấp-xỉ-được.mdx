@@ -1,0 +1,37 @@
+---
+title: "3. TSP tổng quát không xấp xỉ được"
+author: "Trần Đăng Quang Minh"
+---
+
+**Định lý.** Nếu $P \ne NP$ thì với mọi hằng số $\rho \ge 1$, không có thuật toán đa thức nào là $\rho$-xấp xỉ cho TSP tổng quát.
+
+**Chứng minh.** Giả sử có thuật toán $\rho$-xấp xỉ $A$. Ta dùng $A$ để giải bài toán chu trình Hamilton, là bài toán NP-đầy đủ.
+
+Cho đồ thị $G = (V, E)$. Tạo đồ thị đầy đủ $G'$ trên cùng tập đỉnh với chi phí
+$$
+c(u, v) =
+\begin{cases}
+1 & \text{if } (u, v) \in E \\
+\rho |V| + 1 & \text{otherwise}
+\end{cases}
+$$
+
+Việc dựng $G'$ mất thời gian đa thức theo $|V|$ và $|E|$.
+
+- Nếu $G$ có chu trình Hamilton thì $G'$ có chu trình chi phí đúng bằng $|V|$.
+- Nếu $G$ không có chu trình Hamilton thì mọi chu trình trong $G'$ đều dùng ít nhất một cạnh không thuộc $E$, nên có chi phí ít nhất
+$$
+(\rho |V| + 1) + (|V| - 1) = (\rho + 1)|V| > \rho |V|
+$$
+
+Như vậy có một khoảng cách lớn giữa hai trường hợp. Chạy $A$ trên $G'$:
+- Nếu $G$ có chu trình Hamilton thì giá trị tối ưu là $|V|$, nên $A$ trả về chu trình chi phí không quá $\rho |V|$. Chu trình này chỉ có thể dùng các cạnh của $E$.
+- Nếu không thì $A$ trả về chu trình chi phí lớn hơn $\rho |V|$.
+
+Tức là $A$ giải được bài toán chu trình Hamilton trong thời gian đa thức. Điều này mâu thuẫn với $P \ne NP$.
+
+**▸ ⚠️ LƯU Ý**
+
+Đây là phương pháp chung để chứng minh một bài toán không xấp xỉ được: biến các trường hợp "có" và "không" của bài toán NP-đầy đủ thành các trường hợp có giá trị tối ưu chênh lệch nhau hơn $\rho$ lần.
+
+Trong chứng minh trên, chi phí $\rho |V| + 1$ vi phạm bất đẳng thức tam giác. Với TSP metric thì cách này không dùng được, và thực tế bài toán đó xấp xỉ được, như các bài sau.

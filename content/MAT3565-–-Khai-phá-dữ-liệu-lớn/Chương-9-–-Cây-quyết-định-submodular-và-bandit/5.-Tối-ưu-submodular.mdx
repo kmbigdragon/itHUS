@@ -1,0 +1,95 @@
+---
+title: "5. Tối ưu submodular"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ BÀI TOÁN: GỢI Ý ĐA DẠNG**
+
+Gợi ý các bài báo giống nhau là trải nghiệm tệ. Lại không biết chắc user cần gì, nên không nên "bỏ hết trứng vào một giỏ". Ta muốn tối ưu **độ đa dạng** trực tiếp.
+
+**Ý tưởng:** biểu diễn độ đa dạng bằng bài toán phủ: chọn các bài báo sao cho phủ được nhiều **khái niệm** nhất, ví dụ các thực thể có tên.
+
+Mỗi tài liệu $d$ phủ một tập khái niệm $X_d$. Với $A \subseteq D$:
+
+<Formula title="Hàm phủ">
+
+$$
+F(A) = \left| \bigcup_{d \in A} X_d \right|, \qquad \max_{|A| \le k} F(A)
+$$
+
+</Formula>
+
+Đây là bài toán **phủ tối đa**, NP-đầy đủ.
+
+**▸ THUẬT TOÁN THAM LAM**
+
+- **Bước 1:** bắt đầu với $A_0 = \{\}$.
+- **Bước 2:** với $i = 1, \dots, k$, chọn tài liệu có lợi ích biên lớn nhất, rồi đặt $A_i = A_{i-1} \cup \{d\}$.
+
+<Formula title="Lợi ích biên">
+
+$$
+\Delta(d \mid A) = F(A \cup \{d\}) - F(A)
+$$
+
+</Formula>
+
+![Chọn tài liệu tham lam theo lợi ích biên](/content/MAT3565/C9/cover-greedy.svg)
+
+Tham lam không phải lúc nào cũng tối ưu:
+
+![Ví dụ thuật toán tham lam không đạt tối ưu](/content/MAT3565/C9/greedy-fail.svg)
+
+**▸ ĐẢM BẢO CỦA THAM LAM**
+
+Theo Nemhauser, Fisher, Wolsey (1978):
+
+<Formula title="Đảm bảo của tham lam">
+
+$$
+F(A) \ge \left( 1 - \frac{1}{e} \right) \text{OPT} \approx 0.63 \, \text{OPT}
+$$
+
+</Formula>
+
+Với điều kiện $F$ có hai tính chất:
+- **Đơn điệu:** nếu $A \subseteq B$ thì $F(A) \le F(B)$, và $F(\{\}) = 0$.
+- **Submodular.**
+
+**▸ HÀM SUBMODULAR**
+
+<Formula title="Định nghĩa">
+
+$$
+F(A) + F(B) \ge F(A \cup B) + F(A \cap B)
+$$
+
+</Formula>
+
+Định nghĩa tương đương, **lợi ích giảm dần**: thêm một phần tử vào tập nhỏ có lợi hơn thêm vào tập lớn.
+
+<Formula title="Lợi ích giảm dần, với mọi A thuộc B">
+
+$$
+F(A \cup \{d\}) - F(A) \ge F(B \cup \{d\}) - F(B)
+$$
+
+</Formula>
+
+Hàm phủ $F(A) = |\bigcup_{k \in A} X_k|$ là submodular. Submodular là phiên bản rời rạc của hàm lõm.
+
+**Tính chất:** tổ hợp tuyến tính không âm của các hàm submodular là submodular:
+
+<Formula title="Đóng với tổ hợp tuyến tính không âm">
+
+$$
+F(A) = \sum_i \lambda_i F_i(A), \quad \lambda_i \gt 0
+$$
+
+</Formula>
+
+Rất hữu ích: trung bình các hàm submodular, hoặc tối ưu nhiều tiêu chí, vẫn là submodular.
+
+![Tham lam so với tối ưu vét cạn và cận 1 trừ 1 trên e](/content/MAT3565/C9/greedy-bound.svg)
+
+Đường tham lam cong xuống, đó là lợi ích giảm dần. Trên bộ dữ liệu ngẫu nhiên này, tham lam luôn gần tối ưu và trên cận $(1 - 1/e)$.
