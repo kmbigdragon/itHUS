@@ -1,0 +1,53 @@
+---
+title: "2. Gradient"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ CÔNG THỨC**
+
+Gradient là vector gồm đạo hàm theo hai chiều. Nó chỉ về phía mức xám tăng nhanh nhất, tức vuông góc với đường biên.
+
+<Formula title="Gradient">
+
+$$
+\nabla f = \begin{pmatrix} G_x \\ G_y \end{pmatrix}, \qquad G_x = f(x + 1, y) - f(x, y), \qquad G_y = f(x, y + 1) - f(x, y)
+$$
+
+</Formula>
+
+<Formula title="Độ lớn và hướng">
+
+$$
+\vert \nabla f \vert = \sqrt{G_x^2 + G_y^2} \approx \vert G_x \vert + \vert G_y \vert, \qquad \theta = \arctan \frac{G_y}{G_x}
+$$
+
+</Formula>
+
+Hai mặt nạ tương ứng là $\begin{pmatrix} -1 & 1 \end{pmatrix}$ theo $x$ và cột $\begin{pmatrix} -1 & 1 \end{pmatrix}^T$ theo $y$. Trong cài đặt nên tính góc bằng `arctan2` để đúng góc phần tư và tránh chia cho 0.
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Với mỗi điểm $(x, y)$, tính $G_x$ và $G_y$.
+- **Bước 2:** Tính độ lớn $\vert \nabla f \vert$, và hướng $\theta$ nếu cần.
+- **Bước 3:** So sánh $\vert \nabla f \vert$ với ngưỡng $T$. Lớn hơn $T$ thì đó là điểm biên.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Tính Gx, Gy, độ lớn và hướng trên cửa sổ P, kèm hình vector](/content/MAT3562/C5/gradient-buoc.svg)
+
+**▸ TRÊN ẢNH**
+
+![Ảnh gốc, trị tuyệt đối của Gx, Gy và độ lớn gradient](/content/MAT3562/C5/gradient-anh.svg)
+
+$G_x$ đạo hàm theo chiều ngang nên thấy biên dọc, $G_y$ thấy biên ngang. Độ lớn gộp cả hai.
+
+**▸ HẠN CHẾ**
+
+- Chỉ dùng hai điểm cho mỗi chiều nên rất nhạy với nhiễu.
+- Sai phân tiến nằm lệch nửa điểm ảnh so với điểm đang xét.
+
+Prewitt và Sobel khắc phục bằng cách dùng cửa sổ 3 × 3.
+
+**▸ ⚠️ LƯU Ý**
+
+Có tài liệu dùng sai phân lùi hoặc sai phân trung tâm $\frac{1}{2}(f(x + 1, y) - f(x - 1, y))$, số tính ra sẽ khác nhưng ý tưởng giống nhau.

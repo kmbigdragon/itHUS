@@ -1,0 +1,51 @@
+---
+title: "5. Bhattacharyya"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ CÔNG THỨC**
+
+<Formula title="Bhattacharyya">
+
+$$
+d(H_1, H_2) = \sqrt{1 - \frac{1}{\sqrt{\bar H_1 \bar H_2 n^2}} \sum_I \sqrt{H_1(I) \, H_2(I)}}
+$$
+
+</Formula>
+
+Khi hai histogram đã chuẩn hóa, $\bar H_k = 1 / n$ nên phần phân số bằng 1:
+
+<Formula title="Khi đã chuẩn hóa">
+
+$$
+d(H_1, H_2) = \sqrt{1 - \sum_I \sqrt{H_1(I) \, H_2(I)}}
+$$
+
+</Formula>
+
+$\text{BC} = \sum_I \sqrt{H_1(I) H_2(I)}$ gọi là **hệ số Bhattacharyya**, đo độ chồng lấn của hai phân phối.
+
+- $\text{BC} = 1$, tức $d = 0$: giống hệt.
+- $\text{BC} = 0$, tức $d = 1$: không có bin nào chung.
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Chuẩn hóa hai histogram nếu chưa chuẩn hóa.
+- **Bước 2:** Với mỗi bin, tính $\sqrt{H_1(I) H_2(I)}$.
+- **Bước 3:** Cộng lại được $\text{BC}$.
+- **Bước 4:** $d = \sqrt{1 - \text{BC}}$.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Bảng tính căn bậc hai từng bin và vị trí của các kết quả trên đoạn từ 0 đến 1](/content/MAT3562/C6/bhatta-buoc.svg)
+
+**▸ TÍNH CHẤT**
+
+- Đối xứng và luôn nằm trong $[0, 1]$, nên dễ đặt ngưỡng hơn chi-square.
+- Không bị chia cho 0.
+- $\text{BC}$ là cosin của góc giữa hai vector $\sqrt{H_1}$ và $\sqrt{H_2}$, vì hai vector này đều có độ dài bằng 1.
+
+**▸ ⚠️ LƯU Ý**
+
+- Công thức trên là của OpenCV, còn gọi là khoảng cách Hellinger (`HISTCMP_HELLINGER` là cùng một độ đo).
+- Trong xác suất thống kê, "khoảng cách Bhattacharyya" thường là $-\ln \text{BC}$. Với $H_1, H_2$ ở trên, công thức này cho 0.025 chứ không phải 0.157.

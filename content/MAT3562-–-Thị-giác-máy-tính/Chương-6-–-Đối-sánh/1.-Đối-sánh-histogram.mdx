@@ -1,0 +1,73 @@
+---
+title: "1. Đối sánh histogram"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ BÀI TOÁN**
+
+Cho hai ảnh, cần một con số cho biết chúng giống nhau đến đâu. Cách đơn giản là so sánh histogram của chúng, ví dụ để tìm trong kho ảnh những ảnh giống ảnh truy vấn.
+
+![Hai ảnh được đổi thành histogram, rồi so sánh ra một con số](/content/MAT3562/C6/quy-trinh.svg)
+
+**▸ CÁC BƯỚC**
+
+- **Bước 1:** Tính histogram $H_1, H_2$ của hai ảnh, với cùng số bin. **Bin** là một nhóm các mức xám liền nhau, ví dụ 32 bin thì mỗi bin gồm 8 mức.
+- **Bước 2:** Chuẩn hóa để tổng mỗi histogram bằng 1, nhờ đó so được ảnh khác kích thước.
+- **Bước 3:** Tính độ đo $d(H_1, H_2)$.
+
+**▸ BỐN ĐỘ ĐO**
+
+Trong chương này, $n$ là số bin, $I$ là chỉ số bin.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Độ đo</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Công thức ngắn gọn</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Khoảng giá trị khi đã chuẩn hóa</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Hai ảnh giống nhau thì</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Correlation</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Hệ số tương quan của $H_1, H_2$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$[-1, 1]$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bằng 1, càng lớn càng giống</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Intersection</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\sum \min(H_1, H_2)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$[0, 1]$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bằng 1, càng lớn càng giống</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Chi-square</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\sum (H_1 - H_2)^2 / H_1$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$[0, +\infty)$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bằng 0, càng nhỏ càng giống</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Bhattacharyya</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\sqrt{1 - \sum \sqrt{H_1 H_2}}$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$[0, 1]$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bằng 0, càng nhỏ càng giống</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Hai độ đo đầu là **độ giống**, hai độ đo sau là **khoảng cách**. Đây là chỗ dễ nhầm khi đọc kết quả.
+
+**▸ VÍ DỤ DÙNG CHUNG**
+
+Các bài sau tính trên ba histogram 5 bin, mỗi histogram đếm từ 20 điểm ảnh rồi chuẩn hóa.
+
+![Ba histogram H1, H2, H3](/content/MAT3562/C6/vi-du-histogram.svg)
+
+Nhìn vào có thể thấy $H_1$ và $H_2$ khá giống nhau, đều có đỉnh ở giữa. $H_3$ khác hẳn, đỉnh ở bin đầu.
+
+**▸ ⚠️ LƯU Ý**
+
+Ảnh màu thường được tính histogram theo từng kênh, hoặc theo kênh H và S trong hệ màu HSV để ít phụ thuộc vào độ sáng. Công thức so sánh vẫn như vậy.

@@ -1,0 +1,66 @@
+---
+title: "2. Thuật toán tăng giảm mức xám"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ Ý TƯỞNG**
+
+Cộng cùng một hằng số $c$ vào mọi điểm ảnh. $c \gt 0$ thì ảnh sáng lên, $c \lt 0$ thì ảnh tối đi. Kết quả phải nằm trong $[0, 255]$ nên phần vượt ra bị cắt.
+
+<Formula title="Tăng giảm mức xám">
+
+$$
+g(x, y) = \begin{cases}
+0 & \text{nếu } f(x, y) + c \lt 0 \\
+f(x, y) + c & \text{nếu } 0 \le f(x, y) + c \le 255 \\
+255 & \text{nếu } f(x, y) + c \gt 255
+\end{cases}
+$$
+
+</Formula>
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Chọn hằng số $c$.
+- **Bước 2:** Với mỗi điểm $(x, y)$, tính $v = f(x, y) + c$.
+- **Bước 3:** Nếu $v \lt 0$ thì gán $v = 0$. Nếu $v \gt 255$ thì gán $v = 255$.
+- **Bước 4:** Gán $g(x, y) = v$.
+
+Độ phức tạp là $O(W \cdot H)$.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Tăng và giảm mức xám trên ma trận 4 × 4 với c bằng 60 và −60](/content/MAT3562/C1/tang-giam-buoc.svg)
+
+Với $c = +60$: ô 200 thành 260, vượt 255 nên cắt về 255. Với $c = -60$: ô 12 thành $-48$, nhỏ hơn 0 nên cắt về 0.
+
+**▸ HÀM BIẾN ĐỔI**
+
+![Hàm biến đổi là đường thẳng dịch lên hoặc xuống, hai đầu bị cắt phẳng](/content/MAT3562/C1/tang-giam-ham.svg)
+
+Đoạn phẳng ở hai đầu là chỗ mất thông tin: nhiều mức vào khác nhau cho cùng một mức ra.
+
+**▸ TRÊN ẢNH**
+
+![Ảnh gốc, ảnh giảm sáng và ảnh tăng sáng](/content/MAT3562/C1/tang-giam-anh.svg)
+
+- Với $c = +80$ có 33.7% điểm ảnh bị cắt về 255, phần lớn bầu trời thành một mảng trắng.
+- Với $c = -80$ có 18.3% điểm ảnh bị cắt về 0.
+
+Phép này không đảo ngược được sau khi đã cắt. Ví dụ 200 cộng 60 thành 255, trừ lại 60 chỉ còn 195.
+
+**▸ MỞ RỘNG: THÊM HỆ SỐ NHÂN**
+
+<Formula title="Biến đổi tuyến tính">
+
+$$
+g(x, y) = \alpha \, f(x, y) + \beta
+$$
+
+</Formula>
+
+$\beta$ đổi độ sáng, $\alpha$ đổi độ tương phản. Ví dụ với $\alpha = 1.5$: hai mức 100 và 120 cách nhau 20 thành 150 và 180 cách nhau 30. Kết quả cũng phải làm tròn và cắt về $[0, 255]$.
+
+**▸ ⚠️ LƯU Ý**
+
+Trong NumPy, cộng trực tiếp hai ảnh kiểu `uint8` sẽ bị tràn số chứ không cắt: 200 + 100 cho ra 44. Phải đổi sang kiểu lớn hơn rồi dùng `np.clip`, hoặc dùng `cv2.add`, hàm này cho ra 255.

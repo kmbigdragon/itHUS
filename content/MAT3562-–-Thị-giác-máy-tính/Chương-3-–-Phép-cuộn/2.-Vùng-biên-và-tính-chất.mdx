@@ -1,0 +1,108 @@
+---
+title: "2. Vùng biên và tính chất"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ VÙNG BIÊN ẢNH**
+
+Tại điểm sát mép ảnh, cửa sổ thò ra ngoài nên thiếu dữ liệu. Có bốn cách xử lý thường gặp.
+
+![Thêm số 0, lặp điểm biên, đối xứng và bỏ biên trên ảnh 4 × 4](/content/MAT3562/C3/vung-bien.svg)
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Cách</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Làm gì</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Trong OpenCV</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$g(0, 0)$ ở hình trên</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Thêm số 0</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Coi ngoài ảnh bằng 0</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">`BORDER_CONSTANT`</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">15.6</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Lặp điểm biên</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Chép lại điểm sát mép</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">`BORDER_REPLICATE`</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">26.7</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Đối xứng</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Lấy đối xứng qua điểm mép</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">`BORDER_REFLECT_101`</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">43.3</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Bỏ biên</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không tính các điểm thiếu cửa sổ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tự cắt ảnh</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không có</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Hình trên dùng lọc trung bình 3 × 3. Thêm số 0 làm góc ảnh tối đi rõ rệt vì cộng thêm nhiều số 0. Bỏ biên làm ảnh nhỏ đi $2a$ cột và $2b$ hàng. `BORDER_REFLECT_101` là mặc định của phần lớn các hàm lọc trong OpenCV.
+
+**▸ TÍNH CHẤT**
+
+<Formula title="Tính chất của phép cuộn">
+
+$$
+\begin{aligned}
+f * k &= k * f && \text{(giao hoán)} \\
+(f * k_1) * k_2 &= f * (k_1 * k_2) && \text{(kết hợp)} \\
+f * (k_1 + k_2) &= f * k_1 + f * k_2 && \text{(phân phối)} \\
+(\alpha f) * k &= \alpha (f * k) && \text{(nhân hằng số)}
+\end{aligned}
+$$
+
+</Formula>
+
+Các tính chất này đúng với phép cuộn đủ, không cắt bớt vùng biên.
+
+**▸ MẶT NẠ TÁCH ĐƯỢC**
+
+Nếu mặt nạ 2 chiều viết được thành tích của một cột và một hàng thì có thể cuộn hai lần với hai mặt nạ 1 chiều, nhờ tính kết hợp.
+
+$$
+\frac{1}{9} \begin{pmatrix} 1 & 1 & 1 \\ 1 & 1 & 1 \\ 1 & 1 & 1 \end{pmatrix} = \frac{1}{3} \begin{pmatrix} 1 \\ 1 \\ 1 \end{pmatrix} \cdot \frac{1}{3} \begin{pmatrix} 1 & 1 & 1 \end{pmatrix}
+$$
+
+Mặt nạ $n \times n$ cần $n^2$ phép nhân mỗi điểm, tách ra chỉ còn $2n$. Với $n = 9$ là 81 so với 18.
+
+**▸ MẶT NẠ QUYẾT ĐỊNH KẾT QUẢ**
+
+![Cùng một ảnh với bốn mặt nạ: đơn vị, trung bình, làm nét và Sobel](/content/MAT3562/C3/mat-na-anh.svg)
+
+Có thể đoán tác dụng của mặt nạ qua **tổng các phần tử**:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Tổng các phần tử</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Vùng ảnh phẳng cho ra</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Ví dụ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bằng 1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Giữ nguyên mức xám, ảnh không đổi độ sáng chung</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Đơn vị, trung bình, làm nét</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Bằng 0</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bằng 0, chỉ còn phản hồi ở chỗ có thay đổi</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Prewitt, Sobel, Laplace</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

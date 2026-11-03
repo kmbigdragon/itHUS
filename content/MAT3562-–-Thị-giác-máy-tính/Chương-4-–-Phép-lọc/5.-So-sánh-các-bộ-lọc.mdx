@@ -1,0 +1,135 @@
+---
+title: "5. So sánh các bộ lọc"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ TRÊN ẢNH**
+
+![Ba bộ lọc cửa sổ 3 × 3 trên nhiễu Gauss và nhiễu muối tiêu](/content/MAT3562/C4/so-sanh-loc.svg)
+
+**▸ BẢNG PSNR**
+
+Đơn vị dB, càng cao càng tốt. Số đậm là cao nhất trong hàng.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Nhiễu</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Không lọc</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">TB 3×3</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">K gần nhất 3×3, K=5</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Trung vị 3×3</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">TB 5×5</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">K gần nhất 5×5, K=13</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Trung vị 5×5</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Gauss $\sigma = 10$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">28.2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">28.4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">**31.0**</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">29.8</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">25.4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">30.6</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">27.2</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Gauss $\sigma = 25$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">20.3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">**26.2**</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">23.8</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">26.0</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">24.9</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">24.3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">25.9</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Gauss $\sigma = 40$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">16.5</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">24.0</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">19.9</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">22.9</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">24.1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">20.5</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">**24.2**</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Muối tiêu $p = 5\%$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">18.3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">25.1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">28.6</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">**30.8**</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">24.4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">30.2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">27.3</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Muối tiêu $p = 10\%$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">15.2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">22.8</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">24.3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">**29.7**</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">23.3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">26.5</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">27.0</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Muối tiêu $p = 30\%$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">10.4</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">17.9</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">16.2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">22.5</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">19.3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">17.7</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">**25.3**</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ ĐỌC KẾT QUẢ**
+
+- **Nhiễu muối tiêu:** lọc trung vị thắng rõ ở mọi mức. Khi nhiễu dày tới 30%, cửa sổ 5 × 5 tốt hơn hẳn 3 × 3.
+- **Nhiễu Gauss nhẹ:** lọc K giá trị gần nhất tốt nhất, vì biên được giữ mà nhiễu nhỏ đã gần với giá trị tâm.
+- **Nhiễu Gauss mạnh:** lọc K giá trị gần nhất kém đi vì giá trị tâm đã lệch nhiều. Lọc trung bình và trung vị đều tốt hơn hẳn, ở $\sigma = 40$ đều đạt khoảng 24 dB.
+- **Không có bộ lọc nào tốt nhất cho mọi loại nhiễu.**
+
+Các con số này đo trên một ảnh thử với một lần sinh nhiễu nên chỉ để so sánh xu hướng, không phải kết luận chung cho mọi ảnh.
+
+**▸ TÓM TẮT**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Bộ lọc</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Mạnh ở</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Yếu ở</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Tham số</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Trung bình</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Nhanh, giảm nhiễu Gauss</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Làm mờ biên, nhiễu lớn vẫn còn vết</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Kích thước cửa sổ</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">K giá trị gần nhất</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Giữ biên, nhiễu nhẹ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tâm là nhiễu thì khó sửa</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Kích thước cửa sổ, $K$</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Trung vị</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Nhiễu muối tiêu, giữ biên</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Mất chi tiết mảnh, chậm hơn lọc trung bình</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Kích thước cửa sổ</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

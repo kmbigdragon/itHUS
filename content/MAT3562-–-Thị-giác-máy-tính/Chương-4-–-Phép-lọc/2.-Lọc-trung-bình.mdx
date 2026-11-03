@@ -1,0 +1,87 @@
+---
+title: "2. Lọc trung bình"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ CÔNG THỨC**
+
+Thay mỗi điểm bằng trung bình của cửa sổ $(2a + 1) \times (2b + 1)$.
+
+<Formula title="Lọc trung bình">
+
+$$
+g(x, y) = \frac{1}{(2a + 1)(2b + 1)} \sum_{i = -a}^{a} \sum_{j = -b}^{b} f(x + i, \, y + j)
+$$
+
+</Formula>
+
+Đây là phép cuộn với mặt nạ có mọi phần tử bằng nhau. Với cửa sổ 3 × 3:
+
+$$
+k = \frac{1}{9} \begin{pmatrix} 1 & 1 & 1 \\ 1 & 1 & 1 \\ 1 & 1 & 1 \end{pmatrix}
+$$
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Chọn kích thước cửa sổ và cách xử lý vùng biên.
+- **Bước 2:** Với mỗi điểm $(x, y)$, cộng tất cả giá trị trong cửa sổ.
+- **Bước 3:** Chia cho số ô của cửa sổ, làm tròn, gán vào $g(x, y)$.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Tính lọc trung bình tại điểm nhiễu 200 và ảnh kết quả](/content/MAT3562/C4/trung-binh-buoc.svg)
+
+Nhiễu 200 giảm còn 32 nhưng không mất hẳn, và nó làm 8 ô xung quanh từ khoảng 11 tăng lên khoảng 32. Một điểm nhiễu lớn vẫn kéo lệch cả cửa sổ.
+
+**▸ KÍCH THƯỚC CỬA SỔ**
+
+![Ảnh nhiễu và kết quả lọc với cửa sổ 3, 5 và 9, kèm phần phóng to](/content/MAT3562/C4/trung-binh-kich-thuoc.svg)
+
+Cửa sổ lớn giảm nhiễu mạnh hơn nhưng làm mờ biên. PSNR ở đây tăng từ 20.3 dB lên 26.2 dB với cửa sổ 3 × 3, rồi giảm dần còn 24.9 dB và 22.7 dB. Từ cửa sổ 5 × 5, phần hại do mờ đã lớn hơn phần lợi do giảm nhiễu.
+
+**▸ BIẾN THỂ CÓ NGƯỠNG**
+
+Chỉ thay điểm nào lệch nhiều so với trung bình, còn lại giữ nguyên.
+
+<Formula title="Lọc trung bình có ngưỡng">
+
+$$
+g(x, y) = \begin{cases}
+\bar f(x, y) & \text{nếu } \vert f(x, y) - \bar f(x, y) \vert \gt \theta \\
+f(x, y) & \text{ngược lại}
+\end{cases}
+$$
+
+</Formula>
+
+$\bar f(x, y)$ là trung bình của cửa sổ. Thử với cửa sổ 3 × 3, $\theta = 30$:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Nhiễu</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Không có ngưỡng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Có ngưỡng $\theta = 30$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Muối tiêu $p = 10\%$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">22.8 dB</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">24.7 dB</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Gauss $\sigma = 25$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">26.2 dB</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">23.0 dB</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Ngưỡng có lợi với nhiễu muối tiêu vì các điểm tốt được giữ nguyên, nhưng có hại với nhiễu Gauss vì phần lớn điểm có sai lệch nhỏ sẽ không được lọc.
+
+**▸ ⚠️ LƯU Ý**
+
+Có tài liệu đặt điều kiện ngược lại, chỉ thay khi độ lệch nhỏ hơn ngưỡng để bảo vệ biên. Cần xem đề bài dùng dấu nào.

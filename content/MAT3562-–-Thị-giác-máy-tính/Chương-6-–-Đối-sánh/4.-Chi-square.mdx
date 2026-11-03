@@ -1,0 +1,55 @@
+---
+title: "4. Chi-square"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ CÔNG THỨC**
+
+Lấy bình phương độ lệch ở mỗi bin, rồi chia cho giá trị của $H_1$ tại bin đó.
+
+<Formula title="Chi-square">
+
+$$
+d(H_1, H_2) = \sum_I \frac{\big(H_1(I) - H_2(I)\big)^2}{H_1(I)}
+$$
+
+</Formula>
+
+$d = 0$ là giống hệt, $d$ càng lớn càng khác. Không có chặn trên.
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Với mỗi bin có $H_1(I) \ne 0$, tính $(H_1(I) - H_2(I))^2 / H_1(I)$.
+- **Bước 2:** Cộng tất cả.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Bảng tính chi-square và đóng góp của từng bin](/content/MAT3562/C6/chi-buoc.svg)
+
+Bin 4 đóng góp nhiều nhất: 0.150 trên tổng 0.235, vì độ lệch lớn và $H_1$ ở bin đó nhỏ. Với $H_1$ và $H_3$: $d = 1.483$.
+
+**▸ HAI ĐIỂM CẦN NHỚ**
+
+**Không đối xứng.** Đổi chỗ hai histogram thì kết quả khác: $d(H_1, H_2) = 0.235$ nhưng $d(H_2, H_1) = 0.188$.
+
+**Bin có $H_1(I) = 0$.** OpenCV bỏ qua các bin này để tránh chia cho 0, nên phần khác biệt ở đó không được tính. Ví dụ $A = (0.5, 0.5, 0)$ và $B = (0.5, 0.25, 0.25)$:
+
+$$
+d(A, B) = 0 + \frac{0.25^2}{0.5} = 0.125, \qquad d(B, A) = 0 + \frac{0.25^2}{0.25} + \frac{0.25^2}{0.25} = 0.5
+$$
+
+**▸ DẠNG ĐỐI XỨNG**
+
+<Formula title="Chi-square đối xứng">
+
+$$
+d(H_1, H_2) = 2 \sum_I \frac{\big(H_1(I) - H_2(I)\big)^2}{H_1(I) + H_2(I)}
+$$
+
+</Formula>
+
+Trong OpenCV là `HISTCMP_CHISQR_ALT`. Với $H_1, H_2$ ở trên cho 0.193.
+
+**▸ ⚠️ LƯU Ý**
+
+Các tài liệu viết chi-square khá khác nhau: có nơi chia cho $H_1 + H_2$, có nơi nhân thêm $\frac{1}{2}$ hoặc 2. Cần xem đề bài dùng công thức nào.

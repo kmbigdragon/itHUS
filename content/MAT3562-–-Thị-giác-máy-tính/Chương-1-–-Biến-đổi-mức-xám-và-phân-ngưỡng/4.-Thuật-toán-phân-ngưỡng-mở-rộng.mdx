@@ -1,0 +1,138 @@
+---
+title: "4. Thuật toán phân ngưỡng mở rộng"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ ⚠️ LƯU Ý VỀ TÊN GỌI**
+
+Tên "phân ngưỡng mở rộng" không thống nhất giữa các tài liệu. Bài này liệt kê các dạng thường gặp: dùng hai ngưỡng, nhiều ngưỡng, hoặc giữ lại một phần mức xám. Khi làm bài cần xem giảng viên định nghĩa theo dạng nào.
+
+**▸ CÁC DẠNG HAI NGƯỠNG**
+
+Chọn hai ngưỡng $T_1 \lt T_2$. Đoạn $[T_1, T_2]$ gọi là **dải**.
+
+<Formula title="a) Hai ngưỡng, nhị phân">
+
+$$
+g(x, y) = \begin{cases}
+255 & \text{nếu } T_1 \le f(x, y) \le T_2 \\
+0 & \text{ngược lại}
+\end{cases}
+$$
+
+</Formula>
+
+<Formula title="b) Hai ngưỡng, giữ mức xám">
+
+$$
+g(x, y) = \begin{cases}
+f(x, y) & \text{nếu } T_1 \le f(x, y) \le T_2 \\
+0 & \text{ngược lại}
+\end{cases}
+$$
+
+</Formula>
+
+<Formula title="c) Hai ngưỡng, kéo giãn">
+
+$$
+g(x, y) = \begin{cases}
+0 & \text{nếu } f(x, y) \lt T_1 \\
+\dfrac{f(x, y) - T_1}{T_2 - T_1} \cdot 255 & \text{nếu } T_1 \le f(x, y) \le T_2 \\
+255 & \text{nếu } f(x, y) \gt T_2
+\end{cases}
+$$
+
+</Formula>
+
+**▸ CÁC DẠNG KHÁC**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Dạng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Công thức</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Trong OpenCV</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">d) Nhiều mức</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Chia trục mức xám thành nhiều đoạn, mỗi đoạn nhận một giá trị</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tự viết</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">e) Một ngưỡng, giữ phần trên</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$g = f$ nếu $f \gt T$, ngược lại $g = 0$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">`THRESH_TOZERO`</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">f) Một ngưỡng, cắt phần trên</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$g = T$ nếu $f \gt T$, ngược lại $g = f$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">`THRESH_TRUNC`</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+![Hàm biến đổi của sáu dạng phân ngưỡng mở rộng](/content/MAT3562/C1/mo-rong-ham.svg)
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Chọn $T_1, T_2$ và dạng cần dùng.
+- **Bước 2:** Với mỗi điểm, xác định $f(x, y)$ nằm dưới dải, trong dải hay trên dải.
+- **Bước 3:** Gán $g(x, y)$ theo công thức của dạng đã chọn.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Xếp từng ô vào ba vùng rồi tính kết quả theo dạng a, b và c, với T1 bằng 80 và T2 bằng 180](/content/MAT3562/C1/mo-rong-buoc.svg)
+
+Ví dụ ô 110 ở dạng kéo giãn:
+
+$$
+g = \frac{110 - 80}{180 - 80} \cdot 255 = 76.5 \;\to\; 77
+$$
+
+**▸ TRÊN ẢNH**
+
+![Ảnh gốc và kết quả của các dạng phân ngưỡng mở rộng](/content/MAT3562/C1/mo-rong-anh.svg)
+
+**▸ KHI NÀO DÙNG DẠNG NÀO**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Mục đích</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Dạng</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tách vùng có mức xám ở khoảng giữa, chỉ cần biết ở đâu</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">a) Nhị phân</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Tách vùng đó nhưng vẫn cần xem chi tiết bên trong</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">b) Giữ mức xám</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Làm rõ chi tiết trong một dải mức xám</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">c) Kéo giãn</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Chia ảnh thành vài vùng sáng tối</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">d) Nhiều mức</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bỏ phần tối, giữ nguyên phần sáng</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">e) Giữ phần trên</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Hạ các điểm quá sáng về một mức</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">f) Cắt phần trên</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,90 @@
+---
+title: "3. Lọc trung bình theo K giá trị gần nhất"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ Ý TƯỞNG**
+
+Lọc trung bình cộng cả những điểm ở bên kia biên nên làm mờ biên. Cách khắc phục: trong cửa sổ, chỉ lấy trung bình của $K$ giá trị **có mức xám gần** $f(x, y)$ nhất.
+
+"Gần nhất" ở đây là gần về mức xám, không phải gần về vị trí.
+
+<Formula title="Lọc trung bình theo K giá trị gần nhất">
+
+$$
+g(x, y) = \frac{1}{K} \sum_{v \in S_K(x, y)} v
+$$
+
+</Formula>
+
+$S_K(x, y)$ gồm $K$ giá trị trong cửa sổ có $\vert v - f(x, y) \vert$ nhỏ nhất.
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Chọn kích thước cửa sổ và số $K$.
+- **Bước 2:** Với mỗi điểm $(x, y)$, tính $\vert v - f(x, y) \vert$ cho từng giá trị $v$ trong cửa sổ.
+- **Bước 3:** Sắp xếp các giá trị theo khoảng cách tăng dần, lấy $K$ giá trị đầu.
+- **Bước 4:** Tính trung bình $K$ giá trị đó, làm tròn, gán vào $g(x, y)$.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Tính bộ lọc K giá trị gần nhất cho hai cửa sổ, một cửa sổ có tâm là điểm thường và một có tâm là điểm nhiễu](/content/MAT3562/C4/knn-buoc.svg)
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Cửa sổ</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">K gần nhất, $K = 5$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Trung bình cả cửa sổ</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Trung vị</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tâm là điểm thường 14</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">12</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">54.2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">12</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Tâm là điểm nhiễu 200</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">88</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">53.8</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">12</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+- **Tâm là điểm thường:** hai điểm 200 và 205 ở xa nên bị loại. Kết quả 12 đúng với vùng, trong khi lọc trung bình cho 54.2.
+- **Tâm là điểm nhiễu:** bộ lọc lấy các giá trị gần 200, trong đó có cả 205 và chính nó. Kết quả 88 vẫn còn lệch nhiều. Đây là điểm yếu: bộ lọc tin vào giá trị ở tâm, nên tâm là nhiễu thì khó sửa.
+
+**▸ CHỌN K**
+
+- $K = 1$: chỉ lấy chính điểm đó, ảnh giữ nguyên.
+- $K$ bằng số ô của cửa sổ: lấy tất cả, chính là lọc trung bình.
+
+![Lọc K giá trị gần nhất với K bằng 1, 5, 13, 25 trên cửa sổ 5 × 5, kèm phần phóng to](/content/MAT3562/C4/knn-k.svg)
+
+$K$ càng lớn, nhiễu càng giảm và biên càng mờ. Ở hình trên, PSNR là 20.3, 21.6, 24.3 và 24.9 dB. Nhìn phần phóng to thì với $K = 13$ biên mái nhà vẫn rõ hơn hẳn $K = 25$. Bài so sánh ở cuối chương dùng $K$ khoảng một nửa số ô: $K = 5$ với cửa sổ 3 × 3 và $K = 13$ với cửa sổ 5 × 5.
+
+**▸ BIẾN THỂ CÓ NGƯỠNG**
+
+<Formula title="Lọc K giá trị gần nhất có ngưỡng">
+
+$$
+g(x, y) = \begin{cases}
+\text{TB}_K(x, y) & \text{nếu } \vert f(x, y) - \text{TB}_K(x, y) \vert \gt \theta \\
+f(x, y) & \text{ngược lại}
+\end{cases}
+$$
+
+</Formula>
+
+$\text{TB}_K$ là trung bình $K$ giá trị gần nhất. Thử với cửa sổ 3 × 3, $K = 5$, $\theta = 30$, biến thể này không tốt hơn bản gốc: nhiễu muối tiêu $p = 10\%$ cho 24.2 dB so với 24.3 dB, nhiễu Gauss $\sigma = 25$ cho 21.1 dB so với 23.8 dB.
+
+**▸ ⚠️ LƯU Ý**
+
+- Tài liệu này tính cả điểm tâm vào $K$ giá trị, vì khoảng cách của nó bằng 0. Có tài liệu không tính tâm, kết quả sẽ khác.
+- Khi hai giá trị có cùng khoảng cách nhưng khác nhau, ví dụ 13 và 15 với tâm 14, chọn giá trị nào sẽ ra kết quả khác nhau. Ở đây chọn theo thứ tự quét từ trái sang phải, trên xuống dưới.

@@ -1,0 +1,41 @@
+---
+title: "3. Prewitt"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ MẶT NẠ**
+
+Prewitt lấy hiệu giữa cột phải và cột trái, trên cả 3 hàng. Làm vậy vừa lấy đạo hàm, vừa lấy trung bình để giảm nhiễu.
+
+<Formula title="Mặt nạ Prewitt">
+
+$$
+h_x = \begin{pmatrix} -1 & 0 & 1 \\ -1 & 0 & 1 \\ -1 & 0 & 1 \end{pmatrix}, \qquad h_y = \begin{pmatrix} -1 & -1 & -1 \\ 0 & 0 & 0 \\ 1 & 1 & 1 \end{pmatrix}
+$$
+
+</Formula>
+
+<Formula title="Độ lớn và hướng">
+
+$$
+\vert \nabla f \vert = \sqrt{G_x^2 + G_y^2}, \qquad \theta = \arctan \frac{G_y}{G_x}
+$$
+
+</Formula>
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Với mỗi điểm, đặt $h_x$ lên cửa sổ 3 × 3, nhân từng ô rồi cộng, được $G_x$.
+- **Bước 2:** Làm tương tự với $h_y$, được $G_y$.
+- **Bước 3:** Tính độ lớn và hướng.
+- **Bước 4:** Phân ngưỡng độ lớn để được ảnh biên.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Nhân cửa sổ P với hai mặt nạ Prewitt, được Gx bằng 240 và Gy bằng 80](/content/MAT3562/C5/prewitt-buoc.svg)
+
+**▸ TRÊN ẢNH**
+
+![Ảnh gốc, trị tuyệt đối của Gx, Gy và độ lớn Prewitt](/content/MAT3562/C5/prewitt-anh.svg)
+
+So với sai phân tiến ở bài trước, biên dày hơn vì mặt nạ rộng 3 điểm, nhưng liền nét và ít nhiễu hơn.

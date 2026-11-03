@@ -1,0 +1,44 @@
+---
+title: "4. Lọc trung vị"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ CÔNG THỨC**
+
+Thay mỗi điểm bằng giá trị đứng giữa của cửa sổ sau khi sắp xếp.
+
+<Formula title="Lọc trung vị">
+
+$$
+g(x, y) = \text{median} \big\{ f(x + i, \, y + j) : -a \le i \le a, \; -b \le j \le b \big\}
+$$
+
+</Formula>
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Chọn cửa sổ có số ô lẻ, ví dụ 3 × 3 có 9 ô.
+- **Bước 2:** Với mỗi điểm $(x, y)$, lấy các giá trị trong cửa sổ.
+- **Bước 3:** Sắp xếp tăng dần.
+- **Bước 4:** Lấy giá trị đứng giữa, với 9 ô là giá trị thứ 5, gán vào $g(x, y)$.
+
+Nếu sắp xếp lại toàn bộ tại mỗi điểm thì tốn $O(n \log n)$ cho mỗi cửa sổ $n$ ô.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Sắp xếp 9 giá trị và lấy giá trị thứ 5 cho hai cửa sổ](/content/MAT3562/C4/trung-vi-buoc.svg)
+
+- **Tâm là nhiễu muối:** 200 bị đẩy về cuối dãy, không ảnh hưởng đến giá trị giữa. Kết quả 11, trong khi lọc trung bình cho 32.1.
+- **Tâm cạnh biên:** có 5 giá trị 10 và 4 giá trị 200, trung vị là 10. Biên được giữ nguyên, trong khi lọc trung bình cho 94.4, một mức xám không thuộc phía nào của biên.
+
+**▸ TRÊN TÍN HIỆU 1 CHIỀU**
+
+![Một tín hiệu có biên và hai điểm nhiễu, so sánh lọc trung bình và lọc trung vị](/content/MAT3562/C4/tin-hieu-1d.svg)
+
+Trên cùng một tín hiệu, lọc trung vị xóa hẳn hai điểm nhiễu và giữ biên dốc đứng. Lọc trung bình để lại các gợn và làm biên thoải ra.
+
+**▸ TÍNH CHẤT**
+
+- **Phi tuyến:** không phải phép cuộn. Ví dụ $a = (1, 2, 9)$ và $b = (9, 2, 1)$ đều có trung vị 2, nhưng $a + b = (10, 4, 10)$ có trung vị 10, không phải 4.
+- **Không tạo giá trị mới:** với cửa sổ lẻ, kết quả luôn là một giá trị có sẵn trong cửa sổ.
+- **Điểm yếu:** làm mất các chi tiết mảnh hơn nửa cửa sổ, như đường rộng 1 điểm ảnh hay góc nhọn. Khi quá nửa cửa sổ là nhiễu cùng loại, ví dụ 5 trong 9 ô đều bằng 255, thì trung vị cũng là nhiễu, phải dùng cửa sổ lớn hơn.

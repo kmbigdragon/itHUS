@@ -1,0 +1,177 @@
+---
+title: "6. So sánh bốn độ đo"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ TRÊN VÍ DỤ NHỎ**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Cặp</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Correlation</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Intersection</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Chi-square</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Bhattacharyya</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$H_1$ với $H_1$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.000</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.000</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.000</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.000</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$H_1$ với $H_2$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.647</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.800</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.235</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.157</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$H_1$ với $H_3$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">−0.085</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.600</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.483</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.334</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Cả bốn độ đo đều cho rằng $H_2$ gần $H_1$ hơn $H_3$.
+
+**▸ TRÊN ẢNH THẬT**
+
+So ảnh truy vấn với 7 ảnh, histogram 32 bin, đã chuẩn hóa. Bảng xếp theo Bhattacharyya tăng dần.
+
+![Ảnh truy vấn và 7 ứng viên, mỗi ảnh kèm histogram](/content/MAT3562/C6/so-sanh-anh.svg)
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Ứng viên</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Correlation (lớn là giống)</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Intersection (lớn là giống)</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Chi-square (nhỏ là giống)</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Bhattacharyya (nhỏ là giống)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Lật ngang</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.000</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.000</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.000</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.000</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Xáo trộn điểm ảnh</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.000</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.000</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.000</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.000</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Thêm nhiễu, $\sigma = 15$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.770</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.792</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2.733</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.235</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Cân bằng histogram</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.053</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.650</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.683</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.371</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Sáng hơn, $c = +30$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.039</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.549</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">68.46</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.493</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Đồng xu</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.267</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.447</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">5.006</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.537</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Phố đêm</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">−0.278</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.206</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">3.777</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.780</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ ĐỌC KẾT QUẢ**
+
+- **Histogram không biết vị trí.** Ảnh bị xáo trộn hoàn toàn không còn nhìn ra gì, nhưng vẫn khớp tuyệt đối với ảnh gốc vì có cùng histogram.
+- **Nhạy với độ sáng.** Cùng một ảnh chỉ sáng hơn 30 mức, histogram bị dịch đi nên điểm số giảm mạnh. Theo correlation (0.039) và chi-square (68.46), ảnh này còn xa ảnh gốc hơn cả ảnh đồng xu.
+- **Intersection và Bhattacharyya ổn định hơn ở ví dụ này:** vẫn xếp ảnh sáng hơn gần ảnh gốc hơn đồng xu.
+- **Chi-square dễ bị đẩy lên rất cao** khi $H_1$ có bin rất nhỏ mà $H_2$ ở bin đó lớn, như số 68.46 ở trên. Nó cũng xếp phố đêm (3.777) gần ảnh gốc hơn đồng xu (5.006), trong khi ba độ đo còn lại đều xếp đồng xu gần hơn.
+- **Các độ đo không xếp hạng giống nhau.** Đổi độ đo có thể đổi thứ tự.
+
+Đây là một thử nghiệm trên một ảnh, chỉ để thấy tính chất của từng độ đo, không phải để kết luận độ đo nào tốt nhất.
+
+**▸ TÓM TẮT**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Độ đo</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Đối xứng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Giá trị khi giống</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Điểm mạnh</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Điểm yếu</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Correlation</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Có</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">So hình dạng, không phụ thuộc thang đo</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Nhạy khi histogram bị dịch</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Intersection</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Có</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Nhanh, dễ hiểu</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Phụ thuộc chuẩn hóa</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Chi-square</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Nhấn mạnh khác biệt ở bin nhỏ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không chặn trên, dễ bị bin nhỏ kéo lệch</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Bhattacharyya</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Có</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Nằm trong đoạn [0, 1], ổn định</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tốn phép khai căn</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ KHI NÀO KHÔNG NÊN DÙNG ĐỐI SÁNH HISTOGRAM**
+
+- Khi cần phân biệt ảnh theo hình dạng hay bố cục, vì histogram không có thông tin vị trí.
+- Khi ánh sáng thay đổi nhiều. Có thể giảm bớt bằng cách cân bằng histogram trước, hoặc với ảnh màu thì bỏ kênh độ sáng.

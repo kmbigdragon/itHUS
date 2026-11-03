@@ -1,0 +1,58 @@
+---
+title: "1. Ảnh số và mức xám"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ ẢNH SỐ LÀ GÌ**
+
+Ảnh xám là một ma trận. Mỗi ô là một **điểm ảnh** (pixel), giá trị của ô là **mức xám**.
+
+<Formula title="Ảnh xám">
+
+$$
+f(x, y) \in \{0, 1, \dots, L - 1\}, \qquad 0 \le x \le W - 1, \quad 0 \le y \le H - 1
+$$
+
+</Formula>
+
+- $W$ là số cột, $H$ là số hàng, tổng số điểm ảnh là $N = W \cdot H$.
+- $L$ là số mức xám. Ảnh 8 bit có $L = 256$: 0 là đen, 255 là trắng.
+
+![Một ảnh, vùng 10 × 10 được phóng to và ma trận mức xám của vùng đó](/content/MAT3562/C1/anh-la-ma-tran.svg)
+
+**▸ QUY ƯỚC TRONG TÀI LIỆU NÀY**
+
+- $f(x, y)$ là điểm ở cột $x$, hàng $y$. Gốc tọa độ ở góc trên bên trái, trục $y$ hướng xuống.
+- $f$ là ảnh vào, $g$ là ảnh ra.
+- Trong NumPy và OpenCV, ảnh được truy cập theo hàng trước, cột sau: `f[y, x]`.
+
+**▸ HAI NHÓM PHÉP BIẾN ĐỔI**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Nhóm</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Điểm ra phụ thuộc vào</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Ví dụ</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Chương</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Biến đổi điểm</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Chỉ một điểm vào: $g(x, y) = T(f(x, y))$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tăng giảm mức xám, phân ngưỡng, cân bằng histogram</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1, 2</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Biến đổi lân cận</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Cả cửa sổ quanh điểm đó</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Phép cuộn, lọc, tìm biên</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">3, 4, 5</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Biến đổi điểm được mô tả hoàn toàn bằng hàm $T$. Đồ thị của $T$ gọi là **hàm biến đổi**: trục ngang là mức xám vào, trục dọc là mức xám ra. Vì chỉ có 256 mức vào nên có thể tính sẵn $T$ thành một bảng tra rồi áp dụng cho cả ảnh.

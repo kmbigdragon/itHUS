@@ -1,0 +1,77 @@
+---
+title: "6. Laplace"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ CÔNG THỨC**
+
+Laplace là tổng đạo hàm bậc 2 theo hai chiều.
+
+<Formula title="Laplace">
+
+$$
+\nabla^2 f = \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial y^2}
+$$
+
+</Formula>
+
+Thay đạo hàm bằng sai phân bậc 2:
+
+<Formula title="Laplace rời rạc">
+
+$$
+\nabla^2 f = f(x + 1, y) + f(x - 1, y) + f(x, y + 1) + f(x, y - 1) - 4 f(x, y)
+$$
+
+</Formula>
+
+<Formula title="Mặt nạ Laplace">
+
+$$
+h_4 = \begin{pmatrix} 0 & 1 & 0 \\ 1 & -4 & 1 \\ 0 & 1 & 0 \end{pmatrix}, \qquad h_8 = \begin{pmatrix} 1 & 1 & 1 \\ 1 & -8 & 1 \\ 1 & 1 & 1 \end{pmatrix}
+$$
+
+</Formula>
+
+$h_4$ dùng 4 lân cận, $h_8$ dùng thêm 4 đường chéo. Tổng các phần tử bằng 0 nên vùng phẳng cho ra 0.
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Với mỗi điểm, nhân cửa sổ với mặt nạ rồi cộng.
+- **Bước 2:** Tìm biên theo một trong hai cách: phân ngưỡng $\vert \nabla^2 f \vert$, hoặc tìm điểm cắt không.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Nhân cửa sổ P với mặt nạ 4 lân cận và 8 lân cận, được 80 và 180](/content/MAT3562/C5/laplace-buoc.svg)
+
+Laplace cho ra một số duy nhất, không có hướng.
+
+**▸ VIỀN KÉP VÀ ĐIỂM CẮT KHÔNG**
+
+![Ảnh gốc, giá trị Laplace, trị tuyệt đối và điểm cắt không](/content/MAT3562/C5/laplace-cat-khong.svg)
+
+Đạo hàm bậc 2 có một phần dương và một phần âm quanh mỗi biên, nên $\vert \nabla^2 f \vert$ cho **hai viền**. Tâm biên nằm giữa hai viền đó, tại điểm cắt không, nên đường này rất mảnh. Trước khi tìm điểm cắt không nên làm trơn ảnh bằng lọc Gauss. Phép này gọi là **Laplace của Gauss** (LoG).
+
+**▸ NHẠY VỚI NHIỄU**
+
+![Cùng ảnh nhiễu nhẹ, Sobel vẫn rõ biên, Laplace có nhiều chấm nhiễu](/content/MAT3562/C5/laplace-nhieu.svg)
+
+Đạo hàm bậc 2 khuếch đại nhiễu mạnh hơn đạo hàm bậc 1, và mặt nạ Laplace không có phần lấy trung bình. Vì vậy thường phải làm trơn trước khi dùng. Trên ảnh thử ở bài so sánh, với $\sigma = 20$, F1 của Laplace là 0.451, làm trơn Gauss trước thì tăng lên 0.940.
+
+**▸ LÀM NÉT ẢNH**
+
+Laplace còn dùng để làm nét. Với mặt nạ có tâm âm như $h_4$:
+
+<Formula title="Làm nét bằng Laplace">
+
+$$
+g(x, y) = f(x, y) - \nabla^2 f(x, y)
+$$
+
+</Formula>
+
+Viết thành mặt nạ là $\begin{pmatrix} 0 & -1 & 0 \\ -1 & 5 & -1 \\ 0 & -1 & 0 \end{pmatrix}$, chính là mặt nạ làm nét ở Chương 3.
+
+**▸ ⚠️ LƯU Ý**
+
+Có tài liệu dùng mặt nạ đổi dấu, tâm dương và xung quanh âm. Khi đó kết quả đổi dấu, và công thức làm nét đổi thành $g = f + \nabla^2 f$.

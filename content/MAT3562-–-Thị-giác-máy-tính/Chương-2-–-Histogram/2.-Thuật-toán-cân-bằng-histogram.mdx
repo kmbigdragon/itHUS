@@ -1,0 +1,60 @@
+---
+title: "2. Thuật toán cân bằng histogram"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ Ý TƯỞNG**
+
+Ảnh tương phản thấp có các mức xám gom vào một đoạn hẹp. Cân bằng histogram dãn chúng ra toàn dải $[0, L - 1]$. Hàm dùng để biến đổi là **hàm phân phối tích lũy** (CDF) của ảnh.
+
+<Formula title="Cân bằng histogram">
+
+$$
+s_k = \text{round}\left( (L - 1) \sum_{j = 0}^{k} p(r_j) \right)
+$$
+
+</Formula>
+
+Mức xám $r_k$ ở ảnh vào sẽ thành mức $s_k$ ở ảnh ra.
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Tính histogram $h(r_k)$.
+- **Bước 2:** Chuẩn hóa: $p(r_k) = h(r_k) / N$.
+- **Bước 3:** Tính tích lũy: $\text{CDF}(r_k) = \sum_{j = 0}^{k} p(r_j)$.
+- **Bước 4:** Tính $s_k = \text{round}((L - 1) \cdot \text{CDF}(r_k))$.
+- **Bước 5:** Thay mọi điểm có mức $r_k$ thành $s_k$.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Bảng tính từng bước, bảng tra r sang s, ảnh trước sau và histogram trước sau](/content/MAT3562/C2/can-bang-buoc.svg)
+
+Ảnh trên có $L = 8$, $N = 25$. Xét mức $r = 3$: có 10 điểm nên $p = 0.40$. Cộng dồn với mức 2 được $\text{CDF} = 0.24 + 0.40 = 0.64$. Nhân với $L - 1 = 7$ được 4.48, làm tròn thành 4.
+
+Sau cân bằng, các mức 2, 3, 4, 5 thành 2, 4, 6, 7. Khoảng cách giữa các mức lớn hơn nên tương phản tăng. Chiều cao các cột không đổi vì một mức vào chỉ đi đến một mức ra, nên histogram được dãn ra chứ không phẳng hẳn.
+
+**▸ VÌ SAO DÙNG CDF**
+
+![Đường CDF của ảnh tương phản thấp và histogram của ảnh đó](/content/MAT3562/C2/can-bang-cdf.svg)
+
+CDF tăng nhanh ở chỗ có nhiều điểm ảnh. Đoạn dốc đó kéo các mức xám gần nhau ra xa nhau, còn đoạn phẳng ở chỗ ít điểm thì ép các mức lại gần nhau.
+
+**▸ TRÊN ẢNH**
+
+![Ba ảnh trước và sau cân bằng histogram, kèm histogram](/content/MAT3562/C2/can-bang-anh.svg)
+
+- **Tương phản thấp:** dải mức xám từ 105–159 mở rộng thành 5–255. Đây là trường hợp phép này làm tốt nhất.
+- **Ảnh tối:** các vùng tối được nâng lên, nhìn rõ hơn.
+- **Ảnh đêm:** bầu trời tối chiếm phần lớn ảnh nên bị nâng sáng rất mạnh, các vết mờ trên trời lộ ra. Ảnh đã mất tính chất của ảnh đêm. Cân bằng histogram không phải lúc nào cũng làm ảnh đẹp hơn.
+
+Số mức xám khác nhau không tăng, thường còn giảm do các mức gần nhau gộp lại: ảnh tương phản thấp giảm từ 55 xuống 47 mức, ảnh đêm giảm từ 148 xuống 50 mức.
+
+**▸ ⚠️ LƯU Ý**
+
+`cv2.equalizeHist` dùng công thức có trừ $\text{CDF}_{\min}$, là giá trị CDF tại mức xám nhỏ nhất có trong ảnh:
+
+$$
+s_k = \text{round}\left( \frac{\text{CDF}(r_k) - \text{CDF}_{\min}}{1 - \text{CDF}_{\min}} \cdot (L - 1) \right)
+$$
+
+Ở ví dụ trên, công thức này cho $s = 0, 4, 6, 7$ thay vì $2, 4, 6, 7$. Các mức khác giữ nguyên, riêng mức thấp nhất về 0. Khi tính tay, cần dùng công thức mà đề bài hoặc giảng viên yêu cầu.

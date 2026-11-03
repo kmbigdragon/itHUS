@@ -1,0 +1,98 @@
+---
+title: "4. Sobel"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ MẶT NẠ**
+
+Sobel giống Prewitt nhưng hàng giữa có trọng số 2, vì điểm gần tâm đáng tin hơn điểm xa tâm.
+
+<Formula title="Mặt nạ Sobel">
+
+$$
+h_x = \begin{pmatrix} -1 & 0 & 1 \\ -2 & 0 & 2 \\ -1 & 0 & 1 \end{pmatrix}, \qquad h_y = \begin{pmatrix} -1 & -2 & -1 \\ 0 & 0 & 0 \\ 1 & 2 & 1 \end{pmatrix}
+$$
+
+</Formula>
+
+Thuật toán giống hệt Prewitt, chỉ khác mặt nạ.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Nhân cửa sổ P với hai mặt nạ Sobel và tách mặt nạ thành tích của làm trơn và đạo hàm](/content/MAT3562/C5/sobel-buoc.svg)
+
+Mặt nạ Sobel tách được thành làm trơn theo một chiều và đạo hàm theo chiều kia. Prewitt cũng vậy, với phần làm trơn là $\begin{pmatrix} 1 & 1 & 1 \end{pmatrix}^T$.
+
+**▸ SOBEL VÀ PREWITT, CÁI NÀO TỐT HƠN**
+
+Nhiều tài liệu viết rằng Sobel chịu nhiễu tốt hơn Prewitt. Kết quả chạy thử dưới đây **không cho thấy điều đó**.
+
+![Ảnh nhiễu và biên tốt nhất của Gradient, Prewitt, Sobel](/content/MAT3562/C5/sobel-nhieu.svg)
+
+**Về nhiễu:** gần như bằng nhau, Prewitt nhỉnh hơn rất ít. F1 trung bình trên ảnh thử ở bài so sánh, với $\sigma = 40$: Prewitt 0.923, Sobel 0.913. Lý do có thể tính được. Với biên bậc đứng cao $\Delta$ và nhiễu có độ lệch chuẩn $\sigma$:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Toán tử</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Phản hồi tại biên</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Độ lệch chuẩn của nhiễu ra</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Tỉ số tín hiệu trên nhiễu</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Prewitt</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$3 \Delta$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\sqrt{6} \, \sigma$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$1.22 \, \Delta / \sigma$</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Sobel</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$4 \Delta$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\sqrt{12} \, \sigma$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">$1.15 \, \Delta / \sigma$</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Lấy trung bình đều là cách giảm nhiễu độc lập tốt nhất, nên Prewitt không hề thua ở điểm này.
+
+**Về độ đều theo hướng:** Sobel tốt hơn. Đo trên các biên bậc thẳng nghiêng từ 0° đến 45°:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Đo trên biên nghiêng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Prewitt</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Sobel</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Sai số góc trung bình</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2.61°</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.08°</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Sai số góc lớn nhất</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">4.66°</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2.03°</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Độ lớn chênh giữa các hướng</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">11.5%</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">7.6%</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Vì vậy nên chọn Sobel khi cần hướng biên chính xác. Trong thực tế hai toán tử cho kết quả rất gần nhau, và Sobel phổ biến hơn.
+
+**▸ ⚠️ LƯU Ý**
+
+`cv2.Sobel` với `ksize=3` dùng đúng mặt nạ trên. Nếu kiểu ra là `cv2.CV_8U` thì phần âm bị cắt về 0, nên đặt kiểu ra là `cv2.CV_16S` hoặc `cv2.CV_64F` để giữ phần âm.

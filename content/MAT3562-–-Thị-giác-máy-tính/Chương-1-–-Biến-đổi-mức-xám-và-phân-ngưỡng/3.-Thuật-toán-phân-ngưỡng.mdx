@@ -1,0 +1,55 @@
+---
+title: "3. Thuật toán phân ngưỡng"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ Ý TƯỞNG**
+
+So từng điểm với một ngưỡng $T$. Điểm nào từ $T$ trở lên thành trắng, còn lại thành đen. Kết quả là **ảnh nhị phân**, thường dùng để tách vật khỏi nền.
+
+<Formula title="Phân ngưỡng">
+
+$$
+g(x, y) = \begin{cases}
+255 & \text{nếu } f(x, y) \ge T \\
+0 & \text{nếu } f(x, y) \lt T
+\end{cases}
+$$
+
+</Formula>
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Chọn ngưỡng $T$.
+- **Bước 2:** Với mỗi điểm $(x, y)$, so sánh $f(x, y)$ với $T$.
+- **Bước 3:** Gán $g(x, y) = 255$ nếu $f(x, y) \ge T$, ngược lại gán $g(x, y) = 0$.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Phân ngưỡng ma trận 4 × 4 với T bằng 128](/content/MAT3562/C1/phan-nguong-buoc.svg)
+
+![Hàm biến đổi là một bậc thang nhảy từ 0 lên 255 tại T](/content/MAT3562/C1/phan-nguong-ham.svg)
+
+**▸ CHỌN NGƯỠNG**
+
+Kết quả phụ thuộc nhiều vào $T$. Ảnh dưới đây biết trước vị trí đồng xu nên đếm được tỉ lệ điểm ảnh được phân loại đúng.
+
+![Phân ngưỡng ảnh đồng xu với T bằng 45, 110 và 195](/content/MAT3562/C1/phan-nguong-anh.svg)
+
+- $T = 45$: quá thấp, một phần nền bị tính là vật, đúng 85.0%.
+- $T = 110$: tách gần hết, đúng 99.7%.
+- $T = 195$: quá cao, chỉ còn vài vệt sáng trên đồng xu, đúng 70.2%.
+
+Với ảnh có nền và vật tách bạch, nên đặt $T$ ở thung lũng giữa hai đỉnh của histogram (xem Chương 2). Phương pháp Otsu chọn $T$ tự động theo ý này, trên ảnh đồng xu nó cho $T = 109$.
+
+**▸ GIỚI HẠN**
+
+![Trang chữ có ánh sáng lệch, ngưỡng thấp hỏng bên phải, ngưỡng cao hỏng bên trái](/content/MAT3562/C1/nguong-gioi-han.svg)
+
+Khi ánh sáng không đều thì không có ngưỡng chung nào đúng cho cả ảnh. Cách xử lý là chọn ngưỡng riêng theo từng vùng (phân ngưỡng thích nghi, ví dụ `cv2.adaptiveThreshold`).
+
+**▸ ⚠️ LƯU Ý**
+
+- Có tài liệu dùng $f \gt T$, có tài liệu dùng $f \ge T$. Hai cách chỉ khác nhau ở các điểm có $f = T$.
+- `cv2.threshold` dùng $f \gt T$, nên `cv2.threshold(f, 127, 255, cv2.THRESH_BINARY)` cho cùng kết quả với công thức trên khi $T = 128$.
+- Có tài liệu gán giá trị ra là 0 và 1 thay vì 0 và 255, hoặc đảo vai trò đen trắng.

@@ -1,0 +1,61 @@
+---
+title: "1. Phép cuộn (phép tích chập)"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ ĐỊNH NGHĨA**
+
+Phép cuộn tính mỗi điểm của ảnh ra bằng tổng có trọng số của một cửa sổ quanh điểm đó. Bảng trọng số gọi là **mặt nạ** (kernel, mask), kích thước $(2a + 1) \times (2b + 1)$.
+
+<Formula title="Phép cuộn">
+
+$$
+g(x, y) = (f * k)(x, y) = \sum_{i = -a}^{a} \sum_{j = -b}^{b} k(i, j) \, f(x - i, \, y - j)
+$$
+
+</Formula>
+
+Dấu trừ trong $f(x - i, y - j)$ nghĩa là mặt nạ bị **lật 180°** trước khi nhân.
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Lật mặt nạ $k$ 180°, tức là lật cả hàng và cột.
+- **Bước 2:** Đặt tâm mặt nạ đã lật lên điểm $(x, y)$.
+- **Bước 3:** Nhân từng cặp ô chồng lên nhau.
+- **Bước 4:** Cộng tất cả các tích, ghi vào $g(x, y)$.
+- **Bước 5:** Dịch sang điểm tiếp theo, lặp lại từ Bước 2.
+
+Với ảnh $W \times H$ và mặt nạ $m \times n$, độ phức tạp là $O(W \cdot H \cdot m \cdot n)$.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Lật mặt nạ, rồi tính phép cuộn tại ba vị trí trên ảnh 5 × 5](/content/MAT3562/C3/cuon-buoc.svg)
+
+Tính tiếp cho tất cả các điểm đủ cửa sổ, được phần trong của ảnh kết quả:
+
+$$
+g = \begin{pmatrix} 2 & 1 & 4 \\ 3 & 5 & 3 \\ 1 & 3 & 4 \end{pmatrix}
+$$
+
+**▸ PHÉP TƯƠNG QUAN VÀ VIỆC LẬT MẶT NẠ**
+
+Nếu không lật mặt nạ, ta có **phép tương quan** (correlation):
+
+<Formula title="Phép tương quan">
+
+$$
+g(x, y) = \sum_{i = -a}^{a} \sum_{j = -b}^{b} k(i, j) \, f(x + i, \, y + j)
+$$
+
+</Formula>
+
+![Ảnh có một điểm bằng 1: tương quan cho mặt nạ bị xoay 180 độ, phép cuộn cho lại đúng mặt nạ](/content/MAT3562/C3/lat-mat-na.svg)
+
+Lật để ảnh chỉ có một điểm bằng 1 cho ra đúng mặt nạ $k$. Nhờ vậy phép cuộn có tính giao hoán và kết hợp, còn phép tương quan thì không.
+
+Khi mặt nạ đối xứng qua tâm, ví dụ mặt nạ trung bình hay Laplace, hai phép cho cùng kết quả. Với mặt nạ như Prewitt và Sobel, lật mặt nạ làm đổi dấu kết quả.
+
+**▸ ⚠️ LƯU Ý**
+
+- Nhiều tài liệu gọi chung là "cuộn" nhưng công thức thực tế lại không lật. Cần xem đề bài có yêu cầu lật hay không.
+- `cv2.filter2D` tính **tương quan**, không lật mặt nạ. Muốn phép cuộn thật thì phải tự lật trước, ví dụ `k[::-1, ::-1]` trong NumPy.

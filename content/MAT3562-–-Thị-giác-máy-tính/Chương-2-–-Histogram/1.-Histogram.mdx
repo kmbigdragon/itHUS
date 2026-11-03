@@ -1,0 +1,79 @@
+---
+title: "1. Histogram"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ ĐỊNH NGHĨA**
+
+Histogram đếm số điểm ảnh ở mỗi mức xám.
+
+<Formula title="Histogram">
+
+$$
+h(r) = \text{số điểm } (x, y) \text{ có } f(x, y) = r, \qquad \sum_{r = 0}^{L - 1} h(r) = N
+$$
+
+</Formula>
+
+<Formula title="Histogram chuẩn hóa">
+
+$$
+p(r) = \frac{h(r)}{N}, \qquad \sum_{r = 0}^{L - 1} p(r) = 1
+$$
+
+</Formula>
+
+$p(r)$ là tỉ lệ điểm ảnh có mức xám $r$. Dùng $p$ thì so được các ảnh khác kích thước.
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Tạo mảng $h$ gồm $L$ phần tử, tất cả bằng 0.
+- **Bước 2:** Với mỗi điểm $(x, y)$, tăng $h(f(x, y))$ thêm 1.
+- **Bước 3:** Nếu cần chuẩn hóa, chia mọi phần tử cho $N$.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Ma trận 5 × 5 có 8 mức xám, bảng đếm và biểu đồ histogram](/content/MAT3562/C2/histogram-buoc.svg)
+
+Ảnh có 25 điểm: 6 điểm mức 2, 10 điểm mức 3, 7 điểm mức 4, 2 điểm mức 5. Tổng các cột đúng bằng 25.
+
+**▸ ĐỌC HISTOGRAM**
+
+![Bốn phiên bản của một ảnh và histogram tương ứng](/content/MAT3562/C2/histogram-bon-dang.svg)
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Hình dạng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Ý nghĩa</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Cột dồn về bên trái</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Ảnh tối</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Cột dồn về bên phải</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Ảnh sáng</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Cột gom ở một đoạn hẹp</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tương phản thấp, ảnh trông xám</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Cột trải rộng cả dải</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tương phản cao</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Histogram chỉ đếm, không biết điểm nào nằm ở đâu. Hai ảnh rất khác nhau vẫn có thể có cùng histogram, xem Chương 6.
+
+**▸ DÙNG HISTOGRAM ĐỂ CHỌN NGƯỠNG**
+
+![Histogram ảnh đồng xu có hai đỉnh và ba ngưỡng](/content/MAT3562/C2/histogram-chon-nguong.svg)
+
+Ảnh đồng xu ở bài phân ngưỡng có hai đỉnh, một của nền và một của xu. $T = 110$ rơi vào thung lũng nên tách tốt. $T = 45$ cắt ngang đỉnh nền, $T = 195$ cắt ngang đỉnh của xu.

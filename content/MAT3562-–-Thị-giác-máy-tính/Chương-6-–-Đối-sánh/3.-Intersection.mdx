@@ -1,0 +1,49 @@
+---
+title: "3. Intersection"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ CÔNG THỨC**
+
+Với mỗi bin, lấy phần chung là giá trị nhỏ hơn trong hai histogram, rồi cộng lại.
+
+<Formula title="Intersection">
+
+$$
+d(H_1, H_2) = \sum_I \min\big(H_1(I), H_2(I)\big)
+$$
+
+</Formula>
+
+Với histogram chuẩn hóa: $d = 1$ là trùng khít, $d = 0$ là không có bin nào chung.
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Với mỗi bin, lấy $\min(H_1(I), H_2(I))$.
+- **Bước 2:** Cộng tất cả.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Bảng tính min từng bin và biểu đồ phần chung của hai histogram](/content/MAT3562/C6/intersect-buoc.svg)
+
+Với $H_1$ và $H_3$: $d = 0.60$.
+
+**▸ TÍNH CHẤT**
+
+- Đối xứng: $d(H_1, H_2) = d(H_2, H_1)$.
+- Rất nhanh, chỉ có phép lấy min và phép cộng.
+- Với histogram chuẩn hóa, nó liên hệ trực tiếp với khoảng cách L1:
+
+<Formula title="Liên hệ với khoảng cách L1">
+
+$$
+\sum_I \min\big(H_1(I), H_2(I)\big) = 1 - \frac{1}{2} \sum_I \vert H_1(I) - H_2(I) \vert
+$$
+
+</Formula>
+
+Kiểm tra trên ví dụ: $\sum \vert H_1 - H_2 \vert = 0.40$, nên $d = 1 - 0.20 = 0.80$.
+
+**▸ ⚠️ LƯU Ý**
+
+Nếu không chuẩn hóa thì kết quả là số điểm ảnh chung, phụ thuộc vào kích thước ảnh. Độ đo này được giới thiệu trong bài báo *Color Indexing* của M. J. Swain và D. H. Ballard (International Journal of Computer Vision, 1991).

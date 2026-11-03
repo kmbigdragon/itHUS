@@ -1,0 +1,76 @@
+---
+title: "5. La bàn"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ Ý TƯỞNG**
+
+Gradient chỉ dùng hai mặt nạ theo hai trục. Toán tử la bàn (compass) dùng 8 mặt nạ cho 8 hướng, mỗi mặt nạ phản hồi mạnh nhất với biên quay về hướng của nó. Kết quả là phản hồi lớn nhất.
+
+<Formula title="Toán tử la bàn">
+
+$$
+g(x, y) = \max_{i = 1, \dots, 8} G_i(x, y), \qquad \text{hướng} = \arg\max_{i} G_i(x, y)
+$$
+
+</Formula>
+
+$G_i$ là kết quả nhân cửa sổ với mặt nạ thứ $i$. Không cần tính căn bậc hai hay arctan, hướng có sẵn từ chỉ số của mặt nạ.
+
+**▸ MẶT NẠ KIRSCH**
+
+Mặt nạ hướng Bắc:
+
+<Formula title="Kirsch, hướng Bắc">
+
+$$
+h_N = \begin{pmatrix} 5 & 5 & 5 \\ -3 & 0 & -3 \\ -3 & -3 & -3 \end{pmatrix}
+$$
+
+</Formula>
+
+Bảy mặt nạ còn lại có được bằng cách quay vòng 8 ô ngoài, mỗi lần một ô, tương ứng 45°. Tổng các phần tử luôn bằng 0.
+
+![Tám mặt nạ Kirsch xếp theo các hướng của la bàn](/content/MAT3562/C5/la-ban-mat-na.svg)
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Với mỗi điểm, nhân cửa sổ 3 × 3 với cả 8 mặt nạ, được $G_1, \dots, G_8$.
+- **Bước 2:** Lấy $g(x, y)$ là giá trị lớn nhất, hướng là mặt nạ cho giá trị đó.
+- **Bước 3:** Phân ngưỡng $g$ để được ảnh biên.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Phản hồi của 8 mặt nạ Kirsch trên cửa sổ P, lớn nhất là hướng Đông với 980](/content/MAT3562/C5/la-ban-buoc.svg)
+
+Ví dụ với mặt nạ hướng Đông, 3 ô cột phải có hệ số 5, các ô còn lại trừ tâm có hệ số −3:
+
+$$
+G_E = 5 (90 + 90 + 100) - 3 (10 + 20 + 10 + 20 + 80) = 1400 - 420 = 980
+$$
+
+Lớn nhất là Đông (980), tiếp theo là Đông Nam (900). Điều này khớp với kết quả Prewitt và Sobel: góc 18.4° và 23.6° tính từ hướng Đông, chếch về Đông Nam.
+
+**▸ TRÊN ẢNH**
+
+![Ảnh gốc, phản hồi của ba mặt nạ và kết quả lấy max](/content/MAT3562/C5/la-ban-anh.svg)
+
+Mỗi mặt nạ chỉ thấy các đoạn biên có phía sáng quay về hướng của nó. Lấy max thì thấy đủ mọi đoạn biên.
+
+**▸ MẶT NẠ ROBINSON**
+
+Robinson dùng cùng cách quay vòng, xuất phát từ mặt nạ Sobel:
+
+<Formula title="Robinson, hướng Bắc">
+
+$$
+h_N = \begin{pmatrix} 1 & 2 & 1 \\ 0 & 0 & 0 \\ -1 & -2 & -1 \end{pmatrix}
+$$
+
+</Formula>
+
+Mặt nạ hướng ngược nhau chỉ khác dấu, nên chỉ cần tính 4 mặt nạ rồi đổi dấu. Kirsch không có tính chất này. Robinson có thể hòa: trên cửa sổ $P$, hướng Đông và Đông Nam cùng cho 320.
+
+**▸ ⚠️ LƯU Ý**
+
+Có tài liệu đặt tên mặt nạ theo chiều chạy của đường biên thay vì phía sáng của biên, và có tài liệu đánh số các hướng theo thứ tự khác. Tên trong bài này là hướng của phía sáng.

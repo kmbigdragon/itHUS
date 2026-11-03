@@ -1,0 +1,37 @@
+---
+title: "2. Correlation"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ CÔNG THỨC**
+
+Correlation là hệ số tương quan giữa hai dãy số $H_1, H_2$.
+
+<Formula title="Correlation">
+
+$$
+d(H_1, H_2) = \frac{\sum_I \big(H_1(I) - \bar H_1\big)\big(H_2(I) - \bar H_2\big)}{\sqrt{\sum_I \big(H_1(I) - \bar H_1\big)^2 \; \sum_I \big(H_2(I) - \bar H_2\big)^2}}, \qquad \bar H_k = \frac{1}{n} \sum_I H_k(I)
+$$
+
+</Formula>
+
+- $d = 1$: hai histogram có hình dạng giống hệt nhau.
+- $d = 0$: không tương quan tuyến tính.
+- $d = -1$: một cái lên thì cái kia xuống.
+
+**▸ THUẬT TOÁN**
+
+- **Bước 1:** Tính trung bình $\bar H_1, \bar H_2$.
+- **Bước 2:** Với mỗi bin, tính $a = H_1(I) - \bar H_1$ và $b = H_2(I) - \bar H_2$.
+- **Bước 3:** Tính $\sum a b$, $\sum a^2$, $\sum b^2$.
+- **Bước 4:** $d = \sum a b \,/\, \sqrt{\sum a^2 \sum b^2}$.
+
+**▸ MINH HỌA TỪNG BƯỚC**
+
+![Bảng tính correlation và biểu đồ tán xạ H1 theo H2](/content/MAT3562/C6/correl-buoc.svg)
+
+Với $H_1$ và $H_3$, cũng tính như vậy được $d = -0.085$: gần như không tương quan.
+
+**▸ TÍNH CHẤT**
+
+Correlation không đổi nếu nhân cả histogram với một số dương hoặc cộng thêm một hằng số. Vì vậy ví dụ trên dùng được số đếm thay cho histogram chuẩn hóa, kết quả vẫn là 0.647. Nó chỉ so **hình dạng**, không so độ lớn tuyệt đối.

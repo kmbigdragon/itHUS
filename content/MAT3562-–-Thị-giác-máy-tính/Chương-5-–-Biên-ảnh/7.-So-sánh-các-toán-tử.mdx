@@ -1,0 +1,244 @@
+---
+title: "7. So sánh các toán tử"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ TRÊN CỬA SỔ P**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Toán tử</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$G_x$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">$G_y$</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Độ lớn</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Hướng</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Gradient</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">60</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">50</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">78.1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">39.8°</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Prewitt</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">240</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">80</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">253.0</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">18.4°</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Sobel</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">320</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">140</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">349.3</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">23.6°</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">La bàn Kirsch</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không có</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không có</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">980</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Đông</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Laplace 4 lân cận</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không có</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không có</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">80</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không có</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Độ lớn của các toán tử khác nhau không so sánh được, vì tổng trọng số trong mặt nạ khác nhau. Khi đổi toán tử thì phải chọn lại ngưỡng.
+
+**▸ TRÊN ẢNH**
+
+![Năm toán tử trên ảnh sạch và ảnh nhiễu](/content/MAT3562/C5/so-sanh-bien.svg)
+
+**▸ ĐO BẰNG F1 TRÊN ẢNH CÓ BIÊN CHUẨN**
+
+Để có đáp án đúng, dùng ảnh gồm ba hình phẳng trên nền phẳng, biết chính xác đường biên. Đo bằng F1, từ 0 đến 1, càng cao càng tốt.
+
+<Formula title="Độ đo F1">
+
+$$
+F_1 = \frac{2 \cdot \text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}
+$$
+
+</Formula>
+
+- **Precision:** tỉ lệ điểm tìm được đúng là biên.
+- **Recall:** tỉ lệ biên thật được tìm thấy.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Nhiễu Gauss</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Gradient</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Prewitt</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Sobel</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">La bàn Kirsch</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Laplace</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\sigma = 0$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.000</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.000</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.000</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.000</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.000</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$\sigma = 10$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.990</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.000</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.000</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.000</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.823</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\sigma = 20$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.828</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.998</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.997</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.998</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.451</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$\sigma = 30$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.583</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.974</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.967</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.967</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.291</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\sigma = 40$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.411</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.923</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.913</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.896</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.258</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Mỗi số là trung bình của 5 lần sinh nhiễu. Một điểm được tính là đúng nếu cách biên chuẩn không quá 2 điểm ảnh. Không có bước làm trơn trước.
+
+**▸ ĐỌC KẾT QUẢ**
+
+- **Mặt nạ 3 × 3 giúp rất nhiều:** Prewitt, Sobel, Kirsch vượt xa Gradient 2 điểm khi có nhiễu.
+- **Prewitt, Sobel, Kirsch gần như bằng nhau.** Chênh lệch giữa ba toán tử không quá 0.03 ở mọi mức nhiễu trong bảng.
+- **Laplace kém nhất khi có nhiễu.** Không nên dùng khi chưa làm trơn.
+
+**Làm trơn trước giúp rất nhiều.** Thêm bước lọc Gauss với độ lệch chuẩn 1.4 trước khi tính:
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Nhiễu Gauss</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Laplace</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Laplace sau làm trơn</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Sobel</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Sobel sau làm trơn</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\sigma = 10$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.823</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.960</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.000</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1.000</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$\sigma = 20$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.451</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.940</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.997</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.999</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">$\sigma = 30$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.291</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.899</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.967</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.996</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">$\sigma = 40$</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.258</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.838</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.913</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">0.992</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**Giới hạn của phép đo:** mỗi toán tử được chọn ngưỡng tốt nhất dựa trên đáp án, trong thực tế không làm được điều này. Ảnh thử cũng rất đơn giản, nên các số trên có thể cao hơn so với ảnh thật.
+
+**▸ TÓM TẮT**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Toán tử</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Cho biết hướng</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Số mặt nạ</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Chịu nhiễu</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Đặc điểm</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Gradient</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Có</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Kém</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Đơn giản nhất, 2 điểm cho mỗi chiều</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Prewitt</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Có</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tốt</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Trung bình đều trên 3 hàng</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Sobel</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Có</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tốt</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Hướng chính xác hơn Prewitt</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">La bàn</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">8 hướng</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">8</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tốt</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Có sẵn hướng, tốn 4 lần phép tính</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Laplace</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Không</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Kém</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Viền kép, cần làm trơn trước, đường cắt không rất mảnh</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

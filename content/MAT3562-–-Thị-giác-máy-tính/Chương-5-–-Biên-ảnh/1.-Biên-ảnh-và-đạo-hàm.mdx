@@ -1,0 +1,78 @@
+---
+title: "1. Biên ảnh và đạo hàm"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ BIÊN LÀ GÌ**
+
+**Biên** là nơi mức xám thay đổi nhanh, thường là ranh giới giữa hai vùng. Chỗ thay đổi nhanh thì đạo hàm lớn, nên tìm biên chính là tính đạo hàm của ảnh.
+
+![Một biên trên hàng ảnh, đạo hàm bậc 1 có đỉnh và đạo hàm bậc 2 đổi dấu tại tâm biên](/content/MAT3562/C5/bien-dao-ham.svg)
+
+- **Đạo hàm bậc 1:** đạt cực đại tại tâm biên.
+- **Đạo hàm bậc 2:** đổi dấu tại tâm biên, gọi là **điểm cắt không**.
+
+**▸ ĐẠO HÀM TRÊN ẢNH SỐ**
+
+Ảnh là các điểm rời rạc nên đạo hàm được thay bằng sai phân.
+
+<Formula title="Sai phân">
+
+$$
+\begin{aligned}
+f'(x) &\approx f(x + 1) - f(x) \\
+f''(x) &\approx f(x + 1) - 2 f(x) + f(x - 1)
+\end{aligned}
+$$
+
+</Formula>
+
+**▸ HAI NHÓM TOÁN TỬ**
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Nhóm</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Dựa trên</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Cho biết</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Toán tử</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Bậc 1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Đạo hàm bậc 1</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Độ lớn và hướng của biên</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Gradient, Prewitt, Sobel, La bàn</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Bậc 2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Đạo hàm bậc 2</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Chỉ độ lớn, không có hướng</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Laplace</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ QUY TRÌNH CHUNG**
+
+- **Bước 1:** Làm trơn ảnh nếu có nhiều nhiễu.
+- **Bước 2:** Áp dụng mặt nạ để tính phản hồi tại mỗi điểm.
+- **Bước 3:** Phân ngưỡng phản hồi để được ảnh biên nhị phân.
+
+**▸ CỬA SỔ DÙNG CHUNG TRONG CHƯƠNG**
+
+Các bài sau đều tính trên cùng cửa sổ này, tâm là điểm có giá trị 30:
+
+$$
+P = \begin{pmatrix} 10 & 20 & 90 \\ 10 & 30 & 90 \\ 20 & 80 & 100 \end{pmatrix}
+$$
+
+Phía phải và phía dưới sáng hơn, nên biên ở đây quay về hướng đông, hơi chếch xuống nam.
+
+**▸ ⚠️ LƯU Ý**
+
+- Phản hồi có thể âm hoặc lớn hơn 255. Khi hiển thị cần lấy trị tuyệt đối rồi chia tỉ lệ. Ảnh trong chương này chia theo phân vị 99.5 của từng ảnh, nên độ sáng giữa các ảnh khác toán tử không so sánh được.
+- Các bài sau đặt mặt nạ lên cửa sổ, nhân từng ô rồi cộng, **không lật mặt nạ**, tức là phép tương quan ở Chương 3. Nếu lật thì $G_x, G_y$ đổi dấu, còn độ lớn không đổi.

@@ -4,6 +4,7 @@ Allow: /subjects/
 Allow: /subjects/mat2404-giai-tich-so
 Allow: /subjects/mat2407-toi-uu-hoa
 Allow: /subjects/mat3323-toi-uu-roi-rac
+Allow: /subjects/mat3562-thi-giac-may-tinh
 Allow: /subjects/mat3565-nhap-mon-khai-pha-cac-tap-du-lieu-lon
 
 Sitemap: https://ithus.bigdragon.info.vn/sitemap.xml

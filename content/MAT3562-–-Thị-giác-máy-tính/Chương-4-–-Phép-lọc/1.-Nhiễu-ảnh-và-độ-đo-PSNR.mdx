@@ -1,0 +1,79 @@
+---
+title: "1. Nhiễu ảnh và độ đo PSNR"
+author: "Trần Đăng Quang Minh"
+---
+
+**▸ HAI LOẠI NHIỄU THƯỜNG GẶP**
+
+![Ảnh gốc, ảnh nhiễu Gauss, ảnh nhiễu muối tiêu và đường mức xám của từng ảnh](/content/MAT3562/C4/nhieu.svg)
+
+<Formula title="Nhiễu Gauss">
+
+$$
+g(x, y) = f(x, y) + n(x, y), \qquad n(x, y) \sim \mathcal{N}(0, \sigma^2)
+$$
+
+</Formula>
+
+Mọi điểm đều lệch một ít. $\sigma$ càng lớn, nhiễu càng mạnh.
+
+<Formula title="Nhiễu muối tiêu">
+
+$$
+g(x, y) = \begin{cases}
+0 & \text{với xác suất } p / 2 \\
+255 & \text{với xác suất } p / 2 \\
+f(x, y) & \text{với xác suất } 1 - p
+\end{cases}
+$$
+
+</Formula>
+
+Chỉ một số điểm bị hỏng, nhưng hỏng hẳn. Điểm đen là "tiêu", điểm trắng là "muối".
+
+**▸ Ý TƯỞNG CỦA PHÉP LỌC**
+
+Thay mỗi điểm bằng một giá trị tính từ cửa sổ quanh nó. Nhiễu thường là thay đổi đột ngột, còn ảnh thật thường đổi chậm, trừ ở biên.
+
+<div className="overflow-x-auto my-6">
+  <table className="border-collapse text-sm w-full">
+    <thead>
+      <tr className="bg-primary/10">
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Bộ lọc</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Giá trị thay vào</th>
+        <th className="border border-primary/20 px-4 py-2 text-center font-semibold">Loại</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Trung bình</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Trung bình cả cửa sổ</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Tuyến tính, là phép cuộn</td>
+      </tr>
+      <tr className="bg-primary/5">
+        <td className="border border-primary/20 px-4 py-2 text-center">Trung bình theo K giá trị gần nhất</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Trung bình K giá trị gần tâm nhất</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Phi tuyến</td>
+      </tr>
+      <tr>
+        <td className="border border-primary/20 px-4 py-2 text-center">Trung vị</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Giá trị đứng giữa khi sắp xếp</td>
+        <td className="border border-primary/20 px-4 py-2 text-center">Phi tuyến</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+**▸ ĐO CHẤT LƯỢNG BẰNG PSNR**
+
+Khi có ảnh gốc $f$, chất lượng ảnh $g$ đo bằng PSNR, đơn vị dB. Càng cao càng gần ảnh gốc.
+
+<Formula title="PSNR">
+
+$$
+\text{MSE} = \frac{1}{N} \sum_{x, y} \big( f(x, y) - g(x, y) \big)^2, \qquad \text{PSNR} = 10 \log_{10} \frac{255^2}{\text{MSE}}
+$$
+
+</Formula>
+
+Hai ảnh nhiễu ở hình trên có PSNR 20.3 dB (Gauss, $\sigma = 25$) và 15.2 dB (muối tiêu, $p = 10\%$). Trong thực tế thường không có ảnh gốc, PSNR chủ yếu dùng để so sánh thuật toán như trong tài liệu này.
