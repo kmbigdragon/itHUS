@@ -92,7 +92,11 @@ const langNames: Record<string, string> = {
   sql: "SQL",
 };
 
-export function CodeBlock({ children, className, ...props }: any) {
+export function CodeBlock({
+  children,
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<"code">) {
   const lang = className?.replace("language-", "");
 
   if (!lang) {

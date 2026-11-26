@@ -22,14 +22,6 @@ export function NavigationProgress() {
   const prevPathname = useRef(pathname);
   const completeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Khi pathname THAY ĐỔI → trang đã render xong → complete bar
-  useEffect(() => {
-    if (prevPathname.current !== pathname) {
-      prevPathname.current = pathname;
-      completBar();
-    }
-  }, [pathname]);
-
   function startBar() {
     // Xóa timer cũ nếu có
     if (timerRef.current) clearInterval(timerRef.current);
@@ -61,6 +53,14 @@ export function NavigationProgress() {
       setProgress(0);
     }, 400);
   }
+
+  // Khi pathname THAY ĐỔI → trang đã render xong → complete bar
+  useEffect(() => {
+    if (prevPathname.current !== pathname) {
+      prevPathname.current = pathname;
+      completBar();
+    }
+  }, [pathname]);
 
   // Intercept tất cả click vào <a> để bắt đầu loading
   useEffect(() => {

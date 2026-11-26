@@ -4,6 +4,7 @@ import { FaBook } from "react-icons/fa";
 import { LuArrowRight } from "react-icons/lu";
 import SocialButtons from "@/components/home/SocialButtons";
 import OpenSearchButton from "@/components/home/OpenSearchButton";
+import { ContributeSection } from "@/components/home/ContributeSection";
 import { SubjectCard } from "@/components/subjects/SubjectCard";
 import { buildTree } from "@/utils/tree";
 import { isCompletedSubject } from "@/utils/subjects";
@@ -129,6 +130,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ĐÓNG GÓP */}
+      <ContributeSection />
     </div>
   );
 }
