@@ -2,22 +2,9 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 relative overflow-hidden">
-      {/* Background grid */}
-      <div
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `linear-gradient(var(--color-primary) 1px, transparent 1px),
-            linear-gradient(90deg, var(--color-primary) 1px, transparent 1px)`,
-          backgroundSize: "40px 40px",
-        }}
-      />
-
-      {/* Glow */}
-      <div className="absolute w-96 h-96 rounded-full bg-accent/10 blur-3xl pointer-events-none" />
-
+    <div className="min-h-[80vh] flex flex-col items-center justify-center px-6">
       {/* Content */}
-      <div className="relative z-10 text-center flex flex-col items-center gap-6">
+      <div className="text-center flex flex-col items-center gap-6">
         {/* 404 số lớn */}
         <div className="relative">
           <span className="text-[160px] sm:text-[220px] font-black leading-none tracking-tighter text-primary/5 select-none">
@@ -32,7 +19,7 @@ export default function NotFound() {
           <h1 className="text-xl sm:text-2xl font-semibold text-primary/80">
             Trang không tồn tại
           </h1>
-          <p className="text-sm text-primary/40 max-w-xs">
+          <p className="text-sm text-primary/60 max-w-xs">
             Trang bạn đang tìm kiếm đã bị xóa, đổi tên hoặc chưa được tạo.
           </p>
         </div>
@@ -40,13 +27,13 @@ export default function NotFound() {
         <div className="flex flex-col sm:flex-row gap-3 mt-2">
           <Link
             href="/"
-            className="px-6 py-2.5 rounded-lg bg-accent text-background text-sm font-medium hover:bg-accent/80 transition"
+            className="px-6 py-2.5 rounded-lg bg-accent text-primary text-sm font-semibold hover:bg-accent/85 transition-colors"
           >
             Về trang chủ
           </Link>
           <Link
             href="/subjects"
-            className="px-6 py-2.5 rounded-lg border border-primary/20 text-primary/60 text-sm font-medium hover:border-primary/40 hover:text-primary/80 transition"
+            className="px-6 py-2.5 rounded-lg border border-primary/20 text-primary/70 text-sm font-medium hover:border-accent hover:bg-accent/10 hover:text-primary transition-colors"
           >
             Xem môn học
           </Link>

@@ -1,17 +1,54 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { FaXmark } from "react-icons/fa6";
+import { LuMenu, LuX } from "react-icons/lu";
 import { SearchBar } from "./SearchBar";
-import { FaBars } from "react-icons/fa";
+
+const links = [
+  { href: "/", label: "Trang chủ" },
+  { href: "/subjects", label: "Môn học" },
+];
+
+function isActive(pathname: string, href: string) {
+  return href === "/" ? pathname === "/" : pathname.startsWith(href);
+}
 
 export default function Navbar() {
+  const pathname = usePathname();
+
+  // Gắn trạng thái mở với pathname: chuyển trang là menu tự đóng
+  const [menuPath, setMenuPath] = useState<string | null>(null);
+  const menuOpen = menuPath === pathname;
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onClick = (e: MouseEvent) => {
+      if (!menuRef.current?.contains(e.target as Node)) setMenuPath(null);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuPath(null);
+    };
+    document.addEventListener("click", onClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("click", onClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [menuOpen]);
+
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-primary/90 backdrop-blur-md shadow-md">
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4 h-16">
         {/* Logo */}
         <Link
           href="/"
-          className="flex items-center gap-3 group transition-transform duration-300 hover:scale-105 active:scale-95"
+          aria-label="itHUS - Trang chủ"
+          className="flex shrink-0 items-center gap-3 group"
         >
           <Image
             src="/itHUS_LOGO.webp"
@@ -36,52 +73,67 @@ export default function Navbar() {
           />
         </Link>
 
-        {/* Desktop Menu */}
-        <div className="hidden md:flex gap-8 items-center">
-          <Link
-            href="/"
-            className="text-base/80 hover:text-accent hover:scale-110 active:scale-95 hover:cursor-pointer transition duration-300 font-medium"
-          >
-            Trang chủ
-          </Link>
-
-          <div className="h-7 w-px bg-base/30" />
-
-          <Link
-            href="/subjects"
-            className="text-base/80 hover:text-accent hover:scale-110 active:scale-95 hover:cursor-pointer transition duration-300 font-medium"
-          >
-            Môn học
-          </Link>
+        <div className="flex items-center gap-2 md:gap-6">
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center gap-1">
+            {links.map((l) => {
+              const active = isActive(pathname, l.href);
+              return (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  aria-current={active ? "page" : undefined}
+                  className={`rounded-lg px-3 py-1.5 font-medium transition-colors ${
+                    active
+                      ? "bg-base/10 text-base"
+                      : "text-base/70 hover:bg-base/5 hover:text-base"
+                  }`}
+                >
+                  {l.label}
+                </Link>
+              );
+            })}
+          </div>
 
           <SearchBar />
-        </div>
 
-        {/* Mobile Button */}
-        <div className="md:hidden flex flex-row items-center justify-center gap-4">
-          <SearchBar />
-          <details className="relative">
-            <summary className="list-none text-base text-xl cursor-pointer">
-              <FaBars />
-            </summary>
+          {/* Mobile Menu */}
+          <div ref={menuRef} className="relative md:hidden">
+            <button
+              type="button"
+              onClick={() => setMenuPath(menuOpen ? null : pathname)}
+              aria-expanded={menuOpen}
+              aria-label={menuOpen ? "Đóng menu" : "Mở menu"}
+              className="rounded-lg p-2 text-base transition-colors hover:bg-base/10"
+            >
+              {menuOpen ? <LuX size={22} /> : <LuMenu size={22} />}
+            </button>
 
-            <div className="absolute right-0 mt-4 w-40 bg-secondary/95 backdrop-blur-md rounded-lg shadow-lg">
-              <div className="flex flex-col p-4 gap-3">
-                <Link
-                  href="/"
-                  className="text-base/80 hover:text-accent transition"
-                >
-                  Trang chủ
-                </Link>
-                <Link
-                  href="/subjects"
-                  className="text-base/80 hover:text-accent transition"
-                >
-                  Môn học
-                </Link>
+            {menuOpen && (
+              <div className="absolute right-0 mt-3 w-48 overflow-hidden rounded-lg bg-secondary shadow-lg">
+                <div className="flex flex-col p-1.5">
+                  {links.map((l) => {
+                    const active = isActive(pathname, l.href);
+                    return (
+                      <Link
+                        key={l.href}
+                        href={l.href}
+                        onClick={() => setMenuPath(null)}
+                        aria-current={active ? "page" : undefined}
+                        className={`rounded-md px-3 py-2.5 transition-colors ${
+                          active
+                            ? "bg-primary/40 font-medium text-base"
+                            : "text-base/75 hover:bg-primary/30 hover:text-base"
+                        }`}
+                      >
+                        {l.label}
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          </details>
+            )}
+          </div>
         </div>
       </div>
     </nav>

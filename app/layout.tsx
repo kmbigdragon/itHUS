@@ -39,7 +39,8 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <NavigationProgress />
         <Navbar />
-        <main className="pt-16 min-h-screen overflow-x-hidden">{children}</main>
+        {/* overflow-x-clip (không phải hidden) để position: sticky bên trong vẫn hoạt động */}
+        <main className="flex-1 pt-16 overflow-x-clip">{children}</main>
         <ScrollToTop />
         <Footer />
         {/* <Analytics /> */}

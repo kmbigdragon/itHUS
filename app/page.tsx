@@ -1,20 +1,30 @@
 import Link from "next/link";
 import Image from "next/image";
 import { FaBook } from "react-icons/fa";
+import { LuArrowRight } from "react-icons/lu";
 import SocialButtons from "@/components/home/SocialButtons";
+import OpenSearchButton from "@/components/home/OpenSearchButton";
+import { SubjectCard } from "@/components/subjects/SubjectCard";
+import { buildTree } from "@/utils/tree";
+import { isCompletedSubject } from "@/utils/subjects";
+
 export const dynamic = "force-static";
+
 export default function Home() {
+  const subjects = buildTree().filter((n) => !n.isFile);
+  const completed = subjects.filter((s) => isCompletedSubject(s.name));
+
   return (
-    <main className="bg-base text-primary min-h-screen">
+    <div className="bg-base text-primary min-h-screen">
       {/* HERO */}
-      <section className="flex flex-col items-center justify-center text-center px-6 py-32 bg-primary text-base">
+      <section className="flex flex-col items-center justify-center text-center px-6 py-20 md:py-28 bg-primary text-base">
         <Image
           src="/itHUS_LOGO.webp"
           alt="itHUS"
           width={1200}
           height={600}
           loading="eager"
-          className="w-80 h-auto mb-16 transition-all duration-300 drop-shadow-[0_0_8px_var(--color-accent)]"
+          className="w-64 md:w-80 h-auto mb-10 md:mb-14 transition-all duration-300 drop-shadow-[0_0_8px_var(--color-accent)]"
         />
 
         <h1 className="text-4xl md:text-5xl font-bold mb-6">
@@ -26,13 +36,39 @@ export default function Home() {
         </p>
 
         {/* CTA */}
-        <Link
-          href="/subjects"
-          className="flex items-center gap-3 bg-accent text-primary px-8 py-4 rounded-xl text-lg font-semibold hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg"
-        >
-          <FaBook /> Khám phá các Môn học
-        </Link>
+        <div className="flex flex-col sm:flex-row items-center gap-3">
+          <Link
+            href="/subjects"
+            className="flex items-center gap-3 bg-accent text-primary px-6 py-3.5 rounded-xl font-semibold hover:bg-accent/85 transition-colors shadow-lg"
+          >
+            <FaBook /> Khám phá các Môn học
+          </Link>
+          <OpenSearchButton />
+        </div>
       </section>
+
+      {/* MÔN ĐÃ HOÀN THÀNH */}
+      {completed.length > 0 && (
+        <section className="bg-secondary/10 py-14 md:py-20 px-5 sm:px-6">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-8">
+              <h2 className="text-2xl font-bold">Môn đã hoàn thành</h2>
+              <Link
+                href="/subjects"
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-secondary hover:underline"
+              >
+                Xem tất cả {subjects.length} môn <LuArrowRight aria-hidden />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {completed.map((s) => (
+                <SubjectCard key={s.path} subject={s} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ABOUT ME */}
       <section
@@ -93,41 +129,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* EXTRA SECTION (FEATURE / PREVIEW) */}
-      <section className="bg-secondary/10 py-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl font-bold mb-10 text-center">
-            itHUS có những gì?
-          </h2>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="p-6 rounded-xl bg-white/60 backdrop-blur shadow-sm hover:scale-105 hover:cursor-pointer duration-300">
-              <h3 className="font-semibold mb-2">📖 Kiến thức có hệ thống</h3>
-              <p className="text-sm text-primary/70">
-                Mỗi chủ đề đều được hệ thống hóa theo từng phần, có liên kết rõ
-                ràng.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-xl bg-white/60 backdrop-blur shadow-sm hover:scale-105 hover:cursor-pointer duration-300">
-              <h3 className="font-semibold mb-2">🔍 Dễ tra cứu</h3>
-              <p className="text-sm text-primary/70">
-                Bạn có thể tìm kiếm nhanh chóng các khái niệm và nội dung cần
-                thiết.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-xl bg-white/60 backdrop-blur shadow-sm hover:scale-105 hover:cursor-pointer duration-300">
-              <h3 className="font-semibold mb-2">🚀 Luôn cập nhật</h3>
-              <p className="text-sm text-primary/70">
-                Nội dung được bổ sung liên tục trong quá trình học tập và làm
-                việc.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
+    </div>
   );
 }

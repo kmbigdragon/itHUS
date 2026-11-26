@@ -2,8 +2,23 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import { cache } from "react";
+import { getSubjectCode } from "./subjects";
 
 const CONTENT_PATH = path.join(process.cwd(), "content");
+
+/* =========================
+   SORT
+   So sánh theo tiếng Việt và theo số ("Chương 2" đứng trước "Chương 10")
+========================= */
+const collator = new Intl.Collator("vi", { numeric: true });
+
+export function compareNames(a: string, b: string) {
+  return collator.compare(a, b);
+}
+
+export function readDirSorted(dir: string): string[] {
+  return fs.readdirSync(dir).sort(compareNames);
+}
 
 /* =========================
    NORMALIZE / SLUG
@@ -88,7 +103,7 @@ export const getContentBySlug = cache(function (slug: string[]) {
   }
 
   const raw = fs.readFileSync(filePath, "utf-8");
-  const { data, content } = matter(raw);
+  const { content } = matter(raw);
   fileName = path.basename(filePath).replace(/\.(mdx)$/i, "");
 
   return {
@@ -98,41 +113,49 @@ export const getContentBySlug = cache(function (slug: string[]) {
   };
 });
 
-let cachedContent: { title: string; href: string; subject: string }[] | null =
-  null;
+export type SearchItem = {
+  title: string;
+  href: string;
+  kind: "folder" | "lesson" | "pdf";
+  /** Đường dẫn cha, ví dụ "MAT3323 › Chương 3 – Cây bao trùm nhỏ nhất" */
+  context: string;
+};
+
+let cachedContent: SearchItem[] | null = null;
 
 export const getAllContent = cache(function () {
   if (cachedContent) return cachedContent;
 
-  const results: { title: string; href: string; subject: string }[] = [];
+  const results: SearchItem[] = [];
 
-  function walk(dir: string, slugParts: string[], subject: string) {
-    const entries = fs.readdirSync(dir, { withFileTypes: true });
-    for (const entry of entries) {
-      const nameWithoutExt = entry.name.replace(/\.mdx?$/i, "");
+  function walk(dir: string, slugParts: string[], trail: string[]) {
+    for (const entry of readDirSorted(dir)) {
+      const fullPath = path.join(dir, entry);
+      const isDir = fs.statSync(fullPath).isDirectory();
+      const isPdf = /\.pdf$/i.test(entry);
+      const isMdx = /\.mdx$/i.test(entry);
+      if (!isDir && !isPdf && !isMdx) continue;
+
+      const nameWithoutExt = entry.replace(/\.(mdx|pdf)$/i, "");
       const newSlug = [...slugParts, toSlug(nameWithoutExt)];
-      const currentSubject = subject || getDisplayName(nameWithoutExt);
+      const title = getDisplayName(nameWithoutExt);
 
-      if (entry.isDirectory()) {
-        results.push({
-          title: getDisplayName(nameWithoutExt),
-          href: `/subjects/${newSlug.join("/")}`,
-          subject: currentSubject,
-        });
-        walk(path.join(dir, entry.name), newSlug, currentSubject);
-      } else if (entry.name.match(/\.mdx?$/i)) {
-        const raw = fs.readFileSync(path.join(dir, entry.name), "utf-8");
-        const { data } = matter(raw);
-        results.push({
-          title: data.title ?? getDisplayName(nameWithoutExt),
-          href: `/subjects/${newSlug.join("/")}`,
-          subject: currentSubject,
-        });
+      results.push({
+        title,
+        href: `/subjects/${newSlug.join("/")}`,
+        kind: isDir ? "folder" : isPdf ? "pdf" : "lesson",
+        context: trail.join(" › "),
+      });
+
+      if (isDir) {
+        // cấp môn học chỉ hiện mã môn cho gọn
+        const label = trail.length === 0 ? (getSubjectCode(title) ?? title) : title;
+        walk(fullPath, newSlug, [...trail, label]);
       }
     }
   }
 
-  walk(CONTENT_PATH, [], "");
+  walk(CONTENT_PATH, [], []);
 
   cachedContent = results;
   return results;
@@ -169,7 +192,7 @@ export function getFolderContents(slug: string[]) {
 
   if (!folderPath) return null;
 
-  const entries = fs.readdirSync(folderPath);
+  const entries = readDirSorted(folderPath);
 
   return entries.map((entry) => {
     const fullPath = path.join(folderPath, entry);
@@ -281,7 +304,7 @@ export function getOrderedFiles() {
   function walk(dir: string, slugParts: string[], subject: string) {
     const entries = fs
       .readdirSync(dir, { withFileTypes: true })
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .sort((a, b) => compareNames(a.name, b.name));
 
     for (const entry of entries) {
       const nameWithoutExt = entry.name.replace(/\.mdx?$/i, "");
@@ -307,7 +330,7 @@ export function getOrderedFiles() {
   const subjects = fs
     .readdirSync(CONTENT_PATH, { withFileTypes: true })
     .filter((e) => e.isDirectory())
-    .sort((a, b) => a.name.localeCompare(b.name));
+    .sort((a, b) => compareNames(a.name, b.name));
 
   for (const subject of subjects) {
     walk(

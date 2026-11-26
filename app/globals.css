@@ -10,6 +10,20 @@
   --font-mono: var(--font-jetbrains-mono);
 }
 
+/* Chừa chỗ cho navbar cố định (h-16) khi nhảy tới #anchor */
+html {
+  scroll-padding-top: 5rem;
+}
+
+/* Viền focus rõ ràng khi dùng bàn phím.
+   Để trong @layer base để class như outline-none trên component ghi đè được */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--color-secondary);
+    outline-offset: 2px;
+  }
+}
+
 pre {
   overflow-x: auto;
   white-space: pre-wrap;

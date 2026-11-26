@@ -1,4 +1,4 @@
-import Sidebar from "@/components/Sidebar";
+import Sidebar, { MobileSubjectBar } from "@/components/Sidebar";
 import { buildTree } from "@/utils/tree";
 
 export default function SubjectsLayout({
@@ -12,7 +12,10 @@ export default function SubjectsLayout({
     <div className="flex">
       <Sidebar tree={tree} />
 
-      <main className="flex-1 min-h-[90vh]">{children}</main>
+      <div className="min-w-0 flex-1">
+        <MobileSubjectBar tree={tree} />
+        {children}
+      </div>
     </div>
   );
 }

@@ -1,37 +1,33 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FaChevronUp } from "react-icons/fa";
+import { LuArrowUp } from "react-icons/lu";
 
 const ScrollToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 200) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
-    };
+    const handleScroll = () => setIsVisible(window.scrollY > 400);
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleScrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
-    <div
-      className={`fixed bottom-6 right-6 rounded-full w-10 h-10 bg-secondary text-base flex items-center justify-center duration-300 hover:cursor-pointer hover:bg-secondary/80 ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+    <button
+      type="button"
+      aria-label="Lên đầu trang"
+      title="Lên đầu trang"
+      tabIndex={isVisible ? 0 : -1}
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      className={`fixed bottom-6 right-6 z-40 flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-base shadow-md transition-all duration-300 hover:bg-primary ${
+        isVisible
+          ? "translate-y-0 opacity-100"
+          : "pointer-events-none translate-y-10 opacity-0"
       }`}
-      onClick={handleScrollToTop}
     >
-      <FaChevronUp />
-    </div>
+      <LuArrowUp aria-hidden size={18} />
+    </button>
   );
 };
 

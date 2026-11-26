@@ -16,14 +16,14 @@ const socials = [
   {
     icon: <SiGmail size={18} />,
     href: "mailto:kuanmin.bigdragon.56@gmail.com",
-    label: "YouTube",
+    label: "Email",
   },
 ];
 
 export function Footer() {
   return (
     <footer className="border-t border-primary/10 py-6 px-6 mt-auto">
-      <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
         <p className="text-sm text-primary/40 flex items-center gap-1">
           <FaRegCopyright /> 2025 - {new Date().getFullYear()}{" "}
           <Link href="/" className="text-primary/60 font-medium">
@@ -40,7 +40,8 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={s.label}
-              className="text-primary/40 hover:text-accent transition"
+              title={s.label}
+              className="text-primary/50 hover:text-secondary transition"
             >
               {s.icon}
             </a>
