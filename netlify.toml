@@ -1,0 +1,15 @@
+# Header cho file tĩnh trong public/. Netlify áp dụng khi phục vụ file từ CDN.
+# Không có mục [build] nên cấu hình build trên giao diện Netlify vẫn giữ nguyên.
+
+# PDF: trang luôn gọi kèm ?v=<mã băm nội dung>, thay file thì URL tự đổi,
+# nên trình duyệt và Cloudflare giữ được rất lâu.
+[[headers]]
+  for = "/pdf/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Hình minh hoạ trong bài: giữ 1 ngày, hết hạn vẫn dùng bản cũ trong lúc lấy bản mới.
+[[headers]]
+  for = "/content/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"

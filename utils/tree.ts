@@ -1,7 +1,6 @@
-import fs from "fs";
 import path from "path";
 import { cache } from "react";
-import { toSlug, getDisplayName, readDirSorted } from "./slug";
+import { toSlug, getDisplayName, readDirSorted, statEntry } from "./slug";
 
 const CONTENT_PATH = path.join(process.cwd(), "content");
 
@@ -23,7 +22,8 @@ function walk(dir: string, base: string[]): TreeNode[] {
 
   for (const entry of readDirSorted(dir)) {
     const fullPath = path.join(dir, entry);
-    const stat = fs.statSync(fullPath);
+    // PDF nằm ở public/pdf/ nhưng vẫn hiện đúng chỗ như khi còn trong content/
+    const stat = statEntry(fullPath);
 
     const name = entry.replace(/\.(mdx|pdf)$/i, "");
     const slug = toSlug(name);

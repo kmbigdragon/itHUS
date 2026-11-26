@@ -100,13 +100,14 @@ itHUS/
 ├── app/
 │   ├── page.tsx              # Trang chủ
 │   ├── subjects/             # Danh sách môn, trang chương, trang bài học
-│   └── api/                  # Chỉ mục tìm kiếm, trả file PDF
+│   └── api/                  # Chỉ mục tìm kiếm, chuyển hướng link PDF cũ
 ├── components/
 │   ├── mdx/                  # Component dùng được trong file .mdx (Formula, SimplexTable...)
 │   └── ...                   # Navbar, Sidebar, SearchBar...
-├── content/                  # TOÀN BỘ BÀI VIẾT nằm ở đây (.mdx, .pdf)
+├── content/                  # TOÀN BỘ BÀI VIẾT (.mdx) nằm ở đây
 ├── public/
 │   ├── content/              # Hình minh hoạ cho bài viết
+│   ├── pdf/                  # File PDF, cùng cấu trúc thư mục với content/
 │   ├── sitemap.xml
 │   └── robots.txt
 └── utils/
@@ -115,7 +116,9 @@ itHUS/
     └── subjects.ts           # Mã môn, danh sách môn đã hoàn thành
 ```
 
-Phần lớn đóng góp chỉ cần đụng tới `content/` và `public/content/`.
+Phần lớn đóng góp chỉ cần đụng tới `content/`, `public/content/` và `public/pdf/`.
+
+`netlify.toml` và phần `headers()` trong `next.config.ts` đặt thời gian cache cho Cloudflare. Không cần sửa khi viết bài.
 
 ## Tổ chức nội dung
 
@@ -133,15 +136,21 @@ content/
         └── 3.-Thuật-toán-Prim.mdx
 
 public/
-└── content/
-    └── MAT3323/
-        └── C3/                                   ← hình của chương 3
-            └── mst-graph.svg
+├── content/
+│   └── MAT3323/
+│       └── C3/                                   ← hình của chương 3
+│           └── mst-graph.svg
+└── pdf/
+    └── MAT2407-–-Tối-ưu-hoá/                     ← cùng tên với thư mục môn trong content/
+        └── Đề-thi-các-năm/
+            └── Giữa-kì/
+                └── GK-2223-TUH.pdf               ← hiện trong mục lục ở MAT2407 › Đề thi các năm › Giữa kì
 ```
 
 - Cấp 1 là **môn**, cấp 2 thường là **chương**, bên trong là **bài**. Có thể lồng thêm thư mục nếu cần, ví dụ `Đề-thi-các-năm/`.
 - Mỗi môn nên có `Chương-0-–-Lời-nói-đầu.mdx` ở ngay thư mục môn: giới thiệu môn, tài liệu tham khảo, nguồn.
-- Trong `content/` chỉ file `.mdx` và `.pdf` được hiển thị, các file khác bị bỏ qua.
+- Trong `content/` chỉ file `.mdx` được hiển thị, các file khác bị bỏ qua.
+- File PDF để ở `public/pdf/`, xem [File PDF](#file-pdf).
 - Hình minh hoạ để ở `public/content/<MÃ-MÔN>/C<số chương>/`, không để trong `content/`.
 
 ## Đặt tên file và thư mục
@@ -339,7 +348,19 @@ Muốn thêm component mới: tạo file trong `components/mdx/`, rồi khai bá
 
 ### File PDF
 
-- Đặt file `.pdf` vào thư mục chương như một bài bình thường. Trang sẽ hiện trình xem PDF kèm nút "Mở tab mới" và "Tải xuống".
+PDF **không** để trong `content/` mà để trong `public/pdf/`, với **đúng cấu trúc và tên thư mục** như bên `content/`. Trên trang, PDF vẫn hiện trong mục lục ở đúng chỗ đó như một bài bình thường, kèm trình xem PDF và hai nút "Mở tab mới", "Tải xuống".
+
+```text
+content/MAT2407-–-Tối-ưu-hoá/Đề-thi-các-năm/          ← có thể không tồn tại nếu thư mục chỉ có PDF
+public/pdf/MAT2407-–-Tối-ưu-hoá/Đề-thi-các-năm/Giữa-kì/GK-2223-TUH.pdf
+→ /subjects/mat2407-toi-uu-hoa/de-thi-cac-nam/giua-ki/gk-2223-tuh
+```
+
+Lý do: file trong `public/` được CDN phục vụ như file tĩnh, Cloudflare cache được, tải nhanh và tải được từng phần. Nếu để trong `content/`, PDF phải đi qua serverless function.
+
+- Tên file và thư mục theo đúng [quy tắc đặt tên](#đặt-tên-file-và-thư-mục) ở trên.
+- Nếu lỡ để PDF trong `content/`, `pnpm build` sẽ báo lỗi chỉ ra file cần chuyển.
+- Trang gọi PDF kèm `?v=<mã băm nội dung>`, nên khi thay file cùng tên, người đọc sẽ nhận bản mới ngay.
 - Nén file dưới khoảng 5 MB. File lớn tải rất chậm, nhất là trên điện thoại.
 - Chỉ đăng tài liệu bạn được phép chia sẻ.
 

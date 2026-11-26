@@ -50,6 +50,10 @@ import {
 
 export { generateStaticParams } from "@/utils/slug";
 
+// Mọi trang (bài, PDF, môn, chương) đều được dựng sẵn lúc build.
+// URL không có trong danh sách trả 404 ngay, không render lại trên server.
+export const dynamicParams = false;
+
 type PageProps = {
   params: Promise<{
     slug: string[];
